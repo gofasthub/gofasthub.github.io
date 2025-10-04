@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GoFastHub</title>
+  <style>
+    :root {
+      --bg-light: #f2f5fa;
+      --glass-bg: rgba(255,255,255,0.65);
+      --glass-dark: rgba(255,255,255,0.4);
+      --accent: #0078ff; /* Windows/iOS hybrid blue */
+      --accent-light: #4aa3ff;
+      --text-main: #1b1b1d;
+      --radius: 22px;
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; background: var(--bg-light); overflow: hidden; }
+
+    body {
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #f8faff 0%, #dbe7ff 100%);
+      transition: background 1s ease;
+    }
+
+    .card {
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      background-color: var(--glass-bg);
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,0.4);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 45px 40px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      animation: fadeIn 0.8s ease forwards;
+      transition: all 0.6s ease;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 25px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: var(--glass-dark);
+      color: var(--text-main);
+      font-size: 1rem;
+      outline: none;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input[type="password"]:focus {
+      background: rgba(255,255,255,0.8);
+      box-shadow: 0 0 0 2px var(--accent-light);
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 14px 0;
+      width: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,120,255,0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,120,255,0.4);
+    }
+
+    .error {
+      color: #ff3b30;
+      font-size: 0.9rem;
+      margin-top: 12px;
+      height: 18px;
+      transition: opacity 0.3s ease;
+    }
+
+    .spinner {
+      display: none;
+      margin: 25px auto 0;
+      width: 36px; height: 36px;
+      border: 4px solid rgba(0,0,0,0.1);
+      border-top: 4px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .games-page {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(160deg, #f7f9ff, #e2e9ff);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 1s ease, visibility 0s linear 1s;
+    }
+
+    .games-page.active {
+      opacity: 1;
+      visibility: visible;
+      transition-delay: 0s;
+    }
+
+    .games-content {
+      text-align: center;
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      background-color: rgba(255,255,255,0.7);
+      border-radius: var(--radius);
+      padding: 50px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      max-width: 600px;
+      animation: fadeIn 1.2s ease forwards;
+    }
+
+    .games-content h2 {
+      font-size: 2.2rem;
+      margin: 0 0 12px;
+      color: var(--text-main);
+    }
+
+    .games-content p {
+      color: #555;
+      font-size: 1rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="login-card">
+    <h1>Welcome to GoFastHub</h1>
+    <input id="password" type="password" placeholder="Enter Access Key" />
+    <button id="enter-btn">Enter</button>
+    <div class="spinner" id="spinner"></div>
+    <div class="error" id="error-msg"></div>
+  </div>
+
+  <div class="games-page" id="games-page">
+    <div class="games-content">
+      <h2>Games Page</h2>
+      <p>Coming soon — stay tuned for GoFastHub's next update ✨</p>
+    </div>
+  </div>
+
+  <script>
+    const btn = document.getElementById('enter-btn');
+    const card = document.getElementById('login-card');
+    const games = document.getElementById('games-page');
+    const pwInput = document.getElementById('password');
+    const errorMsg = document.getElementById('error-msg');
+    const spinner = document.getElementById('spinner');
+
+    btn.addEventListener('click', () => {
+      const password = pwInput.value.trim();
+      if(password === 'fast67') {
+        errorMsg.textContent = '';
+        spinner.style.display = 'block';
+        btn.disabled = true;
+        btn.style.opacity = '0.7';
+
+        setTimeout(() => {
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.96)';
+          setTimeout(() => {
+            card.style.display = 'none';
+            games.classList.add('active');
+          }, 700);
+        }, 2000);
+
+      } else {
+        errorMsg.textContent = 'Incorrect password. Try again.';
+        pwInput.value = '';
+        pwInput.focus();
+      }
+    });
+  </script>
+</body>
+</html>
