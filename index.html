@@ -54,6 +54,7 @@
       padding: 45px 40px;
       transition: all 0.4s ease;
       text-align: center;
+      position: relative;
     }
 
     .liquidGlass-text {
@@ -150,40 +151,51 @@
       text-transform: uppercase;
     }
 
-    .admin-panel {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-      padding: 20px;
-      border-radius: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 90%;
-      max-width: 350px;
-      margin: 40px auto;
+    .admin-popup-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease;
+      font-size: 0.8rem;
+      z-index: 10;
     }
 
-    .message-banner {
+    .admin-popup-button:hover {
+      transform: translateY(-3px);
+    }
+
+    .admin-password-popup, .admin-panel {
       position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      padding: 1rem 2rem;
-      border-radius: 12px;
-      font-size: 1.2rem;
-      animation: fadeIn 0.5s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translate(-50%, -20px); }
-      to { opacity: 1; transform: translate(-50%, 0); }
+      bottom: 100px;
+      left: 20px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 280px;
+      padding: 25px;
+      border-radius: var(--radius);
+      background: rgba(120, 80, 255, 0.15);
+      backdrop-filter: blur(10px) saturate(180%);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      z-index: 1000;
+      transition: all 0.4s ease;
+      cursor: move;
     }
   </style>
 </head>
 <body>
   <div class="liquidGlass-wrapper" id="login-card">
+    <button class="admin-popup-button" onclick="toggleAdminPasswordPopup()">Admin</button>
     <div class="liquidGlass-text">welcome to fasthub</div>
     <input id="password" type="password" placeholder="enter access key" />
     <div id="error-msg" style="color:#ff7a7a;font-size:0.9rem;margin-top:10px;height:18px;"></div>
@@ -197,16 +209,17 @@
       <div class="game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game three</span></div>
       <div class="game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game four</span></div>
     </div>
+  </div>
 
-    <div class="admin-panel" id="admin-panel" style="display:none;">
-      <input id="adminPass" type="password" placeholder="enter admin password" />
-      <button onclick="checkAdmin()">Unlock Admin Panel</button>
-      <div id="adminContent" style="display:none;">
-        <input id="adminMessage" type="text" placeholder="Type global message" />
-        <input id="duration" type="number" placeholder="Duration (s)" min="1" />
-        <button onclick="sendMessage()">Send</button>
-      </div>
-    </div>
+  <div class="admin-password-popup" id="admin-password-popup">
+    <input id="adminPass" type="password" placeholder="enter admin password" />
+    <button onclick="checkAdmin()">Unlock Admin Panel</button>
+  </div>
+
+  <div class="admin-panel" id="admin-panel">
+    <input id="adminMessage" type="text" placeholder="Type global message" />
+    <input id="duration" type="number" placeholder="Duration (s)" min="1" />
+    <button onclick="sendMessage()">Send</button>
   </div>
 
   <script type="module">
@@ -254,12 +267,17 @@
 
     const messagesRef = ref(db, 'messages');
 
+    window.toggleAdminPasswordPopup = function() {
+      const popup = document.getElementById('admin-password-popup');
+      popup.style.display = popup.style.display === 'flex' ? 'none' : 'flex';
+    };
+
     window.checkAdmin = function() {
       const adminPass = document.getElementById('adminPass').value.trim();
-      const adminContent = document.getElementById('adminContent');
       if (adminPass === 'fastadmin67') {
-        adminContent.style.display = 'flex';
-        adminContent.style.flexDirection = 'column';
+        document.getElementById('admin-password-popup').style.display = 'none';
+        document.getElementById('admin-panel').style.display = 'flex';
+        makeDraggable(document.getElementById('admin-panel'));
       } else {
         alert('Incorrect admin password');
       }
@@ -283,6 +301,23 @@
       document.body.appendChild(msgElem);
       setTimeout(() => msgElem.remove(), (message.expiresIn || 10) * 1000);
     });
+
+    function makeDraggable(el) {
+      let isDown = false;
+      let offset = [0, 0];
+      el.addEventListener('mousedown', (e) => {
+        isDown = true;
+        offset = [el.offsetLeft - e.clientX, el.offsetTop - e.clientY];
+      });
+      document.addEventListener('mouseup', () => isDown = false);
+      document.addEventListener('mousemove', (e) => {
+        e.preventDefault();
+        if (isDown) {
+          el.style.left = (e.clientX + offset[0]) + 'px';
+          el.style.top = (e.clientY + offset[1]) + 'px';
+        }
+      });
+    }
   </script>
 </body>
 </html>
