@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -15,9 +15,9 @@
       font-family: 'Outfit', sans-serif;
     }
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      margin: 0;
-      padding: 0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -37,190 +37,201 @@
       100% { background-position: 0% 50%; }
     }
 
-    .liquidGlass-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      color: white;
+    .liquidGlass {
       backdrop-filter: blur(10px) saturate(180%);
-      background: rgba(120, 80, 255, 0.15);
+      background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
       border-radius: var(--radius);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+    }
+
+    /* Added bounce hover effect globally */
+    .liquidGlass:hover {
+      transform: scale(1.07);
+      box-shadow: 0 12px 45px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .liquidGlass-wrapper {
       width: 90%;
       max-width: 420px;
-      padding: 45px 40px;
-      transition: all 0.4s ease;
+      padding: 40px;
       text-align: center;
-      position: relative;
+      animation: fadeInUp 0.8s ease;
     }
 
     .liquidGlass-text {
       font-size: 2rem;
       font-weight: 700;
       text-transform: lowercase;
+      text-align: center;
       margin-bottom: 25px;
     }
 
     input[type="password"], input[type="text"], input[type="number"] {
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       border-radius: 14px;
       border: none;
-      background: rgba(255,255,255,0.15);
+      background: rgba(255, 255, 255, 0.15);
       color: white;
       font-size: 1rem;
       outline: none;
-      margin-bottom: 10px;
+      transition: background 0.3s ease;
+      margin-bottom: 12px;
     }
 
-    button {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none;
-      color: white;
-      font-weight: 600;
-      padding: 0.8rem 1.5rem;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-      width: 100%;
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-    }
+    input:focus { background: rgba(255, 255, 255, 0.25); }
 
     .games-page {
-      position: absolute;
-      inset: 0;
-      display: flex;
+      display: none;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      background: linear-gradient(160deg, #b38cff, #8aa9ff);
-      background-size: 300% 300%;
-      animation: gradientShift 12s ease infinite;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 1s ease, visibility 0s linear 1s;
-      text-align: center;
       padding: 20px;
-      overflow-y: auto;
+      width: 100%;
+      max-width: 1000px;
+      animation: fadeInUp 0.8s ease;
     }
 
-    .games-page.active {
-      opacity: 1;
-      visibility: visible;
-      transition-delay: 0s;
-    }
+    .games-page.active { display: flex; }
 
     .games-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 20px;
-      margin-top: 30px;
       width: 100%;
-      max-width: 800px;
+      margin-top: 20px;
     }
 
     .game-card {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(8px);
-      border-radius: 16px;
+      height: 220px;
       overflow: hidden;
-      transition: background 0.3s ease, transform 0.3s ease;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 160px;
+      text-align: center;
     }
 
     .game-card img {
       width: 100%;
-      height: 70%;
+      height: 75%;
       object-fit: cover;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
     }
 
     .game-card span {
       padding: 10px;
-      font-size: 1rem;
-      background: rgba(0, 0, 0, 0.2);
-      text-align: center;
+      background: rgba(0, 0, 0, 0.25);
       text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
     }
 
     .admin-popup-button {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: white;
-      padding: 6px 10px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      transition: transform 0.3s ease;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 8px 12px;
       font-size: 0.8rem;
-      z-index: 10;
-    }
-
-    .admin-popup-button:hover {
-      transform: translateY(-3px);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      cursor: pointer;
+      z-index: 20;
+      transition: all 0.3s ease;
     }
 
     .admin-password-popup, .admin-panel {
-      position: fixed;
-      bottom: 100px;
-      left: 20px;
       display: none;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      gap: 10px;
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
       width: 280px;
-      padding: 25px;
-      border-radius: var(--radius);
-      background: rgba(120, 80, 255, 0.15);
-      backdrop-filter: blur(10px) saturate(180%);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      z-index: 30;
+      cursor: grab;
+    }
+
+    .notification-container {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 9999;
+      align-items: center;
+    }
+
+    .notification {
+      padding: 15px 20px;
+      border-radius: 14px;
+      min-width: 250px;
       text-align: center;
-      z-index: 1000;
-      transition: all 0.4s ease;
-      cursor: move;
+      transform: scale(0.9);
+      opacity: 0;
+      animation: bumpIn 0.5s forwards;
+    }
+
+    @keyframes bumpIn {
+      0% { transform: translateY(-10px) scale(0.9); opacity: 0; }
+      60% { transform: translateY(3px) scale(1.03); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    @keyframes bumpOut {
+      0% { transform: scale(1) translateY(0); opacity: 1; }
+      50% { transform: scale(0.95) translateY(-5px); opacity: 0.8; }
+      100% { transform: scale(0.8) translateY(-20px); opacity: 0; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <div class="liquidGlass-wrapper" id="login-card">
-    <button class="admin-popup-button" onclick="toggleAdminPasswordPopup()">Admin</button>
+  <!-- content unchanged -->
+</body>
+</html>
+
+  <div class="liquidGlass liquidGlass-wrapper" id="login-card">
     <div class="liquidGlass-text">welcome to fasthub</div>
     <input id="password" type="password" placeholder="enter access key" />
-    <div id="error-msg" style="color:#ff7a7a;font-size:0.9rem;margin-top:10px;height:18px;"></div>
+    <div id="error-msg" class="error"></div>
   </div>
 
   <div class="games-page" id="games-page">
-    <h1>welcome to fasthub</h1>
+    <h1 class="liquidGlass-text">welcome to fasthub</h1>
     <div class="games-grid">
-      <div class="game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game one</span></div>
-      <div class="game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game two</span></div>
-      <div class="game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game three</span></div>
-      <div class="game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game four</span></div>
+      <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg" alt="game"><span>game one</span></div>
+      <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg" alt="game"><span>game two</span></div>
+      <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg" alt="game"><span>game three</span></div>
+      <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg" alt="game"><span>game four</span></div>
     </div>
   </div>
 
-  <div class="admin-password-popup" id="admin-password-popup">
+  <button class="liquidGlass admin-popup-button" id="adminToggleBtn">admin</button>
+
+  <div class="liquidGlass admin-password-popup" id="admin-password-popup">
     <input id="adminPass" type="password" placeholder="enter admin password" />
-    <button onclick="checkAdmin()">Unlock Admin Panel</button>
+    <button class="liquidGlass" id="unlockBtn">unlock admin panel</button>
   </div>
 
-  <div class="admin-panel" id="admin-panel">
+  <div class="liquidGlass admin-panel" id="admin-panel">
     <input id="adminMessage" type="text" placeholder="Type global message" />
     <input id="duration" type="number" placeholder="Duration (s)" min="1" />
-    <button onclick="sendMessage()">Send</button>
+    <button class="liquidGlass" id="sendBtn">send</button>
   </div>
+
+  <div class="notification-container" id="notificationContainer"></div>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js';
@@ -239,83 +250,99 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const messagesRef = ref(db, 'messages');
 
-    const card = document.getElementById('login-card');
-    const games = document.getElementById('games-page');
+    const loginCard = document.getElementById('login-card');
+    const gamesPage = document.getElementById('games-page');
     const pwInput = document.getElementById('password');
     const errorMsg = document.getElementById('error-msg');
+    const adminToggleBtn = document.getElementById('adminToggleBtn');
+    const adminPasswordPopup = document.getElementById('admin-password-popup');
+    const adminPanel = document.getElementById('admin-panel');
+    const unlockBtn = document.getElementById('unlockBtn');
+    const sendBtn = document.getElementById('sendBtn');
+    const notificationContainer = document.getElementById('notificationContainer');
 
     function tryLogin() {
       const password = pwInput.value.trim();
-      if(password === 'fast67') {
-        errorMsg.textContent = '';
-        card.style.opacity = '0';
-        setTimeout(() => {
-          card.style.display = 'none';
-          games.classList.add('active');
-        }, 700);
+      if (password === 'fast67') {
+        loginCard.style.display = 'none';
+        gamesPage.classList.add('active');
+      } else if (password === 'fastadmin67') {
+        loginCard.style.display = 'none';
+        gamesPage.classList.add('active');
+        adminPanel.style.display = 'flex';
+        makeDraggable(adminPanel);
       } else {
         errorMsg.textContent = 'incorrect password. try again.';
         pwInput.value = '';
-        pwInput.focus();
       }
     }
 
-    pwInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') tryLogin();
+    pwInput.addEventListener('keypress', e => { if (e.key === 'Enter') tryLogin(); });
+
+    adminToggleBtn.addEventListener('click', () => {
+      adminPasswordPopup.style.display = adminPasswordPopup.style.display === 'flex' ? 'none' : 'flex';
     });
 
-    const messagesRef = ref(db, 'messages');
-
-    window.toggleAdminPasswordPopup = function() {
-      const popup = document.getElementById('admin-password-popup');
-      popup.style.display = popup.style.display === 'flex' ? 'none' : 'flex';
-    };
-
-    window.checkAdmin = function() {
-      const adminPass = document.getElementById('adminPass').value.trim();
-      if (adminPass === 'fastadmin67') {
-        document.getElementById('admin-password-popup').style.display = 'none';
-        document.getElementById('admin-panel').style.display = 'flex';
-        makeDraggable(document.getElementById('admin-panel'));
+    unlockBtn.addEventListener('click', () => {
+      const v = document.getElementById('adminPass').value.trim();
+      if (v === 'fastadmin67') {
+        adminPasswordPopup.style.display = 'none';
+        adminPanel.style.display = 'flex';
+        makeDraggable(adminPanel);
       } else {
         alert('Incorrect admin password');
       }
-    };
+    });
 
-    window.sendMessage = function() {
+    sendBtn.addEventListener('click', () => {
       const msgInput = document.getElementById('adminMessage');
-      const duration = document.getElementById('duration');
-      const message = msgInput.value.trim();
-      if (!message) return;
+      const durationInput = document.getElementById('duration');
+      const text = msgInput.value.trim();
+      const expiresIn = parseInt(durationInput.value) || 10;
+      if (!text) return;
+      push(messagesRef, { text, expiresIn, timestamp: Date.now() });
+    });
 
-      push(messagesRef, { text: message, expiresIn: parseInt(duration.value) || 10, timestamp: Date.now() });
-      msgInput.value = '';
-    };
+    const joinTime = Date.now();
 
-    onChildAdded(messagesRef, (data) => {
-      const message = data.val();
-      const msgElem = document.createElement('div');
-      msgElem.textContent = message.text;
-      msgElem.className = 'message-banner';
-      document.body.appendChild(msgElem);
-      setTimeout(() => msgElem.remove(), (message.expiresIn || 10) * 1000);
+    function showNotification(text, seconds = 10) {
+      const n = document.createElement('div');
+      n.className = 'liquidGlass notification';
+      n.textContent = text;
+      notificationContainer.appendChild(n);
+      setTimeout(() => {
+        n.style.animation = 'bumpOut 0.5s forwards';
+        setTimeout(() => n.remove(), 500);
+      }, seconds * 1000);
+    }
+
+    onChildAdded(messagesRef, snapshot => {
+      const msg = snapshot.val();
+      const now = Date.now();
+      if (msg && msg.timestamp >= joinTime && (now - msg.timestamp) < (msg.expiresIn || 10) * 1000) {
+        showNotification(msg.text, msg.expiresIn || 10);
+      }
     });
 
     function makeDraggable(el) {
-      let isDown = false;
-      let offset = [0, 0];
-      el.addEventListener('mousedown', (e) => {
-        isDown = true;
-        offset = [el.offsetLeft - e.clientX, el.offsetTop - e.clientY];
+      let dragging = false, offX = 0, offY = 0;
+      el.addEventListener('mousedown', e => {
+        dragging = true;
+        offX = e.clientX - el.offsetLeft;
+        offY = e.clientY - el.offsetTop;
+        el.style.cursor = 'grabbing';
       });
-      document.addEventListener('mouseup', () => isDown = false);
-      document.addEventListener('mousemove', (e) => {
+      document.addEventListener('mouseup', () => {
+        dragging = false;
+        el.style.cursor = 'grab';
+      });
+      document.addEventListener('mousemove', e => {
+        if (!dragging) return;
         e.preventDefault();
-        if (isDown) {
-          el.style.left = (e.clientX + offset[0]) + 'px';
-          el.style.top = (e.clientY + offset[1]) + 'px';
-        }
+        el.style.left = (e.clientX - offX) + 'px';
+        el.style.top = (e.clientY - offY) + 'px';
       });
     }
   </script>
