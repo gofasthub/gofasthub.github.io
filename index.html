@@ -65,10 +65,9 @@
       z-index: 200;
     }
 
-    .event-indicator img {
-      width: 28px;
-      height: 28px;
-    }
+    .event-indicator img { width: 28px; height: 28px; }
+
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
@@ -108,8 +107,9 @@
       eventInterval = setInterval(() => {
         timeLeft--;
         if (timeLeft <= 0) {
+          eventIndicator.style.animation = 'bumpOut 0.5s forwards';
+          setTimeout(() => { eventIndicator.style.display = 'none'; eventIndicator.style.animation = ''; }, 500);
           clearInterval(eventInterval);
-          eventIndicator.style.display = 'none';
         } else {
           const mins = Math.floor(timeLeft / 60);
           const secs = timeLeft % 60;
@@ -127,7 +127,6 @@
   </script>
 </body>
 </html>
-
 
   <div class="liquidGlass liquidGlass-wrapper" id="login-card">
     <div class="liquidGlass-text">welcome to fasthub</div>
