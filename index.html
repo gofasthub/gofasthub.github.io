@@ -68,9 +68,9 @@
       margin-bottom: 25px;
     }
 
-    input[type="password"], input[type="text"], input[type="number"] {
+    input, select, button {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       border-radius: 14px;
       border: none;
       background: rgba(255, 255, 255, 0.15);
@@ -81,7 +81,7 @@
       margin-bottom: 12px;
     }
 
-    input:focus { background: rgba(255, 255, 255, 0.25); }
+    input:focus, select:focus { background: rgba(255, 255, 255, 0.25); }
 
     .games-page {
       display: none;
@@ -150,7 +150,7 @@
       position: fixed;
       bottom: 70px;
       right: 20px;
-      width: 280px;
+      width: 300px;
       padding: 20px;
       z-index: 30;
       cursor: grab;
@@ -190,12 +190,6 @@
       100% { transform: scale(0.8) translateY(-20px); opacity: 0; }
     }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Global Event Indicator */
     .event-indicator {
       position: fixed;
       bottom: 25px;
@@ -218,6 +212,8 @@
       height: 24px;
       border-radius: 6px;
     }
+
+    h3 { text-align: center; margin-top: 8px; margin-bottom: 5px; font-size: 1rem; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -246,14 +242,24 @@
   </div>
 
   <div class="liquidGlass admin-panel" id="admin-panel">
+    <h3>Global Message</h3>
     <input id="adminMessage" type="text" placeholder="Type global message" />
     <input id="duration" type="number" placeholder="Duration (s)" min="1" />
-    <button class="liquidGlass" id="sendBtn">send</button>
+    <button class="liquidGlass" id="sendBtn">Send Message</button>
+
+    <h3>Global Event</h3>
+    <select id="eventSelect">
+      <option value="🌮 Raining Tacos">🌮 Raining Tacos</option>
+      <option value="🎉 Double XP">🎉 Double XP</option>
+      <option value="🔥 Hot Mode">🔥 Hot Mode</option>
+      <option value="🌈 Lucky Drops">🌈 Lucky Drops</option>
+    </select>
+    <input id="eventDuration" type="number" placeholder="Event duration (s)" min="5" />
+    <button class="liquidGlass" id="startEventBtn">Start Event</button>
   </div>
 
   <div class="notification-container" id="notificationContainer"></div>
 
-  <!-- GLOBAL EVENT INDICATOR -->
   <div class="liquidGlass event-indicator" id="eventIndicator">
     <img id="eventIcon" src="" alt="event">
     <span id="eventText"></span>
@@ -271,8 +277,7 @@
       projectId: "fasthub-messages",
       storageBucket: "fasthub-messages.firebasestorage.app",
       messagingSenderId: "788670666897",
-      appId: "1:788670666897:web:223bb6a9f8bff4af444730",
-      measurementId: "G-8DN5YXWV0V"
+      appId: "1:788670666897:web:223bb6a9f8bff4af444730"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -280,10 +285,10 @@
     const messagesRef = ref(db, 'messages');
     const eventsRef = ref(db, 'events');
 
-    const loginCard = document.getElementById('login-card');
-    const gamesPage = document.getElementById('games-page');
     const pwInput = document.getElementById('password');
     const errorMsg = document.getElementById('error-msg');
+    const loginCard = document.getElementById('login-card');
+    const gamesPage = document.getElementById('games-page');
     const adminToggleBtn = document.getElementById('adminToggleBtn');
     const adminPasswordPopup = document.getElementById('admin-password-popup');
     const adminPanel = document.getElementById('admin-panel');
@@ -294,6 +299,7 @@
     const eventIcon = document.getElementById('eventIcon');
     const eventText = document.getElementById('eventText');
     const eventTimer = document.getElementById('eventTimer');
+    const startEventBtn = document.getElementById('startEventBtn');
 
     function tryLogin() {
       const password = pwInput.value.trim();
@@ -329,12 +335,10 @@
     });
 
     sendBtn.addEventListener('click', () => {
-      const msgInput = document.getElementById('adminMessage');
-      const durationInput = document.getElementById('duration');
-      const text = msgInput.value.trim();
-      const expiresIn = parseInt(durationInput.value) || 10;
-      if (!text) return;
-      push(messagesRef, { text, expiresIn, timestamp: Date.now() });
+      const msg = document.getElementById('adminMessage').value.trim();
+      const dur = parseInt(document.getElementById('duration').value) || 10;
+      if (!msg) return;
+      push(messagesRef, { text: msg, expiresIn: dur, timestamp: Date.now() });
     });
 
     const joinTime = Date.now();
@@ -350,14 +354,14 @@
       }, seconds * 1000);
     }
 
-    onChildAdded(messagesRef, snapshot => {
-      const msg = snapshot.val();
-      const now = Date.now();
-      if (msg && msg.timestamp >= joinTime && (now - msg.timestamp) < (msg.expiresIn || 10) * 1000) {
-        showNotification(msg.text, msg.expiresIn || 10);
+    onChildAdded(messagesRef, snap => {
+      const msg = snap.val();
+      if (msg && Date.now() - msg.timestamp < msg.expiresIn * 1000) {
+        showNotification(msg.text, msg.expiresIn);
       }
     });
 
+    // Global Events System
     function showGlobalEvent(data) {
       if (!data || !data.name) return;
       eventIcon.src = data.icon || '';
@@ -366,27 +370,41 @@
       let timeLeft = data.duration || 10;
 
       clearInterval(window.eventInterval);
-      eventTimer.textContent = ` ${timeLeft}s`;
+      updateTimer();
+
+      function updateTimer() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        eventTimer.textContent = ` ${mins}:${secs.toString().padStart(2, '0')}`;
+      }
 
       window.eventInterval = setInterval(() => {
         timeLeft--;
         if (timeLeft <= 0) {
           eventIndicator.style.animation = 'bumpOut 0.5s forwards';
-          setTimeout(() => { eventIndicator.style.display = 'none'; }, 500);
+          setTimeout(() => eventIndicator.style.display = 'none', 500);
           clearInterval(window.eventInterval);
-        } else {
-          const mins = Math.floor(timeLeft / 60);
-          const secs = timeLeft % 60;
-          eventTimer.textContent = ` ${mins}:${secs.toString().padStart(2, '0')}`;
-        }
+        } else updateTimer();
       }, 1000);
     }
 
-    onChildAdded(eventsRef, snapshot => {
-      const event = snapshot.val();
-      if (event && Date.now() < event.timestamp + event.duration * 1000) {
-        showGlobalEvent(event);
-      }
+    onChildAdded(eventsRef, snap => {
+      const e = snap.val();
+      if (e && Date.now() < e.timestamp + e.duration * 1000) showGlobalEvent(e);
+    });
+
+    startEventBtn.addEventListener('click', () => {
+      const select = document.getElementById('eventSelect');
+      const duration = parseInt(document.getElementById('eventDuration').value) || 30;
+      const name = select.value;
+      const iconMap = {
+        '🌮 Raining Tacos': 'https://cdn-icons-png.flaticon.com/512/3595/3595455.png',
+        '🎉 Double XP': 'https://cdn-icons-png.flaticon.com/512/992/992651.png',
+        '🔥 Hot Mode': 'https://cdn-icons-png.flaticon.com/512/815/815282.png',
+        '🌈 Lucky Drops': 'https://cdn-icons-png.flaticon.com/512/616/616408.png'
+      };
+      const icon = iconMap[name] || '';
+      push(eventsRef, { name, icon, duration, timestamp: Date.now() });
     });
 
     function makeDraggable(el) {
@@ -397,10 +415,7 @@
         offY = e.clientY - el.offsetTop;
         el.style.cursor = 'grabbing';
       });
-      document.addEventListener('mouseup', () => {
-        dragging = false;
-        el.style.cursor = 'grab';
-      });
+      document.addEventListener('mouseup', () => { dragging = false; el.style.cursor = 'grab'; });
       document.addEventListener('mousemove', e => {
         if (!dragging) return;
         e.preventDefault();
