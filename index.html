@@ -3,115 +3,171 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>gofasthub</title>
+  <title>fasthub</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap');
 
     :root {
       --accent: #a06bff;
       --accent2: #7b57ff;
-      --radius: 18px;
+      --radius: 16px;
       --glass-bg: rgba(255,255,255,0.08);
       font-family: 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%}
-    body{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(135deg,#8a6bff,#6ca3ff,#c78cff);
-      background-size:400% 400%;
-      animation:gradientShift 12s ease infinite;
-      color:#fff;
-      overflow-x:hidden;
-      overflow-y:auto;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg,#8a6bff,#6ca3ff,#c78cff);
+      background-size: 400% 400%;
+      animation: gradientShift 10s ease infinite;
+      color: #fff;
+      overflow: hidden;
     }
     @keyframes gradientShift {
-      0%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-      100%{background-position:0% 50%}
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
-    .liquidGlass{
-      backdrop-filter:blur(10px) saturate(180%);
-      background:var(--glass-bg);
-      border:1px solid rgba(255,255,255,0.18);
-      box-shadow:0 10px 30px rgba(0,0,0,0.2);
-      border-radius:var(--radius);
-      transition:all 280ms cubic-bezier(.34,1.56,.64,1);
+    .liquidGlass {
+      backdrop-filter: blur(10px) saturate(180%);
+      background: var(--glass-bg);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      transition: all 250ms cubic-bezier(.34,1.56,.64,1);
     }
-    .liquidGlass:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 18px 50px rgba(0,0,0,0.28)}
-    .centerWrap{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:20px}
-
-    input,button{
-      font-family:inherit;
-      width:100%;
-      padding:12px;
-      border-radius:12px;
-      border:none;
-      background:rgba(255,255,255,0.10);
-      color:#fff;
-      font-size:1rem;
-      margin-bottom:10px;
-      transition:all 220ms;
+    .liquidGlass:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.3);
     }
-    input:focus{background:rgba(255,255,255,0.18);outline:none;transform:translateY(-2px) scale(1.01)}
 
-    .games-page{display:none;width:100%;max-width:720px;text-align:center;padding:20px}
-    .games-page.active{display:block}
-    .games-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px;margin-top:18px}
-    .game-card img{width:100%;height:70%;object-fit:cover}
-    .game-card span{padding:8px;background:rgba(0,0,0,0.18);display:block}
+    input, button {
+      font-family: inherit;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: none;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      font-size: 1rem;
+      transition: all 0.25s;
+    }
+    input:focus {
+      outline: none;
+      background: rgba(255,255,255,0.18);
+      transform: scale(1.02);
+    }
+    button {
+      cursor: pointer;
+      background: linear-gradient(135deg,var(--accent),var(--accent2));
+    }
 
-    .admin-popup-button{position:fixed;bottom:14px;right:14px;padding:8px 10px;font-size:.8rem;border-radius:12px;cursor:pointer;z-index:70}
-    .admin-password-popup,.admin-panel{position:fixed;right:14px;bottom:60px;width:320px;padding:14px;display:none;z-index:71}
+    #login-card, #games-page {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      padding: 25px;
+      width: 320px;
+    }
 
-    .notification-container{position:fixed;top:22px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:10px;align-items:center;z-index:100}
-    .notification{padding:12px 18px;border-radius:12px;min-width:220px;text-align:center;animation:bumpIn .4s forwards}
-    @keyframes bumpIn{0%{transform:translateY(-10px) scale(.9);opacity:0}60%{transform:translateY(4px) scale(1.08);opacity:1}100%{transform:translateY(0) scale(1);opacity:1}}
-    @keyframes bumpOut{0%{transform:scale(1);opacity:1}50%{transform:scale(1.12) translateY(-8px);opacity:.75}100%{transform:scale(.8) translateY(-20px);opacity:0}}
+    .games-page {
+      display: none;
+      max-width: 600px;
+    }
 
-    .events-stack{position:fixed;left:14px;bottom:14px;display:flex;flex-direction:column;gap:10px;z-index:72}
-    .event-pill{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,0.14);min-width:200px}
-    .event-pill img{width:28px;height:28px;border-radius:6px}
-    .taco{position:fixed;width:48px;height:48px;pointer-events:none;z-index:80;animation:fall 4s linear forwards}
-    @keyframes fall{0%{transform:translateY(-10vh)}100%{transform:translateY(110vh)}}
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
 
-    .xp-fab{position:fixed;right:22px;top:22%;padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;cursor:pointer;z-index:70;display:none}
-    .xp-counter{position:fixed;right:22px;top:calc(22% + 60px);font-weight:700;display:none}
-    .xp-result{position:fixed;right:22px;top:calc(22% + 96px);display:none}
+    .game-card {
+      padding: 10px;
+      text-align: center;
+    }
 
-    .rainbow-bg{animation:rainbow 6s linear infinite;background-size:600% 600%}
-    @keyframes rainbow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    .admin-popup-button {
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      font-size: 0.8rem;
+      padding: 6px 10px;
+      border-radius: 10px;
+      z-index: 10;
+    }
+
+    .admin-panel, .admin-password-popup {
+      position: fixed;
+      right: 14px;
+      bottom: 60px;
+      width: 280px;
+      padding: 14px;
+      display: none;
+    }
+
+    .notification-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .notification {
+      padding: 12px 18px;
+      border-radius: 12px;
+      text-align: center;
+      animation: bumpIn 0.4s forwards;
+    }
+
+    @keyframes bumpIn {
+      0% { transform: translateY(-10px) scale(.9); opacity: 0; }
+      60% { transform: translateY(4px) scale(1.08); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    @keyframes bumpOut {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1) translateY(-5px); opacity: .8; }
+      100% { transform: scale(0.8) translateY(-15px); opacity: 0; }
+    }
   </style>
 </head>
-<body id="bodyRoot">
+<body>
 
-  <div class="centerWrap">
-    <div class="liquidGlass" id="login-card" style="padding:28px;text-align:center;max-width:400px;">
-      <h2 style="margin-bottom:14px;">welcome to fasthub</h2>
-      <input id="password" type="password" placeholder="enter access key">
-      <div id="error-msg" style="height:18px;color:#ffb3b3;margin-top:6px"></div>
-    </div>
+  <!-- Login -->
+  <div class="liquidGlass" id="login-card">
+    <h2>welcome to fasthub</h2>
+    <input id="password" type="password" placeholder="enter access key">
+    <button id="loginBtn">Enter</button>
+    <div id="error-msg" style="color:#ffb3b3;margin-top:6px;height:16px;"></div>
+  </div>
 
-    <div class="liquidGlass games-page" id="games-page">
-      <h2>welcome to fasthub</h2>
-      <div class="games-grid">
-        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game one</span></div>
-        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game two</span></div>
-        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game three</span></div>
-        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game four</span></div>
-      </div>
+  <!-- Games -->
+  <div class="liquidGlass games-page" id="games-page">
+    <h2>game zone</h2>
+    <div class="games-grid">
+      <div class="liquidGlass game-card">Game One</div>
+      <div class="liquidGlass game-card">Game Two</div>
+      <div class="liquidGlass game-card">Game Three</div>
     </div>
   </div>
 
+  <!-- Admin -->
   <button class="liquidGlass admin-popup-button" id="adminToggleBtn">admin</button>
 
   <div class="liquidGlass admin-password-popup" id="admin-password-popup">
-    <input id="adminPass" type="password" placeholder="enter admin password">
+    <input id="adminPass" type="password" placeholder="admin password">
     <button class="liquidGlass" id="unlockBtn">unlock admin panel</button>
   </div>
 
@@ -119,22 +175,10 @@
     <h3>global message</h3>
     <input id="adminMessage" type="text" placeholder="Type global message">
     <input id="duration" type="number" placeholder="Duration (s)" min="1">
-    <button class="liquidGlass" id="sendBtn">Send Message</button>
-    <hr style="margin:10px 0;opacity:.2;">
-    <h3>global event</h3>
-    <select id="eventSelect">
-      <option value="tacos">🌮 Raining Tacos</option>
-      <option value="doublexp">⚡ Double XP</option>
-    </select>
-    <input id="eventDuration" type="number" placeholder="Event duration (s)" min="5">
-    <button class="liquidGlass" id="startEventBtn">Start Event</button>
+    <button class="liquidGlass" id="sendBtn">Send</button>
   </div>
 
   <div class="notification-container" id="notificationContainer"></div>
-  <div class="events-stack" id="eventsStack"></div>
-  <button class="xp-fab" id="xpFab">+ XP</button>
-  <div class="xp-counter" id="xpCounter">XP: 2</div>
-  <div class="xp-result" id="xpResult"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
@@ -153,143 +197,72 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const messagesRef = ref(db, "messages");
-    const eventsRef = ref(db, "events");
 
     const pwInput = document.getElementById("password");
     const loginCard = document.getElementById("login-card");
     const gamesPage = document.getElementById("games-page");
     const errorMsg = document.getElementById("error-msg");
+
     const adminToggleBtn = document.getElementById("adminToggleBtn");
     const adminPasswordPopup = document.getElementById("admin-password-popup");
     const adminPanel = document.getElementById("admin-panel");
     const unlockBtn = document.getElementById("unlockBtn");
     const sendBtn = document.getElementById("sendBtn");
-    const startEventBtn = document.getElementById("startEventBtn");
-    const notificationContainer = document.getElementById("notificationContainer");
-    const eventsStack = document.getElementById("eventsStack");
-    const xpFab = document.getElementById("xpFab");
-    const xpCounter = document.getElementById("xpCounter");
-    const xpResult = document.getElementById("xpResult");
-    const bodyRoot = document.getElementById("bodyRoot");
 
-    function showNotification(msg, seconds=8){
-      const n = document.createElement("div");
-      n.className = "liquidGlass notification";
-      n.textContent = msg;
-      notificationContainer.appendChild(n);
-      setTimeout(()=>{
-        n.style.animation="bumpOut .5s forwards";
-        setTimeout(()=>n.remove(),500);
-      }, seconds*1000);
-    }
+    const notificationContainer = document.getElementById("notificationContainer");
 
     pwInput.addEventListener("keypress", e=>{
       if(e.key==="Enter") tryLogin();
     });
+    document.getElementById("loginBtn").onclick = tryLogin;
 
     function tryLogin(){
       const pw = pwInput.value.trim();
       if(pw==="fast67"){
         loginCard.style.display="none";
-        gamesPage.classList.add("active");
+        gamesPage.style.display="block";
       }else if(pw==="fastadmin67"){
         loginCard.style.display="none";
-        gamesPage.classList.add("active");
+        gamesPage.style.display="block";
         adminPanel.style.display="block";
       }else{
         errorMsg.textContent="incorrect password";
       }
     }
 
-    adminToggleBtn.onclick=()=>adminPasswordPopup.style.display=adminPasswordPopup.style.display==="block"?"none":"block";
-    unlockBtn.onclick=()=>{
+    adminToggleBtn.onclick = () => {
+      adminPasswordPopup.style.display = adminPasswordPopup.style.display==="block"?"none":"block";
+    };
+
+    unlockBtn.onclick = () => {
       if(document.getElementById("adminPass").value==="fastadmin67"){
         adminPasswordPopup.style.display="none";
         adminPanel.style.display="block";
       }
     };
 
-    sendBtn.onclick=()=>{
-      const text=document.getElementById("adminMessage").value.trim();
-      const dur=parseInt(document.getElementById("duration").value)||8;
+    sendBtn.onclick = () => {
+      const text = document.getElementById("adminMessage").value.trim();
+      const dur = parseInt(document.getElementById("duration").value)||8;
       if(text) push(messagesRef,{text,dur,time:Date.now()});
     };
 
-    onChildAdded(messagesRef,snap=>{
+    onChildAdded(messagesRef, snap=>{
       const m=snap.val();
       if(Date.now()-m.time<m.dur*1000) showNotification(m.text,m.dur);
     });
 
-    // Global Events
-    const activeEvents={};
-    function formatTime(s){const m=Math.floor(s/60);const sec=s%60;return `${m}:${sec.toString().padStart(2,"0")}`;}
-
-    onChildAdded(eventsRef,snap=>{
-      const ev=snap.val();
-      const remaining = ev.duration - ((Date.now()-ev.time)/1000);
-      if(remaining>0) startEvent(ev.type,remaining);
-    });
-
-    startEventBtn.onclick=()=>{
-      const type=document.getElementById("eventSelect").value;
-      const duration=parseInt(document.getElementById("eventDuration").value)||10;
-      push(eventsRef,{type,duration,time:Date.now()});
-    };
-
-    function startEvent(type,duration){
-      const id=Math.random().toString(36).slice(2,9);
-      const pill=document.createElement("div");
-      pill.className="liquidGlass event-pill";
-      pill.innerHTML= type==="tacos" ? "🌮 Raining Tacos <span id='t"+id+"'>"+formatTime(duration)+"</span>"
-                   : "⚡ Double XP <span id='t"+id+"'>"+formatTime(duration)+"</span>";
-      eventsStack.appendChild(pill);
-      let timer=setInterval(()=>{
-        duration--;
-        document.getElementById("t"+id).textContent=formatTime(duration);
-        if(duration<=0){clearInterval(timer);pill.remove();stopEvent(type);}
-      },1000);
-      if(type==="tacos") rainTacos(duration);
-      if(type==="doublexp") startXP(duration);
-    }
-
-    function rainTacos(duration){
-      bodyRoot.classList.add("rainbow-bg");
-      const tacoInt=setInterval(()=>{
-        const t=document.createElement("img");
-        t.src="https://cdn-icons-png.flaticon.com/512/3595/3595455.png";
-        t.className="taco";
-        t.style.left=Math.random()*window.innerWidth+"px";
-        t.style.animationDuration=(3+Math.random()*2)+"s";
-        document.body.appendChild(t);
-        setTimeout(()=>t.remove(),4000);
-      },300);
+    function showNotification(msg,seconds=8){
+      const n=document.createElement("div");
+      n.className="liquidGlass notification";
+      n.textContent=msg;
+      notificationContainer.appendChild(n);
       setTimeout(()=>{
-        clearInterval(tacoInt);
-        bodyRoot.classList.remove("rainbow-bg");
-      },duration*1000);
-    }
-
-    let xp=2;
-    function startXP(duration){
-      xp=2;
-      xpFab.style.display="block";
-      xpCounter.style.display="block";
-      xpCounter.textContent="XP: "+xp;
-      xpFab.onclick=()=>{
-        xp*=2;
-        xpCounter.textContent="XP: "+xp;
-      };
-      setTimeout(()=>{
-        xpFab.style.display="none";
-        xpCounter.style.display="none";
-        xpResult.style.display="block";
-        xpResult.textContent="you reached "+xp+" XP!";
-        setTimeout(()=>xpResult.style.display="none",3000);
-      },duration*1000);
-    }
-    function stopEvent(type){
-      if(type==="tacos") bodyRoot.classList.remove("rainbow-bg");
+        n.style.animation="bumpOut .5s forwards";
+        setTimeout(()=>n.remove(),500);
+      },seconds*1000);
     }
   </script>
+
 </body>
 </html>
