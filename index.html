@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>gofasthub</title>
+  <link rel="icon" type="image/png" href="fasthublogo.png">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap');
 
-    :root {
+    :root{
       --accent: #a06bff;
       --accent2: #7b57ff;
       --radius: 18px;
@@ -17,128 +18,141 @@
 
     *{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%}
+
     body{
       min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
       background:linear-gradient(135deg,#8a6bff,#6ca3ff,#c78cff);
-      background-size:400% 400%;
-      animation:gradientShift 12s ease infinite;
-      color:#fff;
-      overflow-x:hidden;
-      overflow-y:auto;
-    }
-    @keyframes gradientShift {
-      0%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-      100%{background-position:0% 50%}
+      background-size:400% 400%;animation:gradientShift 12s ease infinite;color:#fff;overflow-x:hidden;overflow-y:auto;padding:20px;
     }
 
-    .liquidGlass{
-      backdrop-filter:blur(10px) saturate(180%);
-      background:var(--glass-bg);
-      border:1px solid rgba(255,255,255,0.18);
-      box-shadow:0 10px 30px rgba(0,0,0,0.2);
-      border-radius:var(--radius);
-      transition:all 280ms cubic-bezier(.34,1.56,.64,1);
-    }
+    @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+    /* liquid glass base */
+    .liquidGlass{backdrop-filter:blur(10px) saturate(180%);background:var(--glass-bg);border:1px solid rgba(255,255,255,0.18);box-shadow:0 10px 30px rgba(0,0,0,0.2);border-radius:var(--radius);transition:all 280ms cubic-bezier(.34,1.56,.64,1)}
     .liquidGlass:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 18px 50px rgba(0,0,0,0.28)}
-    .centerWrap{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:20px}
+    .liquidGlass:active{transform:translateY(-2px) scale(0.99)}
 
-    input,button{
-      font-family:inherit;
-      width:100%;
-      padding:12px;
-      border-radius:12px;
-      border:none;
-      background:rgba(255,255,255,0.10);
-      color:#fff;
-      font-size:1rem;
-      margin-bottom:10px;
-      transition:all 220ms;
-    }
-    input:focus{background:rgba(255,255,255,0.18);outline:none;transform:translateY(-2px) scale(1.01)}
+    /* layout */
+    .centerWrap{width:100%;max-width:980px;margin:0 auto;display:flex;gap:24px;align-items:flex-start;justify-content:center}
+    .leftCol{width:100%;max-width:460px}
+    .rightCol{flex:1;display:flex;justify-content:center}
 
-    .games-page{display:none;width:100%;max-width:720px;text-align:center;padding:20px}
+    .liquidGlass-wrapper{padding:28px;text-align:center}
+    .liquidGlass-text{font-size:1.9rem;font-weight:700;text-transform:lowercase;margin-bottom:14px}
+
+    input,select,button{font-family:inherit}
+    input[type=password],input[type=text],input[type=number],select{width:100%;padding:12px;border-radius:12px;border:none;background:rgba(255,255,255,0.10);color:#fff;font-size:1rem;margin-bottom:10px;transition:all 220ms}
+    input:focus,select:focus{background:rgba(255,255,255,0.18);outline:none;transform:translateY(-2px) scale(1.01);box-shadow:0 8px 30px rgba(0,0,0,0.12)}
+
+    .games-page{display:none;padding:20px;border-radius:14px;width:100%;max-width:720px}
     .games-page.active{display:block}
-    .games-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px;margin-top:18px}
-    .game-card img{width:100%;height:70%;object-fit:cover}
-    .game-card span{padding:8px;background:rgba(0,0,0,0.18);display:block}
 
-    .admin-popup-button{position:fixed;bottom:14px;right:14px;padding:8px 10px;font-size:.8rem;border-radius:12px;cursor:pointer;z-index:70}
-    .admin-password-popup,.admin-panel{position:fixed;right:14px;bottom:60px;width:320px;padding:14px;display:none;z-index:71}
+    .games-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px;margin-top:18px}
+    .game-card{overflow:hidden;border-radius:12px;height:170px;display:flex;flex-direction:column}
+    .game-card img{width:100%;height:70%;object-fit:cover}
+    .game-card span{padding:8px;text-align:center;background:rgba(0,0,0,0.18);text-transform:uppercase;font-weight:600;font-size:0.9rem}
+
+    /* admin button (small) */
+    .admin-popup-button{position:fixed;right:14px;bottom:14px;padding:8px 10px;font-size:0.78rem;border-radius:12px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:#fff;z-index:70;cursor:pointer}
+
+    /* admin panel restored look: compact, glass, neat */
+    .admin-password-popup,.admin-panel{position:fixed;right:14px;bottom:60px;width:320px;padding:14px;gap:10px;display:none;z-index:71}
+    .admin-panel{max-height:68vh;overflow:auto}
+    .admin-panel h3{margin:0 0 6px 0;text-align:center}
 
     .notification-container{position:fixed;top:22px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:10px;align-items:center;z-index:100}
-    .notification{padding:12px 18px;border-radius:12px;min-width:220px;text-align:center;animation:bumpIn .4s forwards}
+    .notification{padding:12px 18px;border-radius:12px;min-width:220px;text-align:center;animation:bumpIn 420ms forwards}
     @keyframes bumpIn{0%{transform:translateY(-10px) scale(.9);opacity:0}60%{transform:translateY(4px) scale(1.08);opacity:1}100%{transform:translateY(0) scale(1);opacity:1}}
     @keyframes bumpOut{0%{transform:scale(1);opacity:1}50%{transform:scale(1.12) translateY(-8px);opacity:.75}100%{transform:scale(.8) translateY(-20px);opacity:0}}
 
+    /* events stack */
     .events-stack{position:fixed;left:14px;bottom:14px;display:flex;flex-direction:column;gap:10px;z-index:72}
     .event-pill{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,0.14);min-width:200px}
     .event-pill img{width:28px;height:28px;border-radius:6px}
-    .taco{position:fixed;width:48px;height:48px;pointer-events:none;z-index:80;animation:fall 4s linear forwards}
-    @keyframes fall{0%{transform:translateY(-10vh)}100%{transform:translateY(110vh)}}
+    .event-pill .timer{font-weight:700}
 
-    .xp-fab{position:fixed;right:22px;top:22%;padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;cursor:pointer;z-index:70;display:none}
-    .xp-counter{position:fixed;right:22px;top:calc(22% + 60px);font-weight:700;display:none}
-    .xp-result{position:fixed;right:22px;top:calc(22% + 96px);display:none}
+    /* taco particle */
+    .taco{position:fixed;width:48px;height:48px;pointer-events:none;z-index:80;will-change:transform;transform-origin:center}
 
+    /* xp button */
+    .xp-fab{position:fixed;right:22px;top:22%;padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;cursor:pointer;z-index:70;display:none;box-shadow:0 8px 30px rgba(0,0,0,0.2)}
+    .xp-fab:active{transform:scale(.96)}
+    .xp-counter{position:fixed;right:22px;top:22%;transform:translateY(56px);font-weight:700;z-index:70;color:#fff}
+
+    /* xp result popup */
+    .xp-result{position:fixed;right:22px;top:calc(22% + 96px);z-index:75}
+
+    /* responsive tweaks */
+    @media (max-width:700px){.centerWrap{flex-direction:column;padding:0}.admin-password-popup,.admin-panel{right:12px;left:12px;width:auto}}
+
+    /* rainbow background when taco event active */
     .rainbow-bg{animation:rainbow 6s linear infinite;background-size:600% 600%}
-    @keyframes rainbow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    @keyframes rainbow{0%{background-position:0% 50%}25%{background-position:50% 50%}50%{background-position:100% 50%}75%{background-position:50% 50%}100%{background-position:0% 50%}}
   </style>
 </head>
 <body id="bodyRoot">
 
   <div class="centerWrap">
-    <div class="liquidGlass" id="login-card" style="padding:28px;text-align:center;max-width:400px;">
-      <h2 style="margin-bottom:14px;">welcome to fasthub</h2>
-      <input id="password" type="password" placeholder="enter access key">
-      <div id="error-msg" style="height:18px;color:#ffb3b3;margin-top:6px"></div>
+    <div class="leftCol">
+      <div class="liquidGlass liquidGlass-wrapper" id="login-card" aria-live="polite">
+        <div class="liquidGlass-text">welcome to fasthub</div>
+        <input id="password" type="password" placeholder="enter access key" />
+        <div id="error-msg" class="error" style="height:18px;color:#ffb3b3;margin-top:6px"></div>
+      </div>
     </div>
 
-    <div class="liquidGlass games-page" id="games-page">
-      <h2>welcome to fasthub</h2>
-      <div class="games-grid">
-        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game one</span></div>
-        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game two</span></div>
-        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game three</span></div>
-        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game four</span></div>
+    <div class="rightCol">
+      <div class="liquidGlass games-page" id="games-page">
+        <h2 class="liquidGlass-text">welcome to fasthub</h2>
+        <div class="games-grid">
+          <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game one</span></div>
+          <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game two</span></div>
+          <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game three</span></div>
+          <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game four</span></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <button class="liquidGlass admin-popup-button" id="adminToggleBtn">admin</button>
+  <button class="liquidGlass admin-popup-button" id="adminToggleBtn" aria-label="open admin">admin</button>
 
   <div class="liquidGlass admin-password-popup" id="admin-password-popup">
-    <input id="adminPass" type="password" placeholder="enter admin password">
+    <input id="adminPass" type="password" placeholder="enter admin password" />
     <button class="liquidGlass" id="unlockBtn">unlock admin panel</button>
   </div>
 
-  <div class="liquidGlass admin-panel" id="admin-panel">
+  <div class="liquidGlass admin-panel" id="admin-panel" role="dialog" aria-modal="true">
     <h3>global message</h3>
-    <input id="adminMessage" type="text" placeholder="Type global message">
-    <input id="duration" type="number" placeholder="Duration (s)" min="1">
+    <input id="adminMessage" type="text" placeholder="Type global message" />
+    <input id="duration" type="number" placeholder="Duration (s)" min="1" />
     <button class="liquidGlass" id="sendBtn">Send Message</button>
-    <hr style="margin:10px 0;opacity:.2;">
+
+    <hr style="opacity:.08;border:none;height:1px;margin:8px 0;background:rgba(255,255,255,0.06)">
+
     <h3>global event</h3>
     <select id="eventSelect">
       <option value="tacos">🌮 Raining Tacos</option>
       <option value="doublexp">⚡ Double XP</option>
     </select>
-    <input id="eventDuration" type="number" placeholder="Event duration (s)" min="5">
+    <input id="eventDuration" type="number" placeholder="Event duration (s)" min="5" />
     <button class="liquidGlass" id="startEventBtn">Start Event</button>
   </div>
 
-  <div class="notification-container" id="notificationContainer"></div>
-  <div class="events-stack" id="eventsStack"></div>
-  <button class="xp-fab" id="xpFab">+ XP</button>
-  <div class="xp-counter" id="xpCounter">XP: 2</div>
-  <div class="xp-result" id="xpResult"></div>
+  <div class="notification-container" id="notificationContainer" aria-live="polite"></div>
+
+  <div class="events-stack" id="eventsStack" aria-live="polite"></div>
+
+  <button class="liquidGlass xp-fab" id="xpFab">+ XP</button>
+  <div class="xp-counter" id="xpCounter" style="display:none">XP: 2</div>
+  <div class="xp-result" id="xpResult" style="display:none"></div>
+
+  <!-- taco container (empty, tacos appended) -->
+  <div id="tacoLayer"></div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js';
+    import { getDatabase, ref, push, onChildAdded } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js';
 
     const firebaseConfig = {
       apiKey: "AIzaSyDJskELwuyHZVcFZXSX0QHU3e2UgTcRyLQ",
@@ -152,144 +166,209 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const messagesRef = ref(db, "messages");
-    const eventsRef = ref(db, "events");
+    const messagesRef = ref(db, 'messages');
+    const eventsRef = ref(db, 'events');
 
-    const pwInput = document.getElementById("password");
-    const loginCard = document.getElementById("login-card");
-    const gamesPage = document.getElementById("games-page");
-    const errorMsg = document.getElementById("error-msg");
-    const adminToggleBtn = document.getElementById("adminToggleBtn");
-    const adminPasswordPopup = document.getElementById("admin-password-popup");
-    const adminPanel = document.getElementById("admin-panel");
-    const unlockBtn = document.getElementById("unlockBtn");
-    const sendBtn = document.getElementById("sendBtn");
-    const startEventBtn = document.getElementById("startEventBtn");
-    const notificationContainer = document.getElementById("notificationContainer");
-    const eventsStack = document.getElementById("eventsStack");
-    const xpFab = document.getElementById("xpFab");
-    const xpCounter = document.getElementById("xpCounter");
-    const xpResult = document.getElementById("xpResult");
-    const bodyRoot = document.getElementById("bodyRoot");
+    // UI refs
+    const pwInput = document.getElementById('password');
+    const errorMsg = document.getElementById('error-msg');
+    const loginCard = document.getElementById('login-card');
+    const gamesPage = document.getElementById('games-page');
+    const adminToggleBtn = document.getElementById('adminToggleBtn');
+    const adminPasswordPopup = document.getElementById('admin-password-popup');
+    const adminPanel = document.getElementById('admin-panel');
+    const unlockBtn = document.getElementById('unlockBtn');
+    const sendBtn = document.getElementById('sendBtn');
+    const notificationContainer = document.getElementById('notificationContainer');
+    const eventsStack = document.getElementById('eventsStack');
+    const startEventBtn = document.getElementById('startEventBtn');
+    const xpFab = document.getElementById('xpFab');
+    const xpCounter = document.getElementById('xpCounter');
+    const xpResult = document.getElementById('xpResult');
+    const bodyRoot = document.getElementById('bodyRoot');
+    const tacoLayer = document.getElementById('tacoLayer');
 
-    function showNotification(msg, seconds=8){
-      const n = document.createElement("div");
-      n.className = "liquidGlass notification";
-      n.textContent = msg;
-      notificationContainer.appendChild(n);
-      setTimeout(()=>{
-        n.style.animation="bumpOut .5s forwards";
-        setTimeout(()=>n.remove(),500);
-      }, seconds*1000);
+    // small utility animations
+    function animateShow(el){ el.style.opacity=0; el.style.transform='translateY(8px) scale(.98)'; el.style.display='block'; requestAnimationFrame(()=>{ el.style.transition='all 360ms cubic-bezier(.22,1,.36,1)'; el.style.opacity=1; el.style.transform='translateY(0) scale(1)'; }); }
+    function animateHide(el, cb){ el.style.transition='all 300ms ease'; el.style.opacity=0; el.style.transform='translateY(8px) scale(.98)'; setTimeout(()=>{ el.style.display='none'; el.style.transition=''; el.style.transform=''; el.style.opacity=''; if(cb) cb(); },300); }
+
+    // client id for xp
+    let clientId = localStorage.getItem('fasthub_client') || 'c_' + Math.random().toString(36).slice(2,9);
+    localStorage.setItem('fasthub_client', clientId);
+
+    // helper: show notification
+    function showNotification(text, seconds=8){
+      const n = document.createElement('div'); n.className = 'liquidGlass notification'; n.textContent = text; notificationContainer.appendChild(n);
+      setTimeout(()=>{ n.style.animation='bumpOut .45s forwards'; setTimeout(()=>n.remove(),450)}, seconds*1000);
     }
 
-    pwInput.addEventListener("keypress", e=>{
-      if(e.key==="Enter") tryLogin();
-    });
-
+    // login with animation
     function tryLogin(){
       const pw = pwInput.value.trim();
-      if(pw==="fast67"){
-        loginCard.style.display="none";
-        gamesPage.classList.add("active");
-      }else if(pw==="fastadmin67"){
-        loginCard.style.display="none";
-        gamesPage.classList.add("active");
-        adminPanel.style.display="block";
-      }else{
-        errorMsg.textContent="incorrect password";
-      }
+      if(pw==='fast67'){
+        // animate out login card
+        loginCard.style.transition='all 420ms cubic-bezier(.22,1,.36,1)';
+        loginCard.style.opacity=0; loginCard.style.transform='translateY(-10px) scale(.98)';
+        setTimeout(()=>{ loginCard.style.display='none'; gamesPage.classList.add('active'); animateShow(gamesPage); },360);
+      } else if(pw==='fastadmin67'){
+        loginCard.style.transition='all 420ms cubic-bezier(.22,1,.36,1)'; loginCard.style.opacity=0; loginCard.style.transform='translateY(-10px) scale(.98)';
+        setTimeout(()=>{ loginCard.style.display='none'; gamesPage.classList.add('active'); animateShow(gamesPage); adminPanel.style.display='block'; animateShow(adminPanel); makeDraggable(adminPanel); },360);
+      } else { errorMsg.textContent='incorrect password. try again.'; pwInput.value=''; pwInput.focus(); }
     }
+    pwInput.addEventListener('keypress', e=>{ if(e.key==='Enter') tryLogin(); });
 
-    adminToggleBtn.onclick=()=>adminPasswordPopup.style.display=adminPasswordPopup.style.display==="block"?"none":"block";
-    unlockBtn.onclick=()=>{
-      if(document.getElementById("adminPass").value==="fastadmin67"){
-        adminPasswordPopup.style.display="none";
-        adminPanel.style.display="block";
-      }
-    };
+    // admin panel toggle
+    adminToggleBtn.addEventListener('click', ()=>{ if(adminPasswordPopup.style.display==='flex'){ animateHide(adminPasswordPopup); } else { adminPasswordPopup.style.display='flex'; animateShow(adminPasswordPopup); } });
+    unlockBtn.addEventListener('click', ()=>{ const v=document.getElementById('adminPass').value.trim(); if(v==='fastadmin67'){ animateHide(adminPasswordPopup, ()=>{ adminPanel.style.display='block'; animateShow(adminPanel); makeDraggable(adminPanel); }); } else alert('Incorrect admin password'); });
 
-    sendBtn.onclick=()=>{
-      const text=document.getElementById("adminMessage").value.trim();
-      const dur=parseInt(document.getElementById("duration").value)||8;
-      if(text) push(messagesRef,{text,dur,time:Date.now()});
-    };
+    // send global message
+    sendBtn.addEventListener('click', ()=>{ const msg=document.getElementById('adminMessage').value.trim(); const dur=parseInt(document.getElementById('duration').value) || 10; if(!msg) return; push(messagesRef,{text:msg,expiresIn:dur,timestamp:Date.now()}); });
 
-    onChildAdded(messagesRef,snap=>{
-      const m=snap.val();
-      if(Date.now()-m.time<m.dur*1000) showNotification(m.text,m.dur);
-    });
+    // listen for messages
+    onChildAdded(messagesRef, snap=>{ const msg=snap.val(); if(msg && Date.now()-msg.timestamp < msg.expiresIn*1000){ showNotification(msg.text,msg.expiresIn); } });
 
-    // Global Events
-    const activeEvents={};
-    function formatTime(s){const m=Math.floor(s/60);const sec=s%60;return `${m}:${sec.toString().padStart(2,"0")}`;}
+    // EVENTS: stackable and trigger actions locally when active
+    const activeEvents = {}; // id -> {data,expiresAt,dom}
 
-    onChildAdded(eventsRef,snap=>{
-      const ev=snap.val();
-      const remaining = ev.duration - ((Date.now()-ev.time)/1000);
-      if(remaining>0) startEvent(ev.type,remaining);
-    });
-
-    startEventBtn.onclick=()=>{
-      const type=document.getElementById("eventSelect").value;
-      const duration=parseInt(document.getElementById("eventDuration").value)||10;
-      push(eventsRef,{type,duration,time:Date.now()});
-    };
-
-    function startEvent(type,duration){
-      const id=Math.random().toString(36).slice(2,9);
-      const pill=document.createElement("div");
-      pill.className="liquidGlass event-pill";
-      pill.innerHTML= type==="tacos" ? "🌮 Raining Tacos <span id='t"+id+"'>"+formatTime(duration)+"</span>"
-                   : "⚡ Double XP <span id='t"+id+"'>"+formatTime(duration)+"</span>";
+    function addEventToStack(id, data){
+      // create pill UI
+      const pill = document.createElement('div'); pill.className='liquidGlass event-pill';
+      const img = document.createElement('img'); img.src = data.icon || '';
+      const txt = document.createElement('div'); txt.textContent = data.name;
+      const timer = document.createElement('div'); timer.className='timer'; timer.textContent = formatTime(data.duration);
+      pill.appendChild(img); pill.appendChild(txt); pill.appendChild(timer);
       eventsStack.appendChild(pill);
-      let timer=setInterval(()=>{
-        duration--;
-        document.getElementById("t"+id).textContent=formatTime(duration);
-        if(duration<=0){clearInterval(timer);pill.remove();stopEvent(type);}
-      },1000);
-      if(type==="tacos") rainTacos(duration);
-      if(type==="doublexp") startXP(duration);
+      activeEvents[id] = {data,expiresAt:Date.now()+data.duration*1000,dom:pill,timerEl:timer};
+
+      // start behaviors
+      if(data.type==='tacos') startTacos(id,data.duration);
+      if(data.type==='doublexp') startDoubleXP(id,data.duration);
+
+      // countdown update
+      const iv = setInterval(()=>{
+        const ae = activeEvents[id]; if(!ae) { clearInterval(iv); return; }
+        const left = Math.max(0,Math.ceil((ae.expiresAt-Date.now())/1000));
+        ae.timerEl.textContent = formatTime(left);
+        if(left<=0){ clearInterval(iv); removeEvent(id); }
+      },900);
     }
 
-    function rainTacos(duration){
-      bodyRoot.classList.add("rainbow-bg");
-      const tacoInt=setInterval(()=>{
-        const t=document.createElement("img");
-        t.src="https://cdn-icons-png.flaticon.com/512/3595/3595455.png";
-        t.className="taco";
-        t.style.left=Math.random()*window.innerWidth+"px";
-        t.style.animationDuration=(3+Math.random()*2)+"s";
-        document.body.appendChild(t);
-        setTimeout(()=>t.remove(),4000);
-      },300);
-      setTimeout(()=>{
-        clearInterval(tacoInt);
-        bodyRoot.classList.remove("rainbow-bg");
-      },duration*1000);
+    function removeEvent(id){
+      const ae = activeEvents[id]; if(!ae) return; ae.dom.remove(); delete activeEvents[id];
+      // stop behaviors
+      stopTacosFor(id); stopDoubleXPFor(id);
     }
 
-    let xp=2;
-    function startXP(duration){
-      xp=2;
-      xpFab.style.display="block";
-      xpCounter.style.display="block";
-      xpCounter.textContent="XP: "+xp;
-      xpFab.onclick=()=>{
-        xp*=2;
-        xpCounter.textContent="XP: "+xp;
+    function formatTime(s){ const m=Math.floor(s/60); const sec=s%60; return `${m}:${sec.toString().padStart(2,'0')}` }
+
+    // listen for new events in realtime
+    onChildAdded(eventsRef, snap=>{
+      const key = snap.key; const e = snap.val();
+      if(!e) return;
+      // ignore old/future expired ones
+      const expiresAt = e.timestamp + (e.duration||0)*1000;
+      if(Date.now() < expiresAt){
+        // map event name to type and icon if not present
+        if(!e.icon){
+          if(e.name.toLowerCase().includes('taco')) e.icon='https://cdn-icons-png.flaticon.com/512/3595/3595455.png';
+          if(e.name.toLowerCase().includes('xp')) e.icon='https://cdn-icons-png.flaticon.com/512/992/992651.png';
+        }
+        // derive type
+        const lower = (e.name||'').toLowerCase();
+        const type = lower.includes('taco') ? 'tacos' : (lower.includes('xp') ? 'doublexp' : 'generic');
+        addEventToStack(key, {name:e.name,icon:e.icon,duration:Math.ceil((expiresAt-Date.now())/1000),type});
+      }
+    });
+
+    // ----- TACO EFFECT -----
+    const tacoMap = {};
+    function startTacos(eventId,duration){
+      // add rainbow bg
+      bodyRoot.classList.add('rainbow-bg');
+      // spawn interval
+      tacoMap[eventId] = {iv:setInterval(()=>spawnTaco(eventId),260), elems:[]};
+    }
+    function spawnTaco(eventId){
+      const el = document.createElement('img'); el.src='https://cdn-icons-png.flaticon.com/512/3595/3595455.png'; el.className='taco';
+      // start at random x
+      const startX = Math.random()* (window.innerWidth-60) + 10;
+      const scale = 0.7 + Math.random()*0.9;
+      el.style.left = startX+'px'; el.style.top = '-60px'; el.style.width = (48*scale)+'px'; el.style.height = (48*scale)+'px'; el.style.opacity='0';
+      tacoLayer.appendChild(el);
+      tacoMap[eventId].elems.push(el);
+      const dur = 3500 + Math.random()*1600;
+      // animate using CSS transition
+      requestAnimationFrame(()=>{ el.style.transition = `transform ${dur}ms cubic-bezier(.2,.9,.2,1), top ${dur}ms linear, opacity 600ms linear`; el.style.top = (window.innerHeight + 60) + 'px'; el.style.transform = `rotate(${(Math.random()*60)-30}deg) translateY(0)`; el.style.opacity='1'; });
+      // cleanup
+      setTimeout(()=>{ try{ el.remove(); const arr=tacoMap[eventId]?.elems; if(arr) arr.splice(arr.indexOf(el),1) }catch(e){} }, dur+300);
+    }
+    function stopTacosFor(eventId){
+      // clear interval and remove remaining tacos
+      if(tacoMap[eventId]){ clearInterval(tacoMap[eventId].iv); tacoMap[eventId].elems.forEach(el=>el.remove()); delete tacoMap[eventId]; }
+      // if no other taco events running, remove rainbow
+      const runningTaco = Object.values(activeEvents).some(a=>a.data.type==='tacos');
+      if(!runningTaco) bodyRoot.classList.remove('rainbow-bg');
+    }
+
+    // ----- DOUBLE XP -----
+    // when event active, show xp button, set local xp to 2 (and write to localStorage), allow clicking to double
+    let doubleXPActive = {};
+    function startDoubleXP(eventId,duration){
+      doubleXPActive[eventId]=true;
+      // show xp UI
+      xpFab.style.display='block'; xpCounter.style.display='block';
+      // initialize xp to 2 for this client
+      localStorage.setItem('fasthub_xp_'+clientId, 2);
+      xpCounter.textContent = 'XP: 2';
+    }
+    function stopDoubleXPFor(eventId){
+      delete doubleXPActive[eventId];
+      // if no other doublexp events active, hide xp UI and show result popup and reset xp to 2
+      const running = Object.values(activeEvents).some(a=>a.data.type==='doublexp');
+      if(!running){
+        const final = parseInt(localStorage.getItem('fasthub_xp_'+clientId) || '2');
+        // show result popup
+        xpResult.style.display='block'; xpResult.innerHTML = `<div class="liquidGlass" style="padding:10px;border-radius:10px">final xp: <strong>${final}</strong></div>`;
+        setTimeout(()=>{ xpResult.style.transition='all 420ms'; xpResult.style.opacity=1; },10);
+        setTimeout(()=>{ xpResult.style.opacity=0; setTimeout(()=>{ xpResult.style.display='none'; },420); },3000);
+        // reset xp to 2
+        localStorage.setItem('fasthub_xp_'+clientId, 2); xpCounter.textContent = 'XP: 2';
+        xpFab.style.display='none'; xpCounter.style.display='none';
+      }
+    }
+
+    // on click fab, double xp
+    xpFab.addEventListener('click', async ()=>{
+      let current = parseInt(localStorage.getItem('fasthub_xp_'+clientId) || '2');
+      current = Math.max(2, current * 2);
+      localStorage.setItem('fasthub_xp_'+clientId, current);
+      xpCounter.textContent = 'XP: ' + current;
+      // little feedback
+      const b = document.createElement('div'); b.className='liquidGlass notification'; b.textContent = 'xp doubled to ' + current; notificationContainer.appendChild(b); setTimeout(()=>{ b.style.animation='bumpOut .45s forwards'; setTimeout(()=>b.remove(),450)},1200);
+    });
+
+    // admin starts event: push to /events with name, icon, duration, timestamp
+    startEventBtn.addEventListener('click', ()=>{
+      const val = document.getElementById('eventSelect').value;
+      const duration = parseInt(document.getElementById('eventDuration').value) || 30;
+      const map = {
+        'tacos':{name:'🌮 Raining Tacos', icon:'https://cdn-icons-png.flaticon.com/512/3595/3595455.png'},
+        'doublexp':{name:'⚡ Double XP', icon:'https://cdn-icons-png.flaticon.com/512/992/992651.png'}
       };
-      setTimeout(()=>{
-        xpFab.style.display="none";
-        xpCounter.style.display="none";
-        xpResult.style.display="block";
-        xpResult.textContent="you reached "+xp+" XP!";
-        setTimeout(()=>xpResult.style.display="none",3000);
-      },duration*1000);
+      const data = map[val] || {name:val,icon:''};
+      push(eventsRef,{name:data.name,icon:data.icon,duration:duration,timestamp:Date.now()});
+    });
+
+    // draggable helper
+    function makeDraggable(el){
+      let dragging=false,offX=0,offY=0;
+      el.addEventListener('mousedown',e=>{ dragging=true; offX=e.clientX - el.offsetLeft; offY=e.clientY - el.offsetTop; el.style.cursor='grabbing'; });
+      document.addEventListener('mouseup',()=>{ dragging=false; el.style.cursor='grab'; });
+      document.addEventListener('mousemove',e=>{ if(!dragging) return; e.preventDefault(); el.style.left=(e.clientX-offX)+'px'; el.style.top=(e.clientY-offY)+'px'; });
     }
-    function stopEvent(type){
-      if(type==="tacos") bodyRoot.classList.remove("rainbow-bg");
-    }
+
+    // done
+    console.log('gofasthub loaded — clientId:',clientId);
   </script>
 </body>
 </html>
