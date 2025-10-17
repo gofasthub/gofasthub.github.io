@@ -2,173 +2,293 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>gofasthub</title>
   <link rel="icon" type="image/png" href="fasthublogo.png" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap');
 
-    :root{
-      --accent:#a06bff; --accent2:#7b57ff; --radius:18px;
+    :root {
+      --accent: #a06bff;
+      --accent2: #7b57ff;
+      --radius: 18px;
       --glass-bg: rgba(255,255,255,0.08);
-      font-family: 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #8a6bff, #6ca3ff, #c78cff);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+      color: #fff;
+      overflow: hidden;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50% }
+      50% { background-position: 100% 50% }
+      100% { background-position: 0% 50% }
     }
 
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%}
-    body{
-      min-height:100vh;
-      display:flex;align-items:center;justify-content:center;
-      background:linear-gradient(135deg,#8a6bff,#6ca3ff,#c78cff);
-      background-size:400% 400%;animation:gradientShift 12s linear infinite;
-      color:#fff;overflow-x:hidden;padding:20px;
-    }
-    @keyframes gradientShift{
-      0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}
-    }
-
-    /* Liquid glass base */
-    .liquidGlass{
+    .liquidGlass {
       backdrop-filter: blur(10px) saturate(180%);
-      background:var(--glass-bg);
-      border:1px solid rgba(255,255,255,0.18);
-      box-shadow:0 10px 30px rgba(0,0,0,0.2);
-      border-radius:var(--radius);
-      transition:all 280ms cubic-bezier(.34,1.56,.64,1);
+      background: var(--glass-bg);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border-radius: var(--radius);
+      transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
     }
-    .liquidGlass:hover{ transform: translateY(-4px) scale(1.03); box-shadow:0 18px 50px rgba(0,0,0,0.28) }
-    .liquidGlass:active{ transform: translateY(-2px) scale(.99) }
-
-    /* Centering */
-    .centerWrap{
-      position:fixed; top:50%; left:50%;
-      transform:translate(-50%,-50%);
-      width:100%; max-width:980px;
-      display:flex; flex-direction:column; align-items:center; gap:20px;
-      padding:20px;
+    .liquidGlass:hover {
+      transform: translateY(-4px) scale(1.03);
+      background: rgba(255,255,255,0.15);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.28);
     }
 
-    .liquidGlass-wrapper{ padding:28px; text-align:center; max-width:420px; width:92% }
-    .liquidGlass-text{ font-size:1.9rem; font-weight:700; text-transform:lowercase; margin-bottom:14px }
-
-    input,select,button{ font-family:inherit }
-    input[type=password],input[type=text],input[type=number],select{
-      width:100%; padding:12px; border-radius:12px; border:none;
-      background:rgba(255,255,255,0.10); color:#fff; font-size:1rem; margin-bottom:10px;
-      transition:all 220ms;
+    .centerWrap {
+      width: 100%;
+      max-width: 720px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeInUp 0.5s ease;
     }
-    input:focus,select:focus{ background:rgba(255,255,255,0.18); outline:none; transform:translateY(-2px) scale(1.01); box-shadow:0 8px 30px rgba(0,0,0,0.12) }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-    /* Games page */
-    .games-page{ display:none; padding:20px; border-radius:14px; width:100%; max-width:920px; text-align:center }
-    .games-page.active{ display:block }
-    .games-grid{ display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); margin-top:18px }
-    .game-card{ display:flex; flex-direction:column; justify-content:space-between; align-items:center; height:220px; border-radius:12px; overflow:hidden; padding:10px }
-    .game-card img{ width:100%; height:70%; object-fit:cover; border-radius:8px }
-    .game-card .title{ width:100%; padding:8px; text-transform:uppercase; font-weight:600; background:rgba(0,0,0,0.18); text-align:center; margin-top:6px }
+    .liquidGlass-wrapper {
+      padding: 28px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .liquidGlass-text {
+      font-size: 1.9rem;
+      font-weight: 700;
+      text-transform: lowercase;
+      margin-bottom: 14px;
+    }
 
-    /* admin button small */
-    .admin-popup-button{ position:fixed; right:14px; bottom:14px; padding:8px 10px; font-size:.78rem; border-radius:12px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.06); color:#fff; z-index:90; cursor:pointer }
+    input, select, button {
+      font-family: inherit;
+    }
+    input[type=password], input[type=text], input[type=number], select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      background: rgba(255,255,255,0.10);
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      transition: background 0.2s, transform 0.2s;
+    }
+    input:focus, select:focus {
+      background: rgba(255,255,255,0.18);
+      transform: translateY(-2px);
+      outline: none;
+    }
 
-    .admin-password-popup, .admin-panel{ position:fixed; right:14px; bottom:70px; width:320px; padding:14px; gap:10px; display:none; z-index:91 }
-    .admin-panel{ max-height:68vh; overflow:auto }
+    .games-page {
+      display: none;
+      width: 100%;
+      max-width: 720px;
+      text-align: center;
+      padding: 20px;
+      animation: fadeInUp 0.5s ease;
+    }
+    .games-page.active {
+      display: block;
+    }
 
-    /* notifications */
-    .notification-container{ position:fixed; top:22px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; gap:10px; align-items:center; z-index:200 }
-    .notification{ padding:12px 18px; border-radius:12px; min-width:220px; text-align:center; animation:bumpIn .42s forwards }
+    .games-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+      margin-top: 18px;
+    }
+    .game-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 200px;
+      border-radius: 12px;
+      overflow: hidden;
+      padding: 12px;
+    }
+    .game-card img {
+      width: 100%;
+      height: 65%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .game-card .title {
+      margin-top: 8px;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: rgba(0,0,0,0.18);
+      width: 100%;
+      text-align: center;
+      padding: 6px 0;
+    }
+    .game-card button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .game-card button:hover {
+      transform: scale(1.05);
+      background: rgba(255,255,255,0.2);
+    }
 
-    @keyframes bumpIn{ 0%{transform:translateY(-10px) scale(.9);opacity:0}60%{transform:translateY(4px) scale(1.08);opacity:1}100%{transform:translateY(0) scale(1);opacity:1} }
-    @keyframes bumpOut{ 0%{transform:scale(1);opacity:1}50%{transform:scale(1.12) translateY(-8px);opacity:.75}100%{transform:scale(.8) translateY(-20px);opacity:0} }
+    .admin-popup-button {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,white,0.12);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      z-index: 90;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .admin-popup-button:hover {
+      transform: scale(1.05);
+      background: rgba(255,255,255,0.12);
+    }
 
-    /* events */
-    .events-stack{ position:fixed; left:14px; bottom:14px; display:flex; flex-direction:column; gap:10px; z-index:110 }
-    .event-pill{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; background:rgba(0,0,0,0.14); min-width:200px }
-    .event-pill img{ width:28px; height:28px; border-radius:6px }
-    .event-pill .timer{ font-weight:700 }
+    .admin-password-popup, .admin-panel {
+      position: fixed;
+      right: 14px;
+      bottom: 70px;
+      width: 320px;
+      padding: 14px;
+      gap: 10px;
+      display: none;
+      z-index: 91;
+      animation: fadeInUp 0.4s ease;
+    }
+    .admin-panel {
+      max-height: 68vh;
+      overflow: auto;
+    }
 
-    /* taco as emoji element */
-    .taco{ position:fixed; font-size:2.2rem; pointer-events:none; z-index:120; will-change:transform,top,left }
+    /* optional animations for messages/events */
+    .notification {
+      opacity: 0;
+      animation: bumpIn 0.42s forwards;
+    }
 
-    /* xp */
-    .xp-fab{ position:fixed; right:22px; top:22%; padding:10px 14px; border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; color:#fff; cursor:pointer; z-index:115; display:none; box-shadow:0 8px 30px rgba(0,0,0,0.2) }
-    .xp-counter{ position:fixed; right:22px; top:calc(22% + 56px); font-weight:700; z-index:115; color:#fff; display:none }
-    .xp-result{ position:fixed; right:22px; top:calc(22% + 96px); z-index:115; display:none }
+    .xp-fab {
+      position:fixed;
+      right:22px; top:22%;
+      padding:10px 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      cursor: pointer;
+      z-index:110;
+      display: none;
+      box-shadow:0 8px 30px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    .xp-fab:hover { transform: scale(1.05); }
 
-    @media (max-width:700px){
-      .centerWrap{ width:95%; padding:10px }
-      .admin-password-popup,.admin-panel{ right:12px; left:12px; width:auto }
-      .xp-fab{ right:14px; top:18% }
-      .xp-counter{ right:14px }
+    .xp-counter {
+      position:fixed;
+      right:22px;
+      top:calc(22% + 56px);
+      font-weight:700;
+      color:#fff;
+      z-index:110;
+      display: none;
+    }
+    .xp-result {
+      position:fixed;
+      right:22px;
+      top:calc(22% + 96px);
+      z-index:110;
+      display: none;
+    }
+
+    /* rainbow background for taco event */
+    .rainbow-bg {
+      animation: rainbow 6s linear infinite;
+      background-size: 600% 600%;
+    }
+    @keyframes rainbow{
+      0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}
     }
   </style>
 </head>
 <body id="bodyRoot">
   <div class="centerWrap">
-    <!-- login card -->
-    <div class="liquidGlass liquidGlass-wrapper" id="login-card" aria-live="polite">
+    <div class="liquidGlass liquidGlass-wrapper" id="login-card">
       <div class="liquidGlass-text">welcome to fasthub</div>
-      <input id="password" type="password" placeholder="enter access key" autocomplete="off" />
-      <div id="error-msg" style="height:18px;color:#ffb3b3;margin-top:6px"></div>
+      <input id="password" type="password" placeholder="enter access key" autocomplete="off"/>
+      <div id="error-msg" style="height:18px;color:#ff7a7a;margin-top:6px"></div>
     </div>
 
-    <!-- games area (hidden until login) -->
-    <div class="liquidGlass games-page" id="games-page" role="region" aria-label="games">
-      <h2 class="liquidGlass-text">welcome to fasthub</h2>
-      <div class="games-grid" id="gamesGrid">
-        <!-- Eggy Car card -->
-        <div class="liquidGlass game-card" data-game="eggycar">
-          <img src="eggycar-banner.png" alt="Eggy Car banner" />
+    <div class="liquidGlass games-page" id="games-page">
+      <div class="liquidGlass-text">welcome to fasthub</div>
+      <div class="games-grid">
+        <div class="liquidGlass game-card">
+          <img src="eggycar-banner.png" alt="Eggy Car Banner"/>
           <div class="title">eggy car</div>
-          <button class="liquidGlass play-btn" data-url="https://www.hoodamath.com/mobile/games/eggy-car/game.html?nocheckorient=1">play</button>
+          <button data-url="https://ubg742.github.io/egycr/index.html">play</button>
         </div>
-        <!-- placeholder -->
-        <div class="liquidGlass game-card" data-game="placeholder">
-          <img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg" alt="placeholder" />
+        <div class="liquidGlass game-card">
+          <img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg" alt="placeholder"/>
           <div class="title">coming soon</div>
-          <button class="liquidGlass" disabled>play</button>
+          <button disabled>play</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- admin UI -->
-  <button class="liquidGlass admin-popup-button" id="adminToggleBtn" aria-label="open admin">admin</button>
-
-  <div class="liquidGlass admin-password-popup" id="admin-password-popup" role="dialog" aria-modal="false" aria-hidden="true">
-    <input id="adminPass" type="password" placeholder="enter admin password" autocomplete="off" />
+  <button class="liquidGlass admin-popup-button" id="adminToggleBtn">admin</button>
+  <div class="liquidGlass admin-password-popup" id="admin-password-popup">
+    <input id="adminPass" type="password" placeholder="enter admin password" autocomplete="off"/>
     <button class="liquidGlass" id="unlockBtn">unlock admin panel</button>
   </div>
-
-  <div class="liquidGlass admin-panel" id="admin-panel" role="dialog" aria-modal="true" aria-hidden="true">
-    <h3 style="margin:0 0 8px 0;text-align:center">global message</h3>
+  <div class="liquidGlass admin-panel" id="admin-panel">
+    <h3 style="text-align:center">global message</h3>
     <input id="adminMessage" type="text" placeholder="Type global message" />
     <input id="duration" type="number" placeholder="Duration (s)" min="1" />
     <button class="liquidGlass" id="sendBtn">Send Message</button>
 
-    <hr style="opacity:.08;border:none;height:1px;margin:10px 0;background:rgba(255,255,255,0.06)" />
+    <hr style="opacity:.08;border:none;height:1px;margin:10px 0;background:rgba(255,255,255,0.06)">
 
-    <h3 style="margin:0 0 8px 0;text-align:center">global event</h3>
+    <h3 style="text-align:center">global event</h3>
     <select id="eventSelect">
       <option value="tacos">🌮 Raining Tacos</option>
       <option value="doublexp">⚡ Double XP</option>
     </select>
-    <input id="eventDuration" type="number" placeholder="Event duration (s)" min="5" />
+    <input id="eventDuration" type="number" placeholder="Event duration (s)" min="5"/>
     <button class="liquidGlass" id="startEventBtn">Start Event</button>
   </div>
 
-  <!-- message & event UI -->
-  <div class="notification-container" id="notificationContainer" aria-live="polite"></div>
-  <div class="events-stack" id="eventsStack" aria-live="polite"></div>
+  <div class="notification-container" id="notificationContainer"></div>
+  <div class="events-stack" id="eventsStack"></div>
   <button class="liquidGlass xp-fab" id="xpFab">+ XP</button>
-  <div class="xp-counter" id="xpCounter" style="display:none">XP: 2</div>
-  <div class="xp-result" id="xpResult" style="display:none"></div>
+  <div class="xp-counter" id="xpCounter">XP: 2</div>
+  <div class="xp-result" id="xpResult"></div>
+  <div id="tacoLayer"></div>
 
-  <!-- taco layer (tacos appended as emoji divs) -->
-  <div id="tacoLayer" aria-hidden="true"></div>
-
-  <!-- Firebase + App JS inline (single file as requested) -->
   <script type="module">
-    // -- Firebase config (user-provided earlier) --
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js';
     import { getDatabase, ref, push, onChildAdded } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js';
 
@@ -188,7 +308,6 @@
     const messagesRef = ref(db, 'messages');
     const eventsRef = ref(db, 'events');
 
-    // -- UI refs --
     const pwInput = document.getElementById('password');
     const loginCard = document.getElementById('login-card');
     const gamesPage = document.getElementById('games-page');
@@ -198,306 +317,203 @@
     const adminPanel = document.getElementById('admin-panel');
     const unlockBtn = document.getElementById('unlockBtn');
     const sendBtn = document.getElementById('sendBtn');
-    const notificationContainer = document.getElementById('notificationContainer');
     const startEventBtn = document.getElementById('startEventBtn');
+    const notificationContainer = document.getElementById('notificationContainer');
     const eventsStack = document.getElementById('eventsStack');
     const xpFab = document.getElementById('xpFab');
     const xpCounter = document.getElementById('xpCounter');
     const xpResult = document.getElementById('xpResult');
     const tacoLayer = document.getElementById('tacoLayer');
-    const playButtons = document.querySelectorAll('.play-btn');
+    const playBtns = document.querySelectorAll('.play-btn');
 
-    // small helpers
-    function formatTimeWhole(s){
-      const secs = Math.max(0, Math.floor(s));
-      const m = Math.floor(secs/60);
-      const sec = secs % 60;
-      return `${m}:${sec.toString().padStart(2,'0')}`;
-    }
-
-    function animateShow(el){
-      el.style.opacity = 0; el.style.transform = 'translateY(8px) scale(.98)';
-      el.style.display = 'block';
-      requestAnimationFrame(()=>{ el.style.transition = 'all 360ms cubic-bezier(.22,1,.36,1)'; el.style.opacity = 1; el.style.transform = 'translateY(0) scale(1)'; });
-    }
-    function animateHide(el, cb){
-      el.style.transition = 'all 300ms ease'; el.style.opacity = 0; el.style.transform = 'translateY(8px) scale(.98)';
-      setTimeout(()=>{ el.style.display = 'none'; el.style.transition=''; el.style.opacity=''; el.style.transform=''; if(cb) cb(); },300);
-    }
-
-    // client join time (so only live viewers see messages/events)
     const joinTime = Date.now();
-
-    // client id for xp (local)
-    let clientId = localStorage.getItem('fasthub_client') || 'c_' + Math.random().toString(36).slice(2,9);
+    let clientId = localStorage.getItem('fasthub_client') || 'c_' + Math.random().toString(36).slice(2);
     localStorage.setItem('fasthub_client', clientId);
 
-    // notifications
-    function showNotification(text, seconds=8){
+    function showNotification(msg, s=8){
       const n = document.createElement('div');
       n.className = 'liquidGlass notification';
-      n.textContent = text;
+      n.textContent = msg;
       notificationContainer.appendChild(n);
-      setTimeout(()=>{ n.style.animation = 'bumpOut .45s forwards'; setTimeout(()=>n.remove(),450); }, seconds * 1000);
+      setTimeout(()=>{ n.style.animation = 'bumpOut .45s forwards'; setTimeout(()=>n.remove(),450); }, s*1000);
     }
 
-    // login logic (correct passwords)
     function tryLogin(){
       const pw = pwInput.value.trim();
       if (pw === 'fast67'){
-        // normal user
         loginCard.style.display = 'none';
         gamesPage.classList.add('active');
-        animateShow(gamesPage);
       } else if (pw === 'fastadmin67'){
-        // admin user
         loginCard.style.display = 'none';
         gamesPage.classList.add('active');
-        animateShow(gamesPage);
         adminPanel.style.display = 'block';
-        animateShow(adminPanel);
-        makeDraggable(adminPanel);
       } else {
         errorMsg.textContent = 'incorrect password. try again.';
         pwInput.value = '';
         pwInput.focus();
       }
     }
-    pwInput.addEventListener('keypress', (e)=>{ if (e.key === 'Enter') tryLogin(); });
+    pwInput.addEventListener('keypress', e => { if(e.key === 'Enter') tryLogin(); });
 
-    // admin toggle/unlock
-    adminToggleBtn.addEventListener('click', ()=> {
-      if (adminPasswordPopup.style.display === 'flex' || adminPasswordPopup.style.display === 'block') {
-        animateHide(adminPasswordPopup);
+    adminToggleBtn.addEventListener('click', ()=>{
+      if (adminPasswordPopup.style.display === 'block'){
+        adminPasswordPopup.style.display = 'none';
       } else {
-        adminPasswordPopup.style.display = 'flex';
-        adminPasswordPopup.style.flexDirection = 'column';
-        animateShow(adminPasswordPopup);
+        adminPasswordPopup.style.display = 'block';
       }
     });
-    unlockBtn.addEventListener('click', ()=> {
-      const v = document.getElementById('adminPass').value.trim();
-      if (v === 'fastadmin67') {
-        animateHide(adminPasswordPopup, ()=>{ adminPanel.style.display = 'block'; animateShow(adminPanel); makeDraggable(adminPanel); });
+    unlockBtn.addEventListener('click', ()=>{
+      if (document.getElementById('adminPass').value.trim() === 'fastadmin67'){
+        adminPasswordPopup.style.display = 'none';
+        adminPanel.style.display = 'block';
       } else {
         alert('Incorrect admin password');
       }
     });
 
-    // send global message (writes to Firebase)
-    sendBtn.addEventListener('click', ()=> {
+    sendBtn.addEventListener('click', ()=>{
       const text = document.getElementById('adminMessage').value.trim();
-      const expiresIn = parseInt(document.getElementById('duration').value) || 10;
+      const dur = parseInt(document.getElementById('duration').value) || 10;
       if (!text) return;
-      push(messagesRef, { text, expiresIn, timestamp: Date.now() });
-      // keep admin input value (user asked to be able to spam)
+      push(messagesRef, { text, expiresIn: dur, timestamp: Date.now() });
     });
-
-    // listen for new messages (realtime)
     onChildAdded(messagesRef, snap => {
-      const msg = snap.val();
-      if (!msg) return;
-      // show only if msg timestamp is >= when this client joined and still active
-      const now = Date.now();
-      const age = now - (msg.timestamp || 0);
-      if ((msg.timestamp || 0) >= joinTime && age < (msg.expiresIn || 10) * 1000) {
-        showNotification(msg.text, msg.expiresIn || 10);
+      const m = snap.val();
+      if (!m) return;
+      const age = Date.now() - (m.timestamp || 0);
+      if ((m.timestamp || 0) >= joinTime && age < (m.expiresIn || 10)*1000) {
+        showNotification(m.text, m.expiresIn || 10);
       }
     });
 
-    // EVENTS: listen for events (realtime)
-    const activeEvents = {}; // id -> {data,expiresAt,dom}
-    function addEventToStack(id, data){
-      // pill
-      const pill = document.createElement('div'); pill.className = 'liquidGlass event-pill';
-      const ico = document.createElement('div'); ico.textContent = data.icon || (data.type === 'tacos' ? '🌮' : '⚡');
-      ico.style.fontSize = '1.1rem';
-      const txt = document.createElement('div'); txt.textContent = data.name;
-      const timer = document.createElement('div'); timer.className = 'timer'; timer.textContent = formatTime(Math.ceil(data.duration));
-      pill.appendChild(ico); pill.appendChild(txt); pill.appendChild(timer);
+    const activeEvents = {};
+    function addEvent(id, d){
+      const pill = document.createElement('div');
+      pill.className = 'liquidGlass event-pill';
+      pill.innerHTML = `${d.icon} ${d.name} <span class="timer">${formatTimeWhole(d.duration)}</span>`;
       eventsStack.appendChild(pill);
-      activeEvents[id] = { data, expiresAt: Date.now() + data.duration*1000, dom: pill, timerEl: timer };
-      // start behavior
-      if (data.type === 'tacos') startTacos(id, data.duration);
-      if (data.type === 'doublexp') startDoubleXP(id, data.duration);
-      // countdown
+      activeEvents[id] = { dom: pill, data: d, expiresAt: Date.now() + d.duration*1000 };
+      if (d.type === 'tacos') startTacos(id, d.duration);
+      if (d.type === 'doublexp') startDoubleXP(id, d.duration);
       const iv = setInterval(()=>{
-        const ae = activeEvents[id];
-        if (!ae) { clearInterval(iv); return; }
-        const left = Math.max(0, Math.ceil((ae.expiresAt - Date.now())/1000));
-        ae.timerEl.textContent = formatTime(left);
+        const evt = activeEvents[id];
+        if (!evt) { clearInterval(iv); return; }
+        const left = Math.ceil((evt.expiresAt - Date.now())/1000);
+        evt.dom.querySelector('.timer').textContent = formatTimeWhole(left);
         if (left <= 0) { clearInterval(iv); removeEvent(id); }
-      }, 950);
+      }, 900);
     }
-
-    function removeEvent(id){
-      const ae = activeEvents[id];
-      if (!ae) return;
-      if (ae.dom && ae.dom.remove) ae.dom.remove();
-      stopTacosFor(id); stopDoubleXPFor(id);
-      delete activeEvents[id];
-    }
-
-    function formatTime(s){
-      return formatTimeWhole(s);
-    }
-
-    // listen for events pushed by admin
-    onChildAdded(eventsRef, snap => {
+    onChildAdded(eventsRef, snap=>{
       const e = snap.val();
       if (!e) return;
-      const expiresAt = (e.timestamp || 0) + (e.duration||0)*1000;
+      const expiresAt = (e.timestamp || 0) + (e.duration || 0)*1000;
       if (Date.now() < expiresAt){
-        const lowerName = (e.name || e.type || '').toLowerCase();
-        const type = e.type || (lowerName.includes('taco') ? 'tacos' : lowerName.includes('xp') ? 'doublexp' : 'generic');
-        const name = e.name || (type === 'tacos' ? 'Raining Tacos' : type === 'doublexp' ? 'Double XP' : 'Event');
-        const icon = e.icon || (type === 'tacos' ? '🌮' : '⚡');
-        const duration = Math.ceil((expiresAt - Date.now())/1000);
-        addEventToStack(snap.key, { name, icon, duration, type, durationRaw: e.duration });
+        const type = e.type || (e.name.toLowerCase().includes('taco') ? 'tacos' : 'doublexp');
+        addEvent(snap.key, { name: e.name, icon: e.icon || (type==='tacos'?'🌮':'⚡'), type, duration: Math.ceil((expiresAt - Date.now())/1000) });
       }
     });
-
-    // ADMIN: start event (push to Firebase)
-    document.getElementById('startEventBtn').addEventListener('click', ()=> {
-      const type = document.getElementById('eventSelect').value;
-      const dur = parseInt(document.getElementById('eventDuration').value) || 30;
+    document.getElementById('startEventBtn').addEventListener('click', ()=>{
+      const tp = document.getElementById('eventSelect').value;
+      const dur = parseInt(document.getElementById('eventDuration').value) || 10;
       const map = {
-        tacos: { name: '🌮 Raining Tacos', icon: '🌮', type:'tacos' },
-        doublexp: { name: '⚡ Double XP', icon: '⚡', type:'doublexp' }
+        tacos: { name: '🌮 Raining Tacos', icon: '🌮', type: 'tacos' },
+        doublexp: { name: '⚡ Double XP', icon: '⚡', type: 'doublexp' }
       };
-      const data = map[type] || { name: type, icon: '' };
-      push(eventsRef, { name: data.name, icon: data.icon, type: data.type, duration: dur, timestamp: Date.now() });
+      const d = map[tp];
+      push(eventsRef, { name: d.name, icon: d.icon, type: d.type, duration: dur, timestamp: Date.now() });
     });
 
-    // ----- TACO EFFECT -----
-    const tacoMap = {}; // eventId -> { iv, elems[] }
-    function startTacos(eventId, duration){
-      // rainbow background while tacos active
+    // Tacos
+    const tacoMap = {};
+    function startTacos(id, duration){
       document.body.classList.add('rainbow-bg');
-      tacoMap[eventId] = { iv: setInterval(()=>spawnTaco(eventId), 260), elems: [] };
-      // stop after duration
-      setTimeout(()=> stopTacosFor(eventId), duration*1000 + 200);
+      tacoMap[id] = { iv: setInterval(()=>spawnTaco(id), 260), elems: [] };
+      setTimeout(()=> stopTacosFor(id), duration*1000 + 200);
     }
-    function spawnTaco(eventId){
+    function spawnTaco(id){
       const el = document.createElement('div');
       el.className = 'taco';
       el.textContent = '🌮';
-      // random start
-      const startX = Math.random() * (window.innerWidth - 64);
-      el.style.left = startX + 'px';
+      const x = Math.random() * (window.innerWidth - 60);
+      el.style.left = x + 'px';
       el.style.top = '-60px';
-      el.style.opacity = '0';
       tacoLayer.appendChild(el);
-      tacoMap[eventId].elems.push(el);
-      // animate (using requestAnimationFrame and CSS via style)
+      tacoMap[id].elems.push(el);
       const dur = 3500 + Math.random()*1600;
       requestAnimationFrame(()=>{
-        el.style.transition = `top ${dur}ms linear, transform ${dur}ms cubic-bezier(.2,.9,.2,1), opacity 300ms linear`;
+        el.style.transition = `top ${dur}ms linear, transform ${dur}ms ease, opacity 300ms`;
         el.style.top = (window.innerHeight + 80) + 'px';
         el.style.transform = `rotate(${(Math.random()*60)-30}deg)`;
         el.style.opacity = '1';
       });
-      setTimeout(()=>{ try{ el.remove(); const arr = tacoMap[eventId]?.elems; if(arr) arr.splice(arr.indexOf(el),1); }catch(e){} }, dur + 350);
+      setTimeout(()=>{
+        el.remove();
+        const arr = tacoMap[id]?.elems;
+        if (arr) arr.splice(arr.indexOf(el),1);
+      }, dur + 300);
     }
-    function stopTacosFor(eventId){
-      if (tacoMap[eventId]){ clearInterval(tacoMap[eventId].iv); tacoMap[eventId].elems.forEach(e => e.remove()); delete tacoMap[eventId]; }
-      // remove rainbow if none remaining
-      const stillTaco = Object.values(activeEvents).some(a => a.data.type === 'tacos');
-      if (!stillTaco) document.body.classList.remove('rainbow-bg');
+    function stopTacosFor(id){
+      if (tacoMap[id]){
+        clearInterval(tacoMap[id].iv);
+        tacoMap[id].elems.forEach(e => e.remove());
+        delete tacoMap[id];
+      }
+      const still = Object.values(activeEvents).some(a => a.data.type === 'tacos');
+      if (!still) document.body.classList.remove('rainbow-bg');
     }
 
-    // ----- DOUBLE XP -----
-    // xp stored per client id locally so each client can click to double
-    function startDoubleXP(eventId, duration){
-      // show xp UI
-      xpFab.style.display = 'block'; xpCounter.style.display = 'block';
-      // initialize xp for this client
+    // DOUBLE XP
+    function startDoubleXP(id, duration){
+      xpFab.style.display = 'block';
+      xpCounter.style.display = 'block';
       localStorage.setItem('fasthub_xp_' + clientId, '2');
       xpCounter.textContent = 'XP: 2';
-      // auto stop after duration: handled by event countdown
     }
-    function stopDoubleXPFor(eventId){
-      // if no other doublexp active, finalize
+    function stopDoubleXPFor(id){
       const any = Object.values(activeEvents).some(a => a.data.type === 'doublexp');
       if (!any){
         const final = parseInt(localStorage.getItem('fasthub_xp_' + clientId) || '2', 10);
         xpResult.style.display = 'block';
-        xpResult.innerHTML = `<div class="liquidGlass" style="padding:10px;border-radius:10px">final xp: <strong>${final}</strong></div>`;
+        xpResult.innerHTML = `<div class="liquidGlass" style="padding:10px;border-radius:10px">Final XP: <strong>${final}</strong></div>`;
         setTimeout(()=>{ xpResult.style.opacity = 1; }, 10);
-        setTimeout(()=>{ xpResult.style.opacity = 0; setTimeout(()=> xpResult.style.display = 'none', 420); }, 3000);
-        // reset local xp to 2
+        setTimeout(()=>{ xpResult.style.opacity = 0; setTimeout(()=>xpResult.style.display='none',420) }, 3000);
         localStorage.setItem('fasthub_xp_' + clientId, '2');
         xpCounter.style.display = 'none'; xpFab.style.display = 'none';
       }
     }
-
-    // global click doubling
-    xpFab.addEventListener('click', ()=> {
+    xpFab.addEventListener('click', ()=>{
       let cur = parseInt(localStorage.getItem('fasthub_xp_' + clientId) || '2', 10);
       cur = Math.max(2, cur * 2);
       localStorage.setItem('fasthub_xp_' + clientId, String(cur));
       xpCounter.textContent = 'XP: ' + cur;
-      // small feedback
-      const b = document.createElement('div'); b.className = 'liquidGlass notification'; b.textContent = 'xp doubled to ' + cur; notificationContainer.appendChild(b);
-      setTimeout(()=>{ b.style.animation = 'bumpOut .45s forwards'; setTimeout(()=>b.remove(),450); }, 1200);
+      const b = document.createElement('div');
+      b.className = 'liquidGlass notification';
+      b.textContent = 'xp doubled to ' + cur;
+      notificationContainer.appendChild(b);
+      setTimeout(()=>{ b.style.animation = 'bumpOut .45s forwards'; setTimeout(()=>b.remove(),450) }, 1200);
     });
 
-    // handle incoming events (when added above we call addEventToStack)
-    // removeEvent calls stopDoubleXPFor/stopTacosFor
-
-    // draggable helper (used for admin panel)
-    function makeDraggable(el){
-      let dragging = false, offX = 0, offY = 0;
-      el.addEventListener('mousedown', e => {
-        dragging = true;
-        offX = e.clientX - el.offsetLeft;
-        offY = e.clientY - el.offsetTop;
-        el.style.cursor = 'grabbing';
-      });
-      document.addEventListener('mouseup', ()=>{ dragging = false; el.style.cursor = 'grab'; });
-      document.addEventListener('mousemove', e => {
-        if (!dragging) return;
-        e.preventDefault();
-        el.style.left = (e.clientX - offX) + 'px';
-        el.style.top = (e.clientY - offY) + 'px';
-      });
-    }
-
-    // when messages/events already exist in DB, they will still trigger onChildAdded (but may be old)
-    // we already guard by timestamp + joinTime
-
-    // PLAY BUTTONS: open about:blank and inject game iframe (Eggy Car)
-    playButtons.forEach(btn=>{
-      btn.addEventListener('click', (e)=>{
+    // play button logic
+    playBtns.forEach(btn => {
+      btn.addEventListener('click', ()=>{
         const url = btn.dataset.url;
         if (!url) return;
         const win = window.open('about:blank', '_blank');
-        if (!win) { alert('Popup blocked. Allow popups for this site.'); return; }
-        // write a simple page that contains only the game iframe
+        if (!win) { alert('Popup blocked. Please allow popups.'); return; }
         win.document.open();
-        win.document.write(`
-          <!doctype html>
+        win.document.write(`<!doctype html>
           <html>
-            <head>
-              <meta charset="utf-8" />
-              <meta name="viewport" content="width=device-width,initial-scale=1" />
-              <title>Eggy Car</title>
-              <style>html,body{height:100%;margin:0;background:#000}iframe{border:0;width:100%;height:100vh;display:block}</style>
-            </head>
-            <body>
-              <iframe src="${url}" allow="fullscreen"></iframe>
-            </body>
-          </html>
-        `);
+          <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <title>Eggy Car</title>
+            <style>html,body{margin:0;padding:0;height:100%;background:#000;}iframe{width:100%;height:100%;border:0;}</style>
+          </head>
+          <body><iframe src="${btn.dataset.url}" allowfullscreen></iframe></body>
+          </html>`);
         win.document.close();
       });
     });
-
-    // small keyboard accessibility: press Enter on password triggers login
-    // already wired above
-
-    // Useful console log
-    console.log('gofasthub client ready. joinTime:', new Date(joinTime).toISOString());
   </script>
 </body>
 </html>
