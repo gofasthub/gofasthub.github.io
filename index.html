@@ -47,8 +47,15 @@
       border-radius: var(--radius);
       transition: all 280ms cubic-bezier(.34,1.56,.64,1);
     }
-    .liquidGlass:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 18px 50px rgba(0,0,0,0.28) }
-    .liquidGlass:active { transform: translateY(-2px) scale(0.99) }
+
+    .liquidGlass:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.28);
+    }
+
+    .liquidGlass:active {
+      transform: translateY(-2px) scale(0.99);
+    }
 
     .centerWrap {
       position: fixed;
@@ -91,7 +98,7 @@
       margin-top: 18px;
     }
 
-    .game-card { overflow: hidden; border-radius: 12px; height: 170px; display: flex; flex-direction: column }
+    .game-card { overflow: hidden; border-radius: 12px; height: 170px; display: flex; flex-direction: column; cursor: pointer }
     .game-card img { width: 100%; height: 70%; object-fit: cover }
     .game-card span {
       padding: 8px; text-align: center;
@@ -99,6 +106,7 @@
       text-transform: uppercase; font-weight: 600; font-size: 0.9rem;
     }
 
+    /* admin button */
     .admin-popup-button {
       position: fixed;
       right: 14px;
@@ -123,8 +131,6 @@
       display: none;
       z-index: 71;
     }
-    .admin-panel { max-height: 68vh; overflow: auto }
-    .admin-panel h3 { margin: 0 0 6px 0; text-align: center }
 
     .notification-container {
       position: fixed;
@@ -178,11 +184,13 @@
       min-width: 200px;
     }
 
+    .event-pill img { width: 28px; height: 28px; border-radius: 6px }
     .event-pill .timer { font-weight: 700 }
 
     .taco {
       position: fixed;
-      font-size: 2rem;
+      width: 48px;
+      height: 48px;
       pointer-events: none;
       z-index: 80;
       will-change: transform;
@@ -207,11 +215,9 @@
     .xp-counter { position: fixed; right: 22px; top: 22%; transform: translateY(56px); font-weight: 700; z-index: 70; color: #fff }
     .xp-result { position: fixed; right: 22px; top: calc(22% + 96px); z-index: 75 }
 
-    .rainbow-bg { animation: rainbow 6s linear infinite; background-size: 600% 600% }
-    @keyframes rainbow {
-      0% { background-position: 0% 50% }
-      50% { background-position: 100% 50% }
-      100% { background-position: 0% 50% }
+    @media (max-width:700px) {
+      .centerWrap { padding: 10px; width: 95% }
+      .admin-password-popup, .admin-panel { right: 12px; left: 12px; width: auto }
     }
   </style>
 </head>
@@ -227,9 +233,8 @@
     <div class="liquidGlass games-page" id="games-page">
       <h2 class="liquidGlass-text">welcome to fasthub</h2>
       <div class="games-grid">
-        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game one</span></div>
-        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game two</span></div>
-        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game three</span></div>
+        <div class="liquidGlass game-card" onclick="openGame('eggycar')"><img src="eggycar-banner.png"><span>eggy car</span></div>
+        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>coming soon</span></div>
       </div>
     </div>
   </div>
@@ -239,6 +244,7 @@
     <input id="adminPass" type="password" placeholder="enter admin password" />
     <button class="liquidGlass" id="unlockBtn">unlock admin panel</button>
   </div>
+
   <div class="liquidGlass admin-panel" id="admin-panel">
     <h3>global message</h3>
     <input id="adminMessage" type="text" placeholder="Type global message" />
@@ -260,114 +266,132 @@
   <div class="xp-counter" id="xpCounter" style="display:none">XP: 2</div>
   <div class="xp-result" id="xpResult" style="display:none"></div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+  <script>
+    const passwordInput = document.getElementById('password');
+    const loginCard = document.getElementById('login-card');
+    const gamesPage = document.getElementById('games-page');
+    const errorMsg = document.getElementById('error-msg');
+    const adminToggleBtn = document.getElementById('adminToggleBtn');
+    const adminPopup = document.getElementById('admin-password-popup');
+    const adminPanel = document.getElementById('admin-panel');
+    const unlockBtn = document.getElementById('unlockBtn');
+    const adminPass = document.getElementById('adminPass');
+    const sendBtn = document.getElementById('sendBtn');
+    const notificationContainer = document.getElementById('notificationContainer');
+    const startEventBtn = document.getElementById('startEventBtn');
+    const eventSelect = document.getElementById('eventSelect');
+    const eventDuration = document.getElementById('eventDuration');
+    const eventsStack = document.getElementById('eventsStack');
+    const xpFab = document.getElementById('xpFab');
+    const xpCounter = document.getElementById('xpCounter');
+    const xpResult = document.getElementById('xpResult');
+    let xp = 2;
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDJskELwuyHZVcFZXSX0QHU3e2UgTcRyLQ",
-      authDomain: "fasthub-messages.firebaseapp.com",
-      databaseURL: "https://fasthub-messages-default-rtdb.firebaseio.com",
-      projectId: "fasthub-messages",
-      storageBucket: "fasthub-messages.firebasestorage.app",
-      messagingSenderId: "788670666897",
-      appId: "1:788670666897:web:223bb6a9f8bff4af444730"
+    passwordInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter') {
+        if (passwordInput.value === 'fast') {
+          loginCard.style.display = 'none';
+          gamesPage.classList.add('active');
+        } else {
+          errorMsg.textContent = 'invalid key';
+        }
+      }
+    });
+
+    adminToggleBtn.onclick = () => {
+      adminPopup.style.display = adminPopup.style.display === 'flex' ? 'none' : 'flex';
+      adminPopup.style.flexDirection = 'column';
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const messagesRef = ref(db, "messages");
-    const eventsRef = ref(db, "events");
-
-    const pwInput = document.getElementById("password");
-    const loginCard = document.getElementById("login-card");
-    const gamesPage = document.getElementById("games-page");
-    const errorMsg = document.getElementById("error-msg");
-    const adminToggleBtn = document.getElementById("adminToggleBtn");
-    const adminPasswordPopup = document.getElementById("admin-password-popup");
-    const adminPanel = document.getElementById("admin-panel");
-    const unlockBtn = document.getElementById("unlockBtn");
-    const sendBtn = document.getElementById("sendBtn");
-    const startEventBtn = document.getElementById("startEventBtn");
-    const notificationContainer = document.getElementById("notificationContainer");
-    const eventsStack = document.getElementById("eventsStack");
-    const xpFab = document.getElementById("xpFab");
-    const xpCounter = document.getElementById("xpCounter");
-    const xpResult = document.getElementById("xpResult");
-    const bodyRoot = document.getElementById("bodyRoot");
-
-    function formatTime(s){
-      s = Math.floor(s);
-      const m = Math.floor(s/60);
-      const sec = s % 60;
-      return `${m}:${sec.toString().padStart(2,"0")}`;
-    }
-
-    function showNotification(msg, seconds=8){
-      const n = document.createElement("div");
-      n.className = "liquidGlass notification";
-      n.textContent = msg;
-      notificationContainer.appendChild(n);
-      setTimeout(()=>{ n.style.animation="bumpOut .5s forwards"; setTimeout(()=>n.remove(),500); }, seconds*1000);
-    }
-
-    pwInput.addEventListener("keypress", e=>{ if(e.key==="Enter") tryLogin(); });
-    function tryLogin(){
-      const pw = pwInput.value.trim();
-      if(pw==="fast67"){ loginCard.style.display="none"; gamesPage.classList.add("active"); }
-      else if(pw==="fastadmin67"){ loginCard.style.display="none"; gamesPage.classList.add("active"); adminPanel.style.display="block"; }
-      else errorMsg.textContent="incorrect password";
-    }
-
-    adminToggleBtn.onclick=()=>adminPasswordPopup.style.display=adminPasswordPopup.style.display==="block"?"none":"block";
-    unlockBtn.onclick=()=>{ if(document.getElementById("adminPass").value==="fastadmin67"){ adminPasswordPopup.style.display="none"; adminPanel.style.display="block"; } };
-
-    sendBtn.onclick=()=>{ const text=document.getElementById("adminMessage").value.trim(); const dur=parseInt(document.getElementById("duration").value)||8; if(text) push(messagesRef,{text,dur,time:Date.now()}); };
-
-    onChildAdded(messagesRef,snap=>{ const m=snap.val(); if(Date.now()-m.time<m.dur*1000) showNotification(m.text,m.dur); });
-
-    onChildAdded(eventsRef,snap=>{ const ev=snap.val(); const remaining = ev.duration - ((Date.now()-ev.time)/1000); if(remaining>0) startEvent(ev.type,remaining); });
-
-    startEventBtn.onclick=()=>{ const type=document.getElementById("eventSelect").value; const duration=parseInt(document.getElementById("eventDuration").value)||10; push(eventsRef,{type,duration,time:Date.now()}); };
-
-    function startEvent(type,duration){
-      const id=Math.random().toString(36).slice(2,9);
-      const pill=document.createElement("div");
-      pill.className="liquidGlass event-pill";
-      pill.innerHTML= type==="tacos" ? "🌮 Raining Tacos <span class='timer' id='t"+id+"'>"+formatTime(duration)+"</span>"
-                   : "⚡ Double XP <span class='timer' id='t"+id+"'>"+formatTime(duration)+"</span>";
-      eventsStack.appendChild(pill);
-      let t=duration; const iv=setInterval(()=>{ t--; document.getElementById("t"+id).textContent=formatTime(t); if(t<=0){ clearInterval(iv); pill.remove(); stopEvent(type); } },1000);
-      runEvent(type);
-    }
-
-    let xp=2;
-    function runEvent(type){
-      if(type==="tacos"){
-        bodyRoot.classList.add("rainbow-bg");
-        const interval=setInterval(()=>{
-          const taco=document.createElement("div");
-          taco.className="taco";
-          taco.textContent="🌮";
-          taco.style.left=Math.random()*window.innerWidth+"px";
-          taco.style.top="-60px";
-          document.body.appendChild(taco);
-          const fall=Math.random()*3+4;
-          let y=-60;const drop=setInterval(()=>{ y+=fall; taco.style.top=y+"px"; if(y>window.innerHeight+60){ taco.remove(); clearInterval(drop); } },16);
-        },180);
-        setTimeout(()=>{ clearInterval(interval); bodyRoot.classList.remove("rainbow-bg"); },10000);
+    unlockBtn.onclick = () => {
+      if (adminPass.value === 'admin') {
+        adminPopup.style.display = 'none';
+        adminPanel.style.display = 'flex';
+        adminPanel.style.flexDirection = 'column';
       }
-      if(type==="doublexp"){
-        xp=2; xpCounter.textContent="XP: "+xp; xpFab.style.display="block"; xpCounter.style.display="block";
-        xpFab.onclick=()=>{ xp*=2; xpCounter.textContent="XP: "+xp; };
-      }
+    };
+
+    sendBtn.onclick = () => {
+      const msg = document.getElementById('adminMessage').value;
+      const duration = parseInt(document.getElementById('duration').value) * 1000;
+      if (!msg) return;
+      const note = document.createElement('div');
+      note.className = 'liquidGlass notification';
+      note.textContent = msg;
+      notificationContainer.appendChild(note);
+      setTimeout(() => {
+        note.style.animation = 'bumpOut 500ms forwards';
+        setTimeout(() => note.remove(), 500);
+      }, duration);
+    };
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 
-    function stopEvent(type){
-      if(type==="doublexp"){
-        xpFab.style.display="none"; xpCounter.style.display="none";
-        xpResult.textContent=`You ended with ${xp} XP!`; xpResult.style.display="block";
-        setTimeout(()=>xpResult.style.display="none",4000);
+    function startTacoRain(duration) {
+      const endTime = Date.now() + duration * 1000;
+      const interval = setInterval(() => {
+        const taco = document.createElement('div');
+        taco.className = 'taco';
+        taco.textContent = '🌮';
+        taco.style.left = Math.random() * 100 + 'vw';
+        taco.style.top = '-50px';
+        document.body.appendChild(taco);
+        const fall = taco.animate([
+          { transform: `translateY(0)` },
+          { transform: `translateY(110vh)` }
+        ], { duration: 4000 + Math.random() * 2000, easing: 'linear' });
+        fall.onfinish = () => taco.remove();
+        if (Date.now() > endTime) clearInterval(interval);
+      }, 300);
+    }
+
+    startEventBtn.onclick = () => {
+      const event = eventSelect.value;
+      const duration = parseInt(eventDuration.value);
+      const eventPill = document.createElement('div');
+      eventPill.className = 'liquidGlass event-pill';
+      eventPill.innerHTML = `${event === 'tacos' ? '🌮' : '⚡'} <span>${event === 'tacos' ? 'Raining Tacos' : 'Double XP'}</span> <span class="timer">${formatTime(duration)}</span>`;
+      eventsStack.appendChild(eventPill);
+
+      let remaining = duration;
+      const timer = setInterval(() => {
+        remaining -= 1;
+        eventPill.querySelector('.timer').textContent = formatTime(remaining);
+        if (remaining <= 0) {
+          clearInterval(timer);
+          eventPill.remove();
+          if (event === 'doublexp') {
+            xpFab.style.display = 'none';
+            xpCounter.style.display = 'none';
+            xpResult.style.display = 'block';
+            xpResult.textContent = `You earned ${xp} XP!`;
+            setTimeout(() => xpResult.style.display = 'none', 3000);
+            xp = 2;
+          }
+        }
+      }, 1000);
+
+      if (event === 'tacos') startTacoRain(duration);
+      if (event === 'doublexp') {
+        xp = 2;
+        xpFab.style.display = 'block';
+        xpCounter.style.display = 'block';
+      }
+    };
+
+    xpFab.onclick = () => {
+      xp *= 2;
+      xpCounter.textContent = `XP: ${xp}`;
+    };
+
+    function openGame(game) {
+      if (game === 'eggycar') {
+        const win = window.open('about:blank', '_blank');
+        win.document.write(`<!doctype html><html><head><title>Eggy Car</title></head><body>${document.querySelector('body').innerHTML}</body></html>`);
       }
     }
   </script>
