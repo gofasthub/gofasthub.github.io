@@ -39,7 +39,6 @@
       100% { background-position: 0% 50% }
     }
 
-    /* liquid glass */
     .liquidGlass {
       backdrop-filter: blur(10px) saturate(180%);
       background: var(--glass-bg);
@@ -51,7 +50,6 @@
     .liquidGlass:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 18px 50px rgba(0,0,0,0.28) }
     .liquidGlass:active { transform: translateY(-2px) scale(0.99) }
 
-    /* center everything perfectly */
     .centerWrap {
       position: fixed;
       top: 50%;
@@ -65,12 +63,6 @@
       max-width: 720px;
       gap: 24px;
       padding: 20px;
-    }
-
-    .leftCol, .rightCol {
-      width: 100%;
-      display: flex;
-      justify-content: center;
     }
 
     .liquidGlass-wrapper { padding: 28px; text-align: center }
@@ -107,7 +99,6 @@
       text-transform: uppercase; font-weight: 600; font-size: 0.9rem;
     }
 
-    /* admin button small */
     .admin-popup-button {
       position: fixed;
       right: 14px;
@@ -167,7 +158,6 @@
       100% { transform: scale(.8) translateY(-20px); opacity: 0 }
     }
 
-    /* events stack */
     .events-stack {
       position: fixed;
       left: 14px;
@@ -188,12 +178,17 @@
       min-width: 200px;
     }
 
-    .event-pill img { width: 28px; height: 28px; border-radius: 6px }
     .event-pill .timer { font-weight: 700 }
 
-    .taco { position: fixed; width: 48px; height: 48px; pointer-events: none; z-index: 80; will-change: transform; transform-origin: center }
+    .taco {
+      position: fixed;
+      font-size: 2rem;
+      pointer-events: none;
+      z-index: 80;
+      will-change: transform;
+      transform-origin: center;
+    }
 
-    /* xp button */
     .xp-fab {
       position: fixed;
       right: 22px;
@@ -212,17 +207,10 @@
     .xp-counter { position: fixed; right: 22px; top: 22%; transform: translateY(56px); font-weight: 700; z-index: 70; color: #fff }
     .xp-result { position: fixed; right: 22px; top: calc(22% + 96px); z-index: 75 }
 
-    @media (max-width:700px) {
-      .centerWrap { padding: 10px; width: 95% }
-      .admin-password-popup, .admin-panel { right: 12px; left: 12px; width: auto }
-    }
-
     .rainbow-bg { animation: rainbow 6s linear infinite; background-size: 600% 600% }
     @keyframes rainbow {
       0% { background-position: 0% 50% }
-      25% { background-position: 50% 50% }
       50% { background-position: 100% 50% }
-      75% { background-position: 50% 50% }
       100% { background-position: 0% 50% }
     }
   </style>
@@ -230,28 +218,22 @@
 
 <body id="bodyRoot">
   <div class="centerWrap">
-    <div class="leftCol">
-      <div class="liquidGlass liquidGlass-wrapper" id="login-card">
-        <div class="liquidGlass-text">welcome to fasthub</div>
-        <input id="password" type="password" placeholder="enter access key" />
-        <div id="error-msg" style="height:18px;color:#ffb3b3;margin-top:6px"></div>
-      </div>
+    <div class="liquidGlass liquidGlass-wrapper" id="login-card">
+      <div class="liquidGlass-text">welcome to fasthub</div>
+      <input id="password" type="password" placeholder="enter access key" />
+      <div id="error-msg" style="height:18px;color:#ffb3b3;margin-top:6px"></div>
     </div>
 
-    <div class="rightCol">
-      <div class="liquidGlass games-page" id="games-page">
-        <h2 class="liquidGlass-text">welcome to fasthub</h2>
-        <div class="games-grid">
-          <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game one</span></div>
-          <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game two</span></div>
-          <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game three</span></div>
-          <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game four</span></div>
-        </div>
+    <div class="liquidGlass games-page" id="games-page">
+      <h2 class="liquidGlass-text">welcome to fasthub</h2>
+      <div class="games-grid">
+        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game one</span></div>
+        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game two</span></div>
+        <div class="liquidGlass game-card"><img src="https://i.kym-cdn.com/entries/icons/facebook/000/053/895/67-kid.jpg"><span>game three</span></div>
       </div>
     </div>
   </div>
 
-  <!-- admin controls -->
   <button class="liquidGlass admin-popup-button" id="adminToggleBtn">admin</button>
   <div class="liquidGlass admin-password-popup" id="admin-password-popup">
     <input id="adminPass" type="password" placeholder="enter admin password" />
@@ -277,9 +259,7 @@
   <button class="liquidGlass xp-fab" id="xpFab">+ XP</button>
   <div class="xp-counter" id="xpCounter" style="display:none">XP: 2</div>
   <div class="xp-result" id="xpResult" style="display:none"></div>
-  <div id="tacoLayer"></div>
 
-  <!-- Firebase + JS logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
@@ -316,6 +296,13 @@
     const xpResult = document.getElementById("xpResult");
     const bodyRoot = document.getElementById("bodyRoot");
 
+    function formatTime(s){
+      s = Math.floor(s);
+      const m = Math.floor(s/60);
+      const sec = s % 60;
+      return `${m}:${sec.toString().padStart(2,"0")}`;
+    }
+
     function showNotification(msg, seconds=8){
       const n = document.createElement("div");
       n.className = "liquidGlass notification";
@@ -327,27 +314,18 @@
     pwInput.addEventListener("keypress", e=>{ if(e.key==="Enter") tryLogin(); });
     function tryLogin(){
       const pw = pwInput.value.trim();
-      if(pw==="fast67"){
-        loginCard.style.display="none"; gamesPage.classList.add("active");
-      }else if(pw==="fastadmin67"){
-        loginCard.style.display="none"; gamesPage.classList.add("active"); adminPanel.style.display="block";
-      }else{ errorMsg.textContent="incorrect password"; }
+      if(pw==="fast67"){ loginCard.style.display="none"; gamesPage.classList.add("active"); }
+      else if(pw==="fastadmin67"){ loginCard.style.display="none"; gamesPage.classList.add("active"); adminPanel.style.display="block"; }
+      else errorMsg.textContent="incorrect password";
     }
 
     adminToggleBtn.onclick=()=>adminPasswordPopup.style.display=adminPasswordPopup.style.display==="block"?"none":"block";
-    unlockBtn.onclick=()=>{
-      if(document.getElementById("adminPass").value==="fastadmin67"){
-        adminPasswordPopup.style.display="none";
-        adminPanel.style.display="block";
-      }
-    };
+    unlockBtn.onclick=()=>{ if(document.getElementById("adminPass").value==="fastadmin67"){ adminPasswordPopup.style.display="none"; adminPanel.style.display="block"; } };
 
     sendBtn.onclick=()=>{ const text=document.getElementById("adminMessage").value.trim(); const dur=parseInt(document.getElementById("duration").value)||8; if(text) push(messagesRef,{text,dur,time:Date.now()}); };
 
     onChildAdded(messagesRef,snap=>{ const m=snap.val(); if(Date.now()-m.time<m.dur*1000) showNotification(m.text,m.dur); });
 
-    // GLOBAL EVENTS
-    function formatTime(s){const m=Math.floor(s/60);const sec=s%60;return `${m}:${sec.toString().padStart(2,"0")}`;}
     onChildAdded(eventsRef,snap=>{ const ev=snap.val(); const remaining = ev.duration - ((Date.now()-ev.time)/1000); if(remaining>0) startEvent(ev.type,remaining); });
 
     startEventBtn.onclick=()=>{ const type=document.getElementById("eventSelect").value; const duration=parseInt(document.getElementById("eventDuration").value)||10; push(eventsRef,{type,duration,time:Date.now()}); };
@@ -368,9 +346,9 @@
       if(type==="tacos"){
         bodyRoot.classList.add("rainbow-bg");
         const interval=setInterval(()=>{
-          const taco=document.createElement("img");
-          taco.src="https://cdn-icons-png.flaticon.com/512/2091/2091801.png";
+          const taco=document.createElement("div");
           taco.className="taco";
+          taco.textContent="🌮";
           taco.style.left=Math.random()*window.innerWidth+"px";
           taco.style.top="-60px";
           document.body.appendChild(taco);
