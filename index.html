@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Fake Windows 11 Emulator (Enhanced Demo)</title>
+  <title>Fake Windows 11 Emulator (Fixed, Interactive)</title>
   <style>
     :root{
       --bg:#071025;--panel:rgba(255,255,255,0.04);--accent:#3b82f6;--muted:#9fb6c0;--glass:rgba(255,255,255,0.06)
@@ -11,16 +11,21 @@
     html,body{height:100%;margin:0;font-family:Inter,Segoe UI,system-ui,Arial; background:linear-gradient(180deg,#061224 0%, #071025 100%);color:#e6eef6;overflow:hidden}
 
     /* Desktop & wallpaper */
-    .desktop{position:relative;height:100%;width:100%;padding:20px;box-sizing:border-box}
-    .wallpaper{position:absolute;inset:0;background:
-      radial-gradient(circle at 10% 10%,rgba(59,130,246,0.08),transparent 10%),
-      linear-gradient(180deg,#071025,#071022);
+    .wallpaper{
+      position:fixed;
+      inset:0;
+      background:
+        radial-gradient(circle at 10% 10%,rgba(59,130,246,0.08),transparent 10%),
+        linear-gradient(180deg,#071025,#071022);
       filter:blur(0.6px);
       transition:filter 280ms ease;
+      z-index:0;
+      pointer-events: none; /* <-- ALLOWS CLICKS THROUGH TO UI */
     }
+    .desktop{position:relative;height:100%;width:100%;padding:20px;box-sizing:border-box;z-index:1}
 
     /* Taskbar */
-    .taskbar{position:fixed;left:12px;right:12px;bottom:12px;height:56px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.25));backdrop-filter:blur(10px);border-radius:14px;display:flex;align-items:center;padding:6px 12px;gap:10px;box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+    .taskbar{position:fixed;left:12px;right:12px;bottom:12px;height:56px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.25));backdrop-filter:blur(10px);border-radius:14px;display:flex;align-items:center;padding:6px 12px;gap:10px;box-shadow:0 10px 30px rgba(2,6,23,0.6);z-index:30}
     .start-btn{width:44px;height:44px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005));display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 160ms cubic-bezier(.2,.9,.2,1)}
     .start-btn:active{transform:scale(0.96)}
     .task-icons{display:flex;gap:8px;margin-left:6px}
@@ -28,14 +33,13 @@
     .icon:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(11,20,34,0.5)}
 
     /* Start menu */
-    .start-menu{position:fixed;left:12px;bottom:80px;width:360px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6);display:none;transform-origin:left bottom;animation:fadeIn 240ms both}
+    .start-menu{position:fixed;left:12px;bottom:80px;width:360px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6);display:none;transform-origin:left bottom;animation:fadeIn 240ms both;z-index:40}
     .apps-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
     .app-card{padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.018), rgba(0,0,0,0.2));cursor:pointer;text-align:center;font-size:13px;transition:transform 140ms ease}
     .app-card:hover{transform:translateY(-6px)}
 
     /* Window system */
     .window{position:absolute;width:640px;height:420px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));border-radius:12px;box-shadow:0 20px 50px rgba(2,6,23,0.6);overflow:hidden;display:none;transform-origin:center center;transition:transform 260ms cubic-bezier(.2,.9,.2,1),opacity 200ms ease,left 160ms ease,top 160ms ease}
-    /* Smooth pop open that'll feel like Win11 */
     .window.open{display:block;transform:translateY(-6px) scale(1.02);opacity:0;animation:popOpen 260ms cubic-bezier(.2,.9,.2,1) forwards}
     @keyframes popOpen{0%{opacity:0;transform:translateY(-18px) scale(0.98)}60%{transform:translateY(6px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)}}
     .titlebar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));border-bottom:1px solid rgba(255,255,255,0.02)}
@@ -61,7 +65,7 @@
     .bso p{font-size:14px;margin-top:8px;color:#ffd6d6}
 
     /* Restore */
-    .restore{position:fixed;right:12px;bottom:86px;background:#0f1720;padding:8px 10px;border-radius:12px;display:none}
+    .restore{position:fixed;right:12px;bottom:86px;background:#0f1720;padding:8px 10px;border-radius:12px;display:none;z-index:999}
 
     /* Small screens */
     @media (max-width:900px){.window{width:92%;height:74%}}
@@ -110,13 +114,13 @@
     </div>
 
     <!-- Notepad -->
-    <div class="window glide" id="notepadWindow" style="left:80px;top:60px;z-index:10">
+    <div class="window glide" id="notepadWindow" style="left:80px;top:60px;z-index:50">
       <div class="titlebar"><div class="title">Notepad</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
       <div class="content"><textarea id="notepadText" style="width:100%;height:100%;box-sizing:border-box;border:none;resize:none">This is a safe, local notepad. Your text is saved to localStorage.</textarea></div>
     </div>
 
     <!-- Calculator -->
-    <div class="window glide" id="calcWindow" style="left:120px;top:120px;z-index:11;width:360px;height:380px">
+    <div class="window glide" id="calcWindow" style="left:120px;top:120px;z-index:51;width:360px;height:380px">
       <div class="titlebar"><div class="title">Calculator</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
       <div class="content">
         <div id="calcDisplay" style="height:70px;background:rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:flex-end;padding:12px;font-size:28px;border-radius:10px">0</div>
@@ -130,7 +134,7 @@
     </div>
 
     <!-- Browser -->
-    <div class="window glide" id="browserWindow" style="left:220px;top:90px;z-index:12;width:760px;height:520px">
+    <div class="window glide" id="browserWindow" style="left:220px;top:90px;z-index:52;width:760px;height:520px">
       <div class="titlebar"><div class="title">Safe Browser (Fake)</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
       <div class="content">
         <div style="display:flex;gap:8px;margin-bottom:8px"><input id="fakeUrl" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit" value="example.local"/><button class="btn" id="goBtn">Go</button></div>
@@ -143,7 +147,7 @@
     </div>
 
     <!-- Gallery -->
-    <div class="window glide" id="galleryWindow" style="left:160px;top:140px;z-index:13;width:620px;height:420px">
+    <div class="window glide" id="galleryWindow" style="left:160px;top:140px;z-index:53;width:620px;height:420px">
       <div class="titlebar"><div class="title">Gallery</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
       <div class="content">
         <div style="display:flex;gap:8px;margin-bottom:10px"><input type="file" id="imgUpload" accept="image/*" multiple/><button class="btn" id="clearGallery">Clear</button></div>
@@ -152,7 +156,7 @@
     </div>
 
     <!-- Music -->
-    <div class="window glide" id="musicWindow" style="left:260px;top:180px;z-index:14;width:520px;height:320px">
+    <div class="window glide" id="musicWindow" style="left:260px;top:180px;z-index:54;width:520px;height:320px">
       <div class="titlebar"><div class="title">Music Player (Demo)</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
       <div class="content">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><button class="btn" id="playMusic">Play</button><button class="btn" id="stopMusic">Stop</button><div class="muted">(Generated sound, no external files)</div></div>
@@ -161,14 +165,14 @@
     </div>
 
     <!-- Terminal -->
-    <div class="window glide" id="terminalWindow" style="left:300px;top:200px;z-index:15;width:560px;height:340px">
+    <div class="window glide" id="terminalWindow" style="left:300px;top:200px;z-index:55;width:560px;height:340px">
       <div class="titlebar"><div class="title">Terminal (Sim)</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
       <div class="content"><div id="termOut" style="height:260px;background:#071022;padding:8px;border-radius:8px;overflow:auto;font-family:monospace;font-size:13px;color:#9ad3ff">Welcome to the fake terminal. Try: <code>help</code></div>
       <div style="margin-top:8px;display:flex;gap:8px"><input id="termIn" style="flex:1" placeholder="type a command (e.g. help, time, clear)"/><button class="btn" id="termRun">Run</button></div></div>
     </div>
 
     <!-- Settings -->
-    <div class="window glide" id="settingsWindow" style="left:340px;top:220px;z-index:16;width:480px;height:360px">
+    <div class="window glide" id="settingsWindow" style="left:340px;top:220px;z-index:56;width:480px;height:360px">
       <div class="titlebar"><div class="title">Settings</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
       <div class="content">
         <div style="display:flex;flex-direction:column;gap:8px">
@@ -178,8 +182,8 @@
       </div>
     </div>
 
-    <!-- About and Prank windows -->
-    <div class="window glide" id="aboutWindow" style="left:260px;top:260px;z-index:17;width:420px;height:220px">
+    <!-- About and controls -->
+    <div class="window glide" id="aboutWindow" style="left:260px;top:260px;z-index:57;width:420px;height:220px">
       <div class="titlebar"><div class="title">About</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
       <div class="content"><h3>Enhanced Safe Windows 11 Emulator</h3><p>This demo is intentionally safe: it only modifies elements inside this page and never downloads or executes real files. The Prank app applies reversible visual effects only.</p></div>
     </div>
@@ -206,16 +210,31 @@
     startBtn.addEventListener('click', ()=> startMenu.style.display = (startMenu.style.display==='block' ? 'none' : 'block'));
 
     // Task icons management
-    function addTask(id, label, emoji){ if(document.getElementById('task-'+id)) return; const el = document.createElement('div'); el.className='icon'; el.id='task-'+id; el.textContent=emoji; el.title=label; el.addEventListener('click', ()=> toggleWindow(id)); taskIcons.appendChild(el); }
+    function addTask(id, label, emoji){
+      // don't add duplicates
+      if(document.getElementById('task-'+id)) return;
+      const el = document.createElement('div'); el.className='icon'; el.id='task-'+id; el.textContent=emoji; el.title=label;
+      el.addEventListener('click', ()=> toggleWindow(id));
+      taskIcons.appendChild(el);
+    }
     function removeTask(id){ const e=document.getElementById('task-'+id); if(e) e.remove(); }
 
-    function toggleWindow(id){ const win = document.getElementById(id+'Window'); if(!win) return; if(win.style.display==='block'){ win.style.display='none'; win.classList.remove('open'); } else { openWindow(id); } }
-    function openWindow(id){ const win = document.getElementById(id+'Window'); if(!win) return;
-      // bring to front and animate
-      document.querySelectorAll('.window').forEach(w=> w.style.zIndex = 10);
-      win.style.zIndex = 100 + Math.floor(Math.random()*100);
+    function toggleWindow(id){
+      const win = document.getElementById(id+'Window');
+      if(!win) return;
+      if(win.style.display==='block'){ win.style.display='none'; win.classList.remove('open'); }
+      else openWindow(id);
+    }
+
+    function openWindow(id){
+      const win = document.getElementById(id+'Window');
+      if(!win) return;
+      // give everyone a base z then bring this window forward
+      document.querySelectorAll('.window').forEach((w,i)=> { if(!w.style.zIndex) w.style.zIndex = 50 + i; });
+      win.style.zIndex = 200; // bring to front
       win.style.display = 'block';
-      requestAnimationFrame(()=>{ win.classList.add('open'); win.style.transform = ''; win.style.opacity = '1'; });
+      // animate open smoothly
+      requestAnimationFrame(()=>{ win.classList.add('open'); win.style.opacity = '1'; });
     }
 
     // App launchers in Start
@@ -235,7 +254,9 @@
 
     // Window controls (close/min/max)
     document.querySelectorAll('.window').forEach(win=>{
-      win.querySelectorAll('.ctrl').forEach(c=> c.addEventListener('click', ()=>{
+      // guard for missing controls
+      const ctrls = win.querySelectorAll('.ctrl')||[];
+      ctrls.forEach(c=> c.addEventListener('click', ()=>{
         const action = c.dataset.action; const id = win.id.replace('Window','');
         if(action==='close'){ win.style.display='none'; win.classList.remove('open'); removeTask(id); }
         if(action==='min'){ win.style.display='none'; win.classList.remove('open'); }
@@ -251,12 +272,14 @@
         }
       }))
 
-      // Dragging
+      // Dragging (titlebar zone)
       let dragging=false, ox=0, oy=0;
       const title = win.querySelector('.titlebar');
-      title.addEventListener('pointerdown',(e)=>{ dragging=true; ox=e.clientX - win.offsetLeft; oy=e.clientY - win.offsetTop; win.style.zIndex=999; title.setPointerCapture(e.pointerId); });
-      window.addEventListener('pointerup',()=>dragging=false);
-      window.addEventListener('pointermove',(e)=>{ if(!dragging) return; win.style.left = (e.clientX - ox) + 'px'; win.style.top = (e.clientY - oy) + 'px'; });
+      if(title){
+        title.addEventListener('pointerdown',(e)=>{ dragging=true; ox=e.clientX - win.offsetLeft; oy=e.clientY - win.offsetTop; win.style.zIndex=999; title.setPointerCapture && title.setPointerCapture(e.pointerId); });
+        window.addEventListener('pointerup',()=>dragging=false);
+        window.addEventListener('pointermove',(e)=>{ if(!dragging) return; win.style.left = (e.clientX - ox) + 'px'; win.style.top = (e.clientY - oy) + 'px'; });
+      }
     })
 
     // Notepad: persist content locally
@@ -271,7 +294,6 @@
       document.querySelectorAll('#calcWindow .btn').forEach(b=> b.addEventListener('click', ()=>{ const k=b.dataset.key;
         if(k==='='){
           try{
-            // allow only digits, whitespace, parentheses and operators
             if(!/^[0-9.+\\-*/\\s()]+$/.test(cur)) throw 'Bad';
             const res = Function('return ('+cur+')')();
             cur = String(res);
@@ -281,34 +303,41 @@
       }))
     })();
 
-    // Fake Browser
+    // Fake Browser (safe)
     document.getElementById('goBtn').addEventListener('click', ()=>{
       const url = document.getElementById('fakeUrl').value.trim(); const fakePage = document.getElementById('fakePage');
       fakePage.innerHTML = `<h3>Fake site: ${escapeHtml(url)}</h3><p>This is a toy page inside the emulator. The "Download" button triggers a harmless visual prank only.</p><button class="btn" id="fakeDownload">Download installer.exe</button>`;
-      document.getElementById('fakeDownload').addEventListener('click', ()=>{ launchSmallPrank(); })
+      const fd = document.getElementById('fakeDownload');
+      if(fd) fd.addEventListener('click', ()=>{ launchSmallPrank(); })
     })
     function escapeHtml(s){ return s.replace(/[&<>\"]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]||c)); }
 
-    // Gallery: file uploads to thumbnails (no upload to server)
+    // Gallery: file uploads to thumbnails (no server upload)
     const thumbs = document.getElementById('thumbs');
-    document.getElementById('imgUpload').addEventListener('change', (e)=>{
-      const files = Array.from(e.target.files).slice(0,12);
-      files.forEach(f=>{
-        const reader = new FileReader();
-        reader.onload = ev=>{
-          const d = ev.target.result;
-          const box = document.createElement('div'); box.className='thumb';
-          const img = document.createElement('img'); img.src = d; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
-          box.appendChild(img); thumbs.appendChild(box);
-        };
-        reader.readAsDataURL(f);
-      })
-    });
-    document.getElementById('clearGallery').addEventListener('click', ()=> thumbs.innerHTML='');
+    const imgUpload = document.getElementById('imgUpload');
+    if(imgUpload){
+      imgUpload.addEventListener('change', (e)=>{
+        const files = Array.from(e.target.files).slice(0,12);
+        files.forEach(f=>{
+          const reader = new FileReader();
+          reader.onload = ev=>{
+            const d = ev.target.result;
+            const box = document.createElement('div'); box.className='thumb';
+            const img = document.createElement('img'); img.src = d; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+            box.appendChild(img); thumbs.appendChild(box);
+          };
+          reader.readAsDataURL(f);
+        })
+      });
+    }
+    const clearGalleryBtn = document.getElementById('clearGallery');
+    if(clearGalleryBtn) clearGalleryBtn.addEventListener('click', ()=> thumbs.innerHTML='');
 
     // Music: generated tone (no external files)
     let audioCtx=null, playing=false, osc=null;
-    document.getElementById('playMusic').addEventListener('click', ()=>{
+    const playBtn = document.getElementById('playMusic');
+    const stopBtn = document.getElementById('stopMusic');
+    if(playBtn) playBtn.addEventListener('click', ()=>{
       if(playing) return; playing=true;
       if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
       osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
@@ -317,11 +346,12 @@
       document.getElementById('visual').classList.add('glitch');
       setTimeout(()=>document.getElementById('visual').classList.remove('glitch'),2000);
     });
-    document.getElementById('stopMusic').addEventListener('click', ()=>{ if(!playing) return; playing=false; if(osc){ osc.stop(); osc.disconnect(); osc=null; } });
+    if(stopBtn) stopBtn.addEventListener('click', ()=>{ if(!playing) return; playing=false; if(osc){ try{ osc.stop(); }catch(e){} osc.disconnect(); osc=null; } });
 
     // Terminal: simulated commands
-    const termOut = document.getElementById('termOut'); const termIn = document.getElementById('termIn'); document.getElementById('termRun').addEventListener('click', runCmd);
-    function runCmd(){ const cmd = termIn.value.trim(); if(!cmd) return; appendOut('> '+cmd);
+    const termOut = document.getElementById('termOut'); const termIn = document.getElementById('termIn'); const termRun = document.getElementById('termRun');
+    if(termRun) termRun.addEventListener('click', runCmd);
+    function runCmd(){ if(!termIn) return; const cmd = termIn.value.trim(); if(!cmd) return; appendOut('> '+cmd);
       if(cmd==='help'){ appendOut('Available: help, time, rand, clear'); }
       else if(cmd==='time'){ appendOut(new Date().toString()); }
       else if(cmd==='rand'){ appendOut('Random: '+Math.floor(Math.random()*10000)); }
@@ -332,8 +362,10 @@
     function appendOut(s){ const p=document.createElement('div'); p.textContent=s; termOut.appendChild(p); }
 
     // Settings controls
-    document.getElementById('themeColor').addEventListener('input', (e)=> document.documentElement.style.setProperty('--accent', e.target.value));
-    document.getElementById('wallBlur').addEventListener('input', (e)=> document.querySelector('.wallpaper').style.filter = `blur(${e.target.value}px)`);
+    const themeColor = document.getElementById('themeColor');
+    if(themeColor) themeColor.addEventListener('input', (e)=> document.documentElement.style.setProperty('--accent', e.target.value));
+    const wallBlur = document.getElementById('wallBlur');
+    if(wallBlur) wallBlur.addEventListener('input', (e)=> document.querySelector('.wallpaper').style.filter = `blur(${e.target.value}px)`);
 
     // Prank (harmless)
     function runPrank(){
@@ -348,14 +380,15 @@
     function randomGibberish(n){ const chars='abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+='; let s=''; for(let i=0;i<n;i++) s+=chars[Math.floor(Math.random()*chars.length)]; return s }
     function playBeepSequence(){ try{ const ctx = new (window.AudioContext || window.webkitAudioContext)(); const now = ctx.currentTime; for(let i=0;i<6;i++){ const o = ctx.createOscillator(); const g = ctx.createGain(); o.type='sine'; o.frequency.value = 200 + i*160; g.gain.value = 0.02; o.connect(g); g.connect(ctx.destination); o.start(now + i*0.08); o.stop(now + i*0.08 + 0.06); } }catch(e){ } }
 
-    // Restore button
-    document.getElementById('restoreNow').addEventListener('click', ()=>{
+    // Restore
+    const restoreNow = document.getElementById('restoreNow');
+    if(restoreNow) restoreNow.addEventListener('click', ()=>{
       bso.style.display='none'; restoreBtn.style.display='none'; document.body.classList.remove('pixelate','glitch'); document.querySelectorAll('.window').forEach(w=> w.classList.remove('shake'));
-      const t = document.getElementById('notepadText'); if(t) t.value = localStorage.getItem(NP_KEY) || t.value.replace(/\.{3}scanning[\s\S]*/,'');
+      const t = document.getElementById('notepadText'); if(t) t.value = localStorage.getItem(NP_KEY) || t.value.replace(/\.{3}scanning[\\s\\S]*/,'');
     })
 
-    // Block external navigation in demo
-    document.addEventListener('click', (e)=>{ const a = e.target.closest('a'); if(!a) return; e.preventDefault(); alert('External navigation is blocked in this safe demo.'); })
+    // Block external nav in demo
+    document.addEventListener('click', (e)=>{ const a = e.target.closest && e.target.closest('a'); if(!a) return; e.preventDefault(); alert('External navigation is blocked in this safe demo.'); })
 
     // Keyboard shortcuts
     window.addEventListener('keydown',(e)=>{
