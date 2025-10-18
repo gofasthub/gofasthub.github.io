@@ -3,52 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fake Windows 11 Emulator</title>
+<title>Windows 11 Emulator</title>
 <style>
-  :root{
-    --accent:#0a64ff;
-    --bg:#f3f3f3;
-    --taskbar:#ffffffcc;
-    --window-bg:#ffffffdd;
-    --text:#111;
-  }
-  html,body{margin:0;padding:0;width:100%;height:100%;font-family:Segoe UI, sans-serif;background:var(--bg);overflow:hidden;}
-  .wallpaper{
-    position:fixed;inset:0;background:linear-gradient(135deg,#61a3ff,#c1d5ff);z-index:0;pointer-events:none;
-  }
-  .desktop{position:relative;width:100%;height:100%;z-index:1;}
-  /* Taskbar */
-  .taskbar{
-    position:fixed;bottom:0;left:0;width:100%;height:48px;background:var(--taskbar);backdrop-filter:blur(10px);
-    display:flex;align-items:center;padding:0 8px;gap:8px;box-shadow:0 -2px 8px rgba(0,0,0,0.1);z-index:50;
-  }
-  .start-btn{
-    width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:background 0.2s; font-size:18px;
-  }
-  .start-btn:hover{background:rgba(10,100,255,0.1);}
-  .task-icons{display:flex;gap:6px;margin-left:8px;}
-  .icon{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:0.2s}
-  .icon:hover{background:rgba(10,100,255,0.2);}
-  /* Start menu */
-  .start-menu{
-    position:fixed;bottom:56px;left:8px;width:300px;background:var(--window-bg);backdrop-filter:blur(12px);
-    border-radius:12px;padding:12px;display:none;flex-direction:column;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:100;
-  }
-  .apps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-  .app-card{padding:8px;border-radius:10px;text-align:center;background:rgba(255,255,255,0.3);cursor:pointer;transition:0.2s}
-  .app-card:hover{background:rgba(10,100,255,0.2);}
-  /* Windows */
-  .window{
-    position:absolute;width:600px;height:400px;background:var(--window-bg);border-radius:12px;
-    box-shadow:0 20px 40px rgba(0,0,0,0.25);display:none;flex-direction:column;overflow:hidden;
-    transition:transform 0.25s ease,opacity 0.25s ease;
-  }
-  .titlebar{height:36px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:space-between;padding:0 10px;cursor:grab;}
-  .controls{display:flex;gap:4px;}
-  .ctrl{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:0.2s}
-  .ctrl:hover{background:rgba(10,100,255,0.2);}
-  .content{padding:10px;flex:1;overflow:auto;color:var(--text);}
+:root{
+  --accent:#0a64ff;
+  --bg:#f3f3f3;
+  --taskbar:#ffffffcc;
+  --window-bg:#ffffffdd;
+  --text:#111;
+}
+html,body{margin:0;padding:0;width:100%;height:100%;font-family:Segoe UI, sans-serif;background:var(--bg);overflow:hidden;}
+.wallpaper{position:fixed;inset:0;background:linear-gradient(135deg,#61a3ff,#c1d5ff);z-index:0;pointer-events:none;}
+.desktop{position:relative;width:100%;height:100%;z-index:1;}
+
+/* Taskbar */
+.taskbar{
+  position:fixed;bottom:0;left:0;width:100%;height:48px;background:var(--taskbar);backdrop-filter:blur(12px);
+  display:flex;align-items:center;padding:0 8px;gap:8px;box-shadow:0 -2px 8px rgba(0,0,0,0.15);z-index:50;
+}
+.start-btn{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:0.2s;font-size:18px;}
+.start-btn:hover{background:rgba(10,100,255,0.1);}
+.task-icons{display:flex;gap:6px;margin-left:8px;}
+.icon{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:0.2s;}
+.icon:hover{background:rgba(10,100,255,0.2);}
+
+/* Start menu */
+.start-menu{
+  position:fixed;bottom:56px;left:8px;width:320px;background:var(--window-bg);backdrop-filter:blur(12px);
+  border-radius:12px;padding:12px;display:none;flex-direction:column;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:100;
+  animation:fadeIn 200ms ease;
+}
+@keyframes fadeIn{0%{opacity:0;transform:scale(0.95)}100%{opacity:1;transform:scale(1)}}
+.apps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.app-card{padding:8px;border-radius:10px;text-align:center;background:rgba(255,255,255,0.3);cursor:pointer;transition:0.2s;}
+.app-card:hover{background:rgba(10,100,255,0.2);}
+
+/* Windows */
+.window{
+  position:absolute;width:600px;height:400px;background:var(--window-bg);border-radius:12px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.25);display:none;flex-direction:column;overflow:hidden;
+  transition:transform 0.25s ease,opacity 0.25s ease;
+}
+.window.open{display:flex;animation:popOpen 250ms ease;}
+@keyframes popOpen{0%{opacity:0;transform:translateY(-15px) scale(0.98)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.titlebar{height:36px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:space-between;padding:0 10px;cursor:grab;}
+.controls{display:flex;gap:4px;}
+.ctrl{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:0.2s;}
+.ctrl:hover{background:rgba(10,100,255,0.2);}
+.content{padding:10px;flex:1;overflow:auto;color:var(--text);}
+
+/* Prank effects */
+.pixelate{filter:contrast(1.2) saturate(0.5) blur(1px);}
+.glitch{animation:glitch 150ms steps(2) infinite;}
+@keyframes glitch{50%{transform:translateX(6px) skewX(6deg)}}
+.shake{animation:shake 700ms linear;}
+@keyframes shake{0%{transform:translate(0,0)}25%{transform:translate(6px,-4px)}50%{transform:translate(-6px,4px)}75%{transform:translate(4px,-6px)}100%{transform:translate(0,0)}}
+.invert{filter:invert(1);}
+
 </style>
 </head>
 <body>
@@ -59,8 +70,13 @@
   <div class="start-menu" id="startMenu">
     <div class="apps-grid">
       <div class="app-card" data-app="notepad">📝<br>Notepad</div>
+      <div class="app-card" data-app="calc">🧮<br>Calculator</div>
       <div class="app-card" data-app="browser">🌐<br>Browser</div>
-      <div class="app-card" data-app="prank">🦠<br>Prank</div>
+      <div class="app-card" data-app="gallery">🖼️<br>Gallery</div>
+      <div class="app-card" data-app="music">🎧<br>Music</div>
+      <div class="app-card" data-app="terminal">💻<br>Terminal</div>
+      <div class="app-card" data-app="settings">⚙️<br>Settings</div>
+      <div class="app-card" data-app="prank">🦠<br>Virus</div>
     </div>
   </div>
 
@@ -70,15 +86,41 @@
     <div class="task-icons" id="taskIcons"></div>
   </div>
 
-  <!-- Windows -->
+  <!-- Notepad -->
   <div class="window" id="notepadWindow" style="left:100px;top:100px">
     <div class="titlebar"><span>Notepad</span><div class="controls"><div class="ctrl" data-action="close">✕</div></div></div>
-    <div class="content"><textarea style="width:100%;height:100%;border:none;resize:none;">Safe Notepad</textarea></div>
+    <div class="content"><textarea id="notepadText" style="width:100%;height:100%;border:none;resize:none;">Safe Notepad</textarea></div>
   </div>
 
-  <div class="window" id="browserWindow" style="left:120px;top:120px">
+  <!-- Calculator -->
+  <div class="window" id="calcWindow" style="left:140px;top:140px;width:360px;height:380px">
+    <div class="titlebar"><span>Calculator</span><div class="controls"><div class="ctrl" data-action="close">✕</div></div></div>
+    <div class="content">
+      <div id="calcDisplay" style="height:50px;background:rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:flex-end;padding:8px;font-size:24px;border-radius:6px">0</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;">
+        <button class="btn" data-key="7">7</button><button class="btn" data-key="8">8</button><button class="btn" data-key="9">9</button><button class="btn" data-key="/">÷</button>
+        <button class="btn" data-key="4">4</button><button class="btn" data-key="5">5</button><button class="btn" data-key="6">6</button><button class="btn" data-key="*">×</button>
+        <button class="btn" data-key="1">1</button><button class="btn" data-key="2">2</button><button class="btn" data-key="3">3</button><button class="btn" data-key="-">−</button>
+        <button class="btn" data-key="0">0</button><button class="btn" data-key=".">.</button><button class="btn" data-key="=">=</button><button class="btn" data-key="+">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Browser -->
+  <div class="window" id="browserWindow" style="left:180px;top:160px;width:700px;height:450px">
     <div class="titlebar"><span>Browser</span><div class="controls"><div class="ctrl" data-action="close">✕</div></div></div>
-    <div class="content">This is a fake browser. Click <button id="fakeDownload">Download</button> for a harmless prank.</div>
+    <div class="content">
+      Fake browser. Click <button id="fakeDownload">Download</button> for a prank.
+    </div>
+  </div>
+
+  <!-- Terminal -->
+  <div class="window" id="terminalWindow" style="left:220px;top:180px;width:500px;height:340px">
+    <div class="titlebar"><span>Terminal</span><div class="controls"><div class="ctrl" data-action="close">✕</div></div></div>
+    <div class="content">
+      <div id="termOut" style="height:260px;background:#071022;padding:8px;border-radius:8px;overflow:auto;font-family:monospace;font-size:13px;color:#9ad3ff">Welcome to fake terminal. Commands: help, time, rand, clear</div>
+      <div style="margin-top:8px;display:flex;gap:8px"><input id="termIn" style="flex:1"/><button id="termRun">Run</button></div>
+    </div>
   </div>
 
 </div>
@@ -102,15 +144,17 @@ function toggleWindow(id){
   const win = document.getElementById(id+'Window');
   if(!win) return;
   if(win.style.display==='flex'){ win.style.display='none'; }
-  else{ win.style.display='flex'; win.style.zIndex=1000; }
+  else{ win.style.display='flex'; win.style.zIndex=1000; win.classList.add('open'); }
 }
 
-// Launch apps from Start menu
+// Start menu launches apps
 document.querySelectorAll('.app-card').forEach(a=>a.addEventListener('click',()=>{
   const app = a.dataset.app; startMenu.style.display='none';
   if(app==='notepad'){ toggleWindow('notepad'); addTask('notepad','Notepad','📝'); }
+  if(app==='calc'){ toggleWindow('calc'); addTask('calc','Calculator','🧮'); }
   if(app==='browser'){ toggleWindow('browser'); addTask('browser','Browser','🌐'); }
-  if(app==='prank'){ alert('Fake virus triggered! Nothing is harmed.'); }
+  if(app==='terminal'){ toggleWindow('terminal'); addTask('terminal','Terminal','💻'); }
+  if(app==='prank'){ runPrank(); addTask('prank','Virus','🦠'); }
 }));
 
 // Window close buttons
@@ -118,8 +162,53 @@ document.querySelectorAll('.ctrl').forEach(c=>c.addEventListener('click',()=>{
   const win = c.closest('.window'); if(win) win.style.display='none';
 }));
 
+// Notepad localStorage
+const notepadText = document.getElementById('notepadText');
+const NP_KEY = 'fakewin_notepad';
+if(localStorage.getItem(NP_KEY)) notepadText.value = localStorage.getItem(NP_KEY);
+notepadText.addEventListener('input', ()=> localStorage.setItem(NP_KEY, notepadText.value));
+
+// Calculator
+(function(){
+  const display = document.getElementById('calcDisplay'); let cur='';
+  document.querySelectorAll('#calcWindow .btn').forEach(b=> b.addEventListener('click', ()=>{
+    const k=b.dataset.key;
+    if(k==='='){
+      try{
+        if(!/^[0-9.+\-*/\s()]+$/.test(cur)) throw 'err';
+        cur=String(Function('return ('+cur+')')());
+      }catch(e){ cur='Err'; }
+    } else cur+=k;
+    display.textContent=cur||'0';
+  }));
+})();
+
+// Terminal
+const termOut = document.getElementById('termOut'); 
+const termIn = document.getElementById('termIn'); 
+document.getElementById('termRun').addEventListener('click', ()=>{
+  const cmd = termIn.value.trim(); if(!cmd) return;
+  appendTerm('> '+cmd);
+  if(cmd==='help'){ appendTerm('Commands: help, time, rand, clear'); }
+  else if(cmd==='time'){ appendTerm(new Date().toString()); }
+  else if(cmd==='rand'){ appendTerm('Random: '+Math.floor(Math.random()*10000)); }
+  else if(cmd==='clear'){ termOut.innerHTML=''; }
+  else appendTerm('Unknown command: '+cmd);
+  termIn.value=''; termOut.scrollTop=termOut.scrollHeight;
+});
+function appendTerm(text){ const p=document.createElement('div'); p.textContent=text; termOut.appendChild(p); }
+
+// Fake virus/prank
+function runPrank(){
+  document.body.classList.add('pixelate','invert');
+  document.querySelectorAll('.window').forEach(w=> w.classList.add('shake'));
+  beepSequence();
+  setTimeout(()=>{ document.body.classList.remove('invert','pixelate'); document.querySelectorAll('.window').forEach(w=> w.classList.remove('shake')); },5000);
+}
+function beepSequence(){ try{ const ctx = new (window.AudioContext||window.webkitAudioContext)(); const now = ctx.currentTime; for(let i=0;i<6;i++){ const o = ctx.createOscillator(); const g = ctx.createGain(); o.type='sine'; o.frequency.value = 200+i*160; g.gain.value=0.02; o.connect(g); g.connect(ctx.destination); o.start(now+i*0.08); o.stop(now+i*0.08+0.06); } }catch(e){} }
+
 // Fake download prank
-document.getElementById('fakeDownload').addEventListener('click', ()=> alert('Ha! Safe prank activated!'));
+document.getElementById('fakeDownload').addEventListener('click', ()=> alert('Safe fake virus triggered!'));
 
 </script>
 </body>
