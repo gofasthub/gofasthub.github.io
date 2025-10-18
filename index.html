@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>gofasthub</title>
   <link rel="icon" href="fasthublogo.png" />
-  <meta name="color-scheme" content="dark light">
   <style>
-    /* Outfit font */
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap');
 
     :root{
@@ -32,76 +30,49 @@
       color:var(--text);
       overflow:hidden;
     }
-    @keyframes gradientShift {
-      0%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-      100%{background-position:0% 50%}
-    }
+    @keyframes gradientShift {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 
-    /* Liquid glass base */
+    /* liquid glass base */
     .liquidGlass{
       backdrop-filter: blur(10px) saturate(180%);
       background: var(--glass-bg);
       border:1px solid rgba(255,255,255,0.18);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.24);
+      box-shadow:0 10px 30px rgba(0,0,0,0.24);
       border-radius:var(--radius);
       transition: all 280ms cubic-bezier(.34,1.56,.64,1);
     }
     .liquidGlass:hover{ transform: translateY(-4px) scale(1.03); box-shadow: 0 18px 50px rgba(0,0,0,0.30) }
     .liquidGlass:active{ transform: translateY(-2px) scale(.99) }
 
-    /* Centering wrapper (perfect center) */
+    /* center perfectly */
     .centerWrap{
-      position:fixed;
-      top:50%;
-      left:50%;
+      position:fixed; top:50%; left:50%;
       transform:translate(-50%,-50%);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      width:100%;
-      max-width:980px;
-      gap:20px;
-      padding:20px;
-      pointer-events:auto;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      width:100%; max-width:980px; gap:20px; padding:20px;
     }
 
     .liquidGlass-wrapper{ padding:28px; text-align:center; width:100%; max-width:420px; }
     .liquidGlass-text{ font-size:1.9rem; font-weight:700; text-transform:lowercase; margin-bottom:14px }
 
-    input,select,button{ font-family:inherit }
-    input[type=password], input[type=text], input[type=number], select{
-      width:100%;
-      padding:12px;
-      border-radius:12px;
-      border:none;
-      background:rgba(255,255,255,0.10);
-      color:var(--text);
-      font-size:1rem;
-      margin-bottom:10px;
-      transition: all 200ms;
+    input[type=password],input[type=text],input[type=number],select{
+      width:100%; padding:12px; border-radius:12px; border:none;
+      background:rgba(255,255,255,0.10); color:var(--text); font-size:1rem; margin-bottom:10px;
     }
-    input:focus, select:focus{ outline:none; background:rgba(255,255,255,0.18); transform: translateY(-2px) scale(1.01); box-shadow: 0 8px 30px rgba(0,0,0,0.12) }
+    input:focus,select:focus{ outline:none; background:rgba(255,255,255,0.18); transform: translateY(-2px) scale(1.01); box-shadow:0 8px 30px rgba(0,0,0,0.12) }
 
-    /* Games area */
     .games-page{ display:none; width:100%; max-width:800px; padding:18px; text-align:center; }
     .games-page.active{ display:block }
     .games-grid{ display:grid; gap:18px; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); margin-top:18px }
-    .game-card{ border-radius:12px; overflow:hidden; height:200px; display:flex; flex-direction:column; cursor:pointer; transition: transform .28s cubic-bezier(.2,.9,.3,1); }
+    .game-card{ border-radius:12px; overflow:hidden; height:200px; display:flex; flex-direction:column; cursor:pointer; transition: transform .28s cubic-bezier(.2,.9,.3,1) }
     .game-card:hover{ transform: translateY(-6px) scale(1.02) }
     .game-card img{ width:100%; height:72%; object-fit:cover; display:block }
     .game-card span{ padding:10px; background: rgba(0,0,0,0.18); text-transform:uppercase; font-weight:600; font-size:0.95rem; text-align:center }
 
     /* admin small button */
-    .admin-popup-button{
-      position:fixed; right:14px; bottom:14px; padding:8px 10px; font-size:0.78rem;
-      border-radius:12px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.06); color:var(--text); z-index:300; cursor:pointer;
-    }
+    .admin-popup-button{ position:fixed; right:14px; bottom:14px; padding:8px 10px; font-size:0.78rem; border-radius:12px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.06); color:var(--text); z-index:300; cursor:pointer; }
 
-    .admin-password-popup,.admin-panel{
-      position:fixed; right:14px; bottom:60px; width:320px; padding:14px; gap:10px; display:none; z-index:310; flex-direction:column;
-    }
+    .admin-password-popup,.admin-panel{ position:fixed; right:14px; bottom:60px; width:320px; padding:14px; gap:10px; display:none; z-index:310; flex-direction:column; }
     .admin-panel{ max-height:68vh; overflow:auto }
 
     /* notifications */
@@ -109,19 +80,29 @@
     .notification{ padding:12px 18px; border-radius:12px; min-width:240px; text-align:center; animation: bumpIn 420ms cubic-bezier(.2,.9,.3,1) both; }
     @keyframes bumpIn{ 0% { transform: translateY(-10px) scale(.9); opacity:0 } 60% { transform: translateY(6px) scale(1.05); opacity:1 } 100% { transform: translateY(0) scale(1); opacity:1 } }
 
-    /* events stack bottom-left */
+    /* events stack */
     .events-stack{ position:fixed; left:14px; bottom:14px; display:flex; flex-direction:column; gap:10px; z-index:320; }
-    .event-pill{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; background: rgba(0,0,0,0.14); min-width:200px }
+    .event-pill{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; background: rgba(0,0,0,0.14); min-width:200px; }
     .event-pill .icon{ font-size:1.4rem }
-    .event-pill .timer{ font-weight:700; margin-left:auto; font-family:inherit }
+    .event-pill .timer{ font-weight:700; margin-left:auto }
 
-    /* taco particle (emoji) */
-    .taco{ position:fixed; font-size:2rem; pointer-events:none; z-index:350; will-change: transform, top, left }
+    /* taco/sparkle particles */
+    .particle{ position:fixed; pointer-events:none; z-index:350; font-size:1.9rem; will-change: transform, top, left; }
 
-    /* xp ui */
+    /* xp UI */
     .xp-fab{ position:fixed; right:22px; top:22%; padding:10px 14px; border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; color:#fff; cursor:pointer; z-index:330; display:none; box-shadow:0 8px 30px rgba(0,0,0,0.2) }
-    .xp-counter{ position:fixed; right:22px; top:calc(22% + 60px); font-weight:700; color:#fff; z-index:330; display:none }
+    .xp-counter{ position:fixed; right:22px; top:calc(22% + 60px); font-weight:700; z-index:330; color:#fff; display:none }
     .xp-result{ position:fixed; right:22px; top:calc(22% + 110px); z-index:330; display:none }
+
+    /* disco background (animated rainbow) */
+    .disco-bg{ animation: discoBg 3s linear infinite; background-size:600% 600% }
+    @keyframes discoBg {
+      0%{ background:linear-gradient(135deg,#ffb3c6,#a06bff,#6ca3ff,#c78cff) }
+      25%{ background:linear-gradient(135deg,#6ca3ff,#c78cff,#ffb3c6,#a06bff) }
+      50%{ background:linear-gradient(135deg,#c78cff,#ffb3c6,#a06bff,#6ca3ff) }
+      75%{ background:linear-gradient(135deg,#a06bff,#6ca3ff,#c78cff,#ffb3c6) }
+      100%{ background:linear-gradient(135deg,#ffb3c6,#a06bff,#6ca3ff,#c78cff) }
+    }
 
     @media (max-width:720px){
       .centerWrap{ width:95%; padding:14px }
@@ -133,27 +114,28 @@
 <body id="bodyRoot">
 
   <div class="centerWrap">
-    <!-- login card -->
+    <!-- login -->
     <div class="liquidGlass liquidGlass-wrapper" id="login-card" aria-live="polite">
       <div class="liquidGlass-text">welcome to fasthub</div>
       <input id="password" type="password" placeholder="enter access key" autocomplete="off" />
       <div id="error-msg" style="height:18px;color:#ffb3b3;margin-top:8px;"></div>
     </div>
 
-    <!-- games page (hidden until login) -->
+    <!-- games -->
     <div class="liquidGlass games-page" id="games-page" role="region" aria-label="games">
       <h2 class="liquidGlass-text">welcome to fasthub</h2>
       <div class="games-grid">
         <div class="liquidGlass game-card" id="eggy-card" title="Click to play eggy car">
-          <img src="eggycarbanner.png" alt="eggy car banner (placeholder)">
+          <!-- file name you said: "eggy car.jpg" (include exactly that file in repo) -->
+          <img src="eggy car.jpg" alt="eggy car banner (placeholder)" />
           <span>eggy car</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- admin -->
-  <button class="liquidGlass admin-popup-button" id="adminToggleBtn" aria-label="admin">admin</button>
+  <!-- admin UI -->
+  <button class="liquidGlass admin-popup-button" id="adminToggleBtn" aria-label="open admin">admin</button>
 
   <div class="liquidGlass admin-password-popup" id="admin-password-popup" role="dialog" aria-hidden="true">
     <input id="adminPass" type="password" placeholder="enter admin password" autocomplete="off" />
@@ -172,12 +154,13 @@
     <select id="eventSelect" aria-label="event type">
       <option value="tacos">🌮 Raining Tacos</option>
       <option value="doublexp">⚡ Double XP</option>
+      <option value="disco">✨ Disco</option>
     </select>
     <input id="eventDuration" type="number" placeholder="Event duration (s)" min="5" />
     <button class="liquidGlass" id="startEventBtn">Start Event</button>
   </div>
 
-  <!-- runtime UI containers -->
+  <!-- runtime containers -->
   <div class="notification-container" id="notificationContainer" aria-live="polite"></div>
   <div class="events-stack" id="eventsStack" aria-live="polite"></div>
 
@@ -185,12 +168,11 @@
   <div class="xp-counter" id="xpCounter">XP: 2</div>
   <div class="xp-result" id="xpResult"></div>
 
-  <!-- taco layer (tacos appended here) -->
+  <!-- particle layer -->
   <div id="tacoLayer" aria-hidden="true"></div>
 
-  <!-- Firebase + logic (module) -->
+  <!-- Firebase + script -->
   <script type="module">
-    // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
@@ -227,24 +209,25 @@
     const xpCounter = document.getElementById('xpCounter');
     const xpResult = document.getElementById('xpResult');
     const tacoLayer = document.getElementById('tacoLayer');
+    const bodyRoot = document.getElementById('bodyRoot') || document.body;
 
-    // passwords
+    // PW constants
     const SITE_PW = 'fast67';
     const ADMIN_PW = 'fastadmin67';
 
-    // client tracking for XP
-    const clientId = localStorage.getItem('fasthub_client') || ('c_'+Math.random().toString(36).slice(2,10));
+    // simple client id
+    const clientId = localStorage.getItem('fasthub_client') || ('c_' + Math.random().toString(36).slice(2,9));
     localStorage.setItem('fasthub_client', clientId);
 
-    // helper: format seconds -> mm:ss (no decimals)
-    function fmtSeconds(total){
-      total = Math.max(0, Math.floor(total));
-      const m = Math.floor(total/60);
-      const s = total % 60;
+    // helper format seconds -> m:ss
+    function fmtSeconds(sec){
+      sec = Math.max(0, Math.floor(sec));
+      const m = Math.floor(sec/60);
+      const s = sec % 60;
       return `${m}:${String(s).padStart(2,'0')}`;
     }
 
-    // login logic (Enter key)
+    // login: Enter key
     pwInput.addEventListener('keypress', (e)=>{
       if(e.key === 'Enter'){
         const v = pwInput.value.trim();
@@ -267,46 +250,44 @@
       }
     });
 
-    // Admin popup toggle
+    // admin toggle + unlock
     adminToggleBtn.addEventListener('click', ()=>{
-      if(adminPasswordPopup.style.display === 'flex'){ adminPasswordPopup.style.display = 'none'; }
-      else { adminPasswordPopup.style.display = 'flex'; adminPasswordPopup.style.flexDirection = 'column'; adminPasswordPopup.querySelector('input')?.focus(); }
+      if(adminPasswordPopup.style.display === 'flex'){
+        adminPasswordPopup.style.display = 'none';
+      } else {
+        adminPasswordPopup.style.display = 'flex';
+        adminPasswordPopup.style.flexDirection = 'column';
+        adminPasswordPopup.querySelector('input')?.focus();
+      }
     });
-
-    // Unlock admin
     unlockBtn.addEventListener('click', ()=>{
       const v = document.getElementById('adminPass').value.trim();
       if(v === ADMIN_PW){
         adminPasswordPopup.style.display = 'none';
         adminPanel.style.display = 'flex';
-        adminPanel.style.flexDirection = 'column';
         makeDraggable(adminPanel);
       } else {
         alert('Incorrect admin password');
       }
     });
 
-    // open game (click entire card) -> about:blank with iframe
+    // open Eggy Car in about:blank with iframe
     eggyCard.addEventListener('click', ()=>{
       const url = 'https://ubg742.github.io/egycr/index.html';
-      const w = window.open('about:blank','_blank');
-      if(!w){ alert('Popup blocked. Allow popups for this site.'); return; }
-      const html = `
-        <!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1" /><title>eggy car</title>
-        <style>html,body{height:100%;margin:0;background:#000}iframe{border:0;width:100%;height:100vh}</style></head>
-        <body><iframe src="${url}" allowfullscreen></iframe></body></html>`;
+      const w = window.open('about:blank', '_blank');
+      if(!w){ alert('Popup blocked: allow popups for this site'); return; }
+      const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>eggy car</title><style>html,body{height:100%;margin:0;background:#000}iframe{border:0;width:100%;height:100vh}</style></head><body><iframe src="${url}" allowfullscreen></iframe></body></html>`;
       w.document.open();
       w.document.write(html);
       w.document.close();
     });
 
-    // --- Notifications (global messages) ---
+    // notifications
     function showNotification(text, seconds=8){
       const n = document.createElement('div');
       n.className = 'liquidGlass notification';
       n.textContent = text;
       notificationContainer.appendChild(n);
-      // bump out after seconds
       setTimeout(()=>{
         n.style.transition = 'transform 420ms ease, opacity 420ms ease';
         n.style.transform = 'scale(.85) translateY(-10px)';
@@ -315,115 +296,138 @@
       }, seconds * 1000);
     }
 
-    // --- Events stack and behaviors ---
+    // EVENTS: stackable
     const activeEvents = {}; // key -> {dom, expiresAt, data}
+    const particleState = {}; // key -> {iv, elems, type}
 
-    function addEventDom(key, data, remainingSeconds){
+    function addEventToStack(key, data, remaining){
       const pill = document.createElement('div');
       pill.className = 'liquidGlass event-pill';
-      const icon = document.createElement('div'); icon.className = 'icon'; icon.textContent = data.icon || (data.type === 'tacos' ? '🌮' : '⚡');
+      const icon = document.createElement('div'); icon.className = 'icon'; icon.textContent = data.icon || (data.type === 'tacos' ? '🌮' : (data.type === 'disco' ? '✨' : '⚡'));
       const name = document.createElement('div'); name.textContent = data.name;
-      const timer = document.createElement('div'); timer.className = 'timer'; timer.textContent = fmtSeconds(remainingSeconds);
+      const timer = document.createElement('div'); timer.className = 'timer'; timer.textContent = fmtSeconds(remaining);
       pill.appendChild(icon); pill.appendChild(name); pill.appendChild(timer);
       eventsStack.appendChild(pill);
-      activeEvents[key] = { dom: pill, expiresAt: Date.now() + remainingSeconds*1000, data };
-      // countdown
+
+      activeEvents[key] = { dom: pill, expiresAt: Date.now() + remaining*1000, data };
+
+      // start specific behavior
+      if(data.type === 'tacos') startTacos(key);
+      if(data.type === 'doublexp') startDoubleXP(key);
+      if(data.type === 'disco') startDisco(key);
+
+      // countdown updater
       const iv = setInterval(()=>{
-        const e = activeEvents[key];
-        if(!e){ clearInterval(iv); return; }
-        const left = Math.ceil((e.expiresAt - Date.now())/1000);
-        e.dom.querySelector('.timer').textContent = fmtSeconds(left);
-        if(left <= 0){ clearInterval(iv); removeEvent(key); }
+        const ev = activeEvents[key];
+        if(!ev){ clearInterval(iv); return; }
+        const left = Math.ceil((ev.expiresAt - Date.now())/1000);
+        ev.dom.querySelector('.timer').textContent = fmtSeconds(left);
+        if(left <= 0){
+          clearInterval(iv);
+          removeEvent(key);
+        }
       }, 900);
-      // start behavior
-      if(data.type === 'tacos') startTacosFor(key);
-      if(data.type === 'doublexp') startDoubleXPFor(key);
     }
 
     function removeEvent(key){
       const ev = activeEvents[key];
       if(!ev) return;
       try{ ev.dom.remove(); }catch(e){}
+      // stop behaviors tied to key
+      stopParticlesFor(key);
+      stopDoubleXPForKey(key);
+      stopDiscoIfNeeded();
       delete activeEvents[key];
-      // stop behaviors (ensure stop if no more active)
-      stopTacosIfNeeded();
-      stopDoubleXPIfNeeded();
     }
 
-    // --- tacos behavior ---
-    const tacoState = {}; // key -> {iv, elems}
-    function startTacosFor(key){
-      // rainbow background
-      document.body.classList.add('rainbow-bg');
-      tacoState[key] = { iv: setInterval(()=>spawnTaco(key), 260), elems: [] };
+    // --- Tacos behavior ---
+    function startTacos(key){
+      // add rainbow-ish background as well (optional)
+      document.body.classList.add('disco-bg'); // lightweight reuse to add color while tacos fall (disco-bg is colorful)
+      // spawn particles
+      particleState[key] = { iv: setInterval(()=>spawnParticle(key,'🌮'), 260), elems: [], type:'tacos' };
     }
-    function spawnTaco(key){
+    function spawnParticle(key, emoji){
       const el = document.createElement('div');
-      el.className = 'taco';
-      el.textContent = '🌮';
-      const x = Math.random() * (window.innerWidth - 48);
-      el.style.left = `${x}px`;
-      el.style.top = `-60px`;
+      el.className = 'particle';
+      el.textContent = emoji;
+      const left = Math.random() * (window.innerWidth - 40);
+      el.style.left = left + 'px';
+      el.style.top = '-60px';
       tacoLayer.appendChild(el);
-      tacoState[key].elems.push(el);
-      // animate to bottom (duration random)
-      const dur = 3000 + Math.random()*1400;
+      particleState[key].elems.push(el);
+
+      const dur = 3000 + Math.random()*1500;
       requestAnimationFrame(()=>{
         el.style.transition = `top ${dur}ms linear, transform ${dur}ms cubic-bezier(.2,.9,.2,1), opacity 400ms`;
-        el.style.top = `${window.innerHeight + 80}px`;
+        el.style.top = (window.innerHeight + 80) + 'px';
         el.style.transform = `rotate(${(Math.random()*80)-40}deg)`;
         el.style.opacity = '1';
       });
-      setTimeout(()=>{
-        try{ el.remove(); const arr = tacoState[key]?.elems; if(arr) arr.splice(arr.indexOf(el),1); }catch(e){}
-      }, dur + 300);
+      setTimeout(()=>{ try{ el.remove(); const a = particleState[key]?.elems; if(a) a.splice(a.indexOf(el),1) }catch(e){} }, dur + 300);
     }
-    function stopTacosIfNeeded(){
-      const any = Object.values(activeEvents).some(e=>e.data.type === 'tacos');
-      if(!any){
-        // clear all taco intervals and remove leftovers
-        Object.keys(tacoState).forEach(k=>{
-          clearInterval(tacoState[k].iv);
-          tacoState[k].elems.forEach(el=>el.remove());
-          delete tacoState[k];
-        });
-        document.body.classList.remove('rainbow-bg');
+    function stopParticlesFor(key){
+      if(!particleState[key]) return;
+      clearInterval(particleState[key].iv);
+      particleState[key].elems.forEach(el=>el.remove());
+      delete particleState[key];
+      // if no remaining taco/disco particles, remove disco-bg (we check disco separately)
+      const anyParticles = Object.values(particleState).length > 0;
+      if(!anyParticles){
+        document.body.classList.remove('disco-bg');
       }
     }
 
-    // --- double XP behavior ---
-    const doubleXPActive = new Set(); // set of event keys
-    function startDoubleXPFor(key){
-      doubleXPActive.add(key);
-      // show xp UI
+    // --- Disco behavior (sparkles + rainbow background) ---
+    function startDisco(key){
+      // add rainbow background class
+      document.body.classList.add('disco-bg');
+      // spawn sparkle emojis (✨)
+      particleState[key] = { iv: setInterval(()=>spawnParticle(key,'✨'), 180), elems: [], type:'disco' };
+    }
+    function stopDiscoIfNeeded(){
+      // remove disco-bg if no disco events active
+      const anyDisco = Object.values(activeEvents).some(e => e.data.type === 'disco');
+      if(!anyDisco){
+        // stop disco particles if any (they are cleaned in stopParticlesFor when event removed)
+        document.body.classList.remove('disco-bg');
+      }
+    }
+
+    // --- Double XP behavior ---
+    const doubleXPMap = {}; // key -> true
+    function startDoubleXP(key){
+      doubleXPMap[key] = true;
+      // show xp UI and init xp to 2 for this client
       xpFab.style.display = 'block';
       xpCounter.style.display = 'block';
-      // set local xp to 2
       localStorage.setItem('fasthub_xp_' + clientId, '2');
       xpCounter.textContent = 'XP: 2';
     }
-    function stopDoubleXPIfNeeded(){
-      // if no active doublexp events, hide and show final popup
-      if(doubleXPActive.size === 0){
+    function stopDoubleXPForKey(key){
+      if(doubleXPMap[key]) delete doubleXPMap[key];
+      // if no other doublexp active, hide and show final result then reset
+      const anyDouble = Object.keys(activeEvents).some(k => activeEvents[k].data.type === 'doublexp');
+      if(!anyDouble){
         const final = parseInt(localStorage.getItem('fasthub_xp_' + clientId) || '2', 10);
+        // show result popup
         xpResult.style.display = 'block';
         xpResult.innerHTML = `<div class="liquidGlass" style="padding:10px;border-radius:10px">final xp: <strong>${final}</strong></div>`;
         setTimeout(()=>{ xpResult.style.opacity = 1; }, 10);
-        setTimeout(()=>{ xpResult.style.opacity = 0; setTimeout(()=> xpResult.style.display='none',420); }, 3000);
-        // reset xp to 2
+        setTimeout(()=>{ xpResult.style.opacity = 0; setTimeout(()=> xpResult.style.display = 'none', 420); }, 3000);
+        // reset xp to 2 and hide UI
         localStorage.setItem('fasthub_xp_' + clientId, '2');
         xpCounter.style.display = 'none';
         xpFab.style.display = 'none';
       }
     }
 
-    // xp fab click
     xpFab.addEventListener('click', ()=>{
       let cur = parseInt(localStorage.getItem('fasthub_xp_' + clientId) || '2', 10);
       cur = Math.max(2, cur * 2);
       localStorage.setItem('fasthub_xp_' + clientId, String(cur));
       xpCounter.textContent = 'XP: ' + cur;
-      // small feedback notification
+      // small temporary notification
       const b = document.createElement('div');
       b.className = 'liquidGlass notification';
       b.textContent = 'xp doubled to ' + cur;
@@ -431,68 +435,66 @@
       setTimeout(()=>{ b.style.transition='transform .42s, opacity .42s'; b.style.transform='scale(.85) translateY(-8px)'; b.style.opacity='0'; setTimeout(()=>b.remove(),420); }, 1200);
     });
 
-    // --- realtime: push & listen (global) ---
+    // --- Firebase realtime push/listen ---
     const messagesRef = ref(db, 'global/messages');
     const eventsRef = ref(db, 'global/events');
 
-    // admin send message -> push
+    // Admin sends message (keeps text in input — you asked to be able to spam)
     sendBtn.addEventListener('click', ()=>{
-      const msg = document.getElementById('adminMessage').value.trim();
-      const dur = parseInt(document.getElementById('duration').value, 10) || 8;
-      if(!msg) return;
-      push(messagesRef, { text: msg, duration: dur, timestamp: Date.now() });
-      // keep input text (you asked earlier to not clear)
+      const text = document.getElementById('adminMessage').value.trim();
+      const duration = Math.max(1, parseInt(document.getElementById('duration').value, 10) || 8);
+      if(!text) return;
+      push(messagesRef, { text, duration, timestamp: Date.now() });
     });
 
-    // admin start event -> push
+    // Admin starts events
     startEventBtn.addEventListener('click', ()=>{
-      const evType = document.getElementById('eventSelect').value;
-      const dur = Math.max(5, parseInt(document.getElementById('eventDuration').value,10) || 30);
+      const type = document.getElementById('eventSelect').value;
+      const duration = Math.max(5, parseInt(document.getElementById('eventDuration').value, 10) || 30);
       const map = {
         tacos: { name: 'Raining Tacos', icon: '🌮', type: 'tacos' },
-        doublexp: { name: 'Double XP', icon: '⚡', type: 'doublexp' }
+        doublexp: { name: 'Double XP', icon: '⚡', type: 'doublexp' },
+        disco: { name: 'Disco', icon: '✨', type: 'disco' }
       };
-      const d = map[evType] || { name: evType, icon: '🔔', type: evType };
-      push(eventsRef, { name: d.name, icon: d.icon, type: d.type, duration: dur, timestamp: Date.now() });
+      const d = map[type] || { name: type, icon: '', type };
+      push(eventsRef, { name: d.name, icon: d.icon, type: d.type, duration, timestamp: Date.now() });
     });
 
-    // When a new global message is added, show it only if it's fresh (everyone hears it when it's pushed)
-    onChildAdded(messagesRef, (snap)=>{
-      const m = snap.val();
+    // Listen for new messages (global)
+    onChildAdded(messagesRef, snapshot => {
+      const m = snapshot.val();
       if(!m) return;
-      // immediate show for everyone
       showNotification(m.text, m.duration || 8);
     });
 
-    // When a new global event is added, add to stack and start behavior for everyone
-    onChildAdded(eventsRef, (snap)=>{
-      const e = snap.val();
+    // Listen for new events (global)
+    onChildAdded(eventsRef, snapshot => {
+      const e = snapshot.val();
       if(!e) return;
       const now = Date.now();
       const expiresAt = (e.timestamp || now) + ( (e.duration || 0) * 1000 );
-      const remaining = Math.max(0, Math.ceil((expiresAt - now)/1000));
+      const remaining = Math.max(0, Math.ceil((expiresAt - now) / 1000));
       if(remaining <= 0) return;
-      const key = snap.key;
-      addEventDom(key, { name: e.name, icon: e.icon, type: e.type }, remaining);
+      const key = snapshot.key;
+      addEventToStack(key, { name: e.name, icon: e.icon, type: e.type }, remaining);
     });
 
-    // make draggable (simple)
+    // draggable helper for admin panel
     function makeDraggable(el){
       el.style.position = 'fixed';
-      let dragging = false, offsetX = 0, offsetY = 0;
-      el.addEventListener('mousedown', (ev)=>{
+      let dragging = false, offX = 0, offY = 0;
+      el.addEventListener('mousedown', (e)=>{
         dragging = true;
-        offsetX = ev.clientX - (el.offsetLeft || 0);
-        offsetY = ev.clientY - (el.offsetTop || 0);
+        offX = e.clientX - (el.offsetLeft || 0);
+        offY = e.clientY - (el.offsetTop || 0);
         el.style.cursor = 'grabbing';
       });
       document.addEventListener('mouseup', ()=>{ dragging = false; el.style.cursor = 'grab'; });
-      document.addEventListener('mousemove', (ev)=>{
+      document.addEventListener('mousemove', (e)=>{
         if(!dragging) return;
-        ev.preventDefault();
-        let left = ev.clientX - offsetX;
-        let top = ev.clientY - offsetY;
-        // clamp inside viewport
+        e.preventDefault();
+        let left = e.clientX - offX;
+        let top = e.clientY - offY;
         left = Math.max(8, Math.min(window.innerWidth - el.offsetWidth - 8, left));
         top = Math.max(8, Math.min(window.innerHeight - el.offsetHeight - 8, top));
         el.style.left = left + 'px';
@@ -500,30 +502,8 @@
       });
     }
 
-    // ensure stopDoubleXPWhen event ends: we remove set in removeEvent above (calls stopDoubleXPIfNeeded)
-    // but we need to remove from doubleXPActive when event expires
-    // hook into removeEvent to clear doubleXPActive entry if present
-    (function patchRemoveEventForDoubleXP(){
-      const originalRemove = removeEvent;
-      window.removeEvent = function(key){ // shadow into global for use
-        // run original behavior
-        originalRemove(key);
-        // also remove from doubleXPActive set if it was added (we stored no keys there earlier, so check activeEvents snapshot)
-        // BUT activeEvents is already updated by originalRemove; just recalc
-        // rebuild set
-        doubleXPActive.clear();
-        Object.keys(activeEvents).forEach(k=>{
-          if(activeEvents[k].data.type === 'doublexp') doubleXPActive.add(k);
-        });
-        stopDoubleXPIfNeeded();
-      };
-    })();
-
-    // Initial console
+    // console
     console.log('gofasthub loaded — clientId:', clientId);
-
-    // Accessibility: prevent blank clicks on admin etc.
-    // Done.
   </script>
 </body>
 </html>
