@@ -3,512 +3,365 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>gofasthub</title>
-  <link rel="icon" href="fasthublogo.png" />
+  <title>Fake Windows 11 Emulator (Enhanced Demo)</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap');
-
     :root{
-      --accent:#a06bff;
-      --accent2:#7b57ff;
-      --radius:18px;
-      --glass-bg: rgba(255,255,255,0.08);
-      --text:#ffffff;
-      font-family: 'Outfit', system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --bg:#071025;--panel:rgba(255,255,255,0.04);--accent:#3b82f6;--muted:#9fb6c0;--glass:rgba(255,255,255,0.06)
+    }
+    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,system-ui,Arial; background:linear-gradient(180deg,#061224 0%, #071025 100%);color:#e6eef6;overflow:hidden}
+
+    /* Desktop & wallpaper */
+    .desktop{position:relative;height:100%;width:100%;padding:20px;box-sizing:border-box}
+    .wallpaper{position:absolute;inset:0;background:
+      radial-gradient(circle at 10% 10%,rgba(59,130,246,0.08),transparent 10%),
+      linear-gradient(180deg,#071025,#071022);
+      filter:blur(0.6px);
+      transition:filter 280ms ease;
     }
 
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%}
-    body{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(135deg,#8a6bff,#6ca3ff,#c78cff);
-      background-size:400% 400%;
-      animation: gradientShift 12s linear infinite;
-      color:var(--text);
-      overflow:hidden;
-    }
-    @keyframes gradientShift {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    /* Taskbar */
+    .taskbar{position:fixed;left:12px;right:12px;bottom:12px;height:56px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.25));backdrop-filter:blur(10px);border-radius:14px;display:flex;align-items:center;padding:6px 12px;gap:10px;box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+    .start-btn{width:44px;height:44px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005));display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 160ms cubic-bezier(.2,.9,.2,1)}
+    .start-btn:active{transform:scale(0.96)}
+    .task-icons{display:flex;gap:8px;margin-left:6px}
+    .icon{width:44px;height:44px;border-radius:8px;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 140ms ease, box-shadow 140ms ease}
+    .icon:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(11,20,34,0.5)}
 
-    /* liquid glass base */
-    .liquidGlass{
-      backdrop-filter: blur(10px) saturate(180%);
-      background: var(--glass-bg);
-      border:1px solid rgba(255,255,255,0.18);
-      box-shadow:0 10px 30px rgba(0,0,0,0.24);
-      border-radius:var(--radius);
-      transition: all 280ms cubic-bezier(.34,1.56,.64,1);
-    }
-    .liquidGlass:hover{ transform: translateY(-4px) scale(1.03); box-shadow: 0 18px 50px rgba(0,0,0,0.30) }
-    .liquidGlass:active{ transform: translateY(-2px) scale(.99) }
+    /* Start menu */
+    .start-menu{position:fixed;left:12px;bottom:80px;width:360px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6);display:none;transform-origin:left bottom;animation:fadeIn 240ms both}
+    .apps-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    .app-card{padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.018), rgba(0,0,0,0.2));cursor:pointer;text-align:center;font-size:13px;transition:transform 140ms ease}
+    .app-card:hover{transform:translateY(-6px)}
 
-    /* center perfectly */
-    .centerWrap{
-      position:fixed; top:50%; left:50%;
-      transform:translate(-50%,-50%);
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      width:100%; max-width:980px; gap:20px; padding:20px;
-    }
+    /* Window system */
+    .window{position:absolute;width:640px;height:420px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));border-radius:12px;box-shadow:0 20px 50px rgba(2,6,23,0.6);overflow:hidden;display:none;transform-origin:center center;transition:transform 260ms cubic-bezier(.2,.9,.2,1),opacity 200ms ease,left 160ms ease,top 160ms ease}
+    /* Smooth pop open that'll feel like Win11 */
+    .window.open{display:block;transform:translateY(-6px) scale(1.02);opacity:0;animation:popOpen 260ms cubic-bezier(.2,.9,.2,1) forwards}
+    @keyframes popOpen{0%{opacity:0;transform:translateY(-18px) scale(0.98)}60%{transform:translateY(6px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)}}
+    .titlebar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));border-bottom:1px solid rgba(255,255,255,0.02)}
+    .title{font-size:14px}
+    .controls{display:flex;gap:8px}
+    .ctrl{width:34px;height:30px;border-radius:8px;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 120ms}
+    .ctrl:hover{background:rgba(255,255,255,0.02)}
+    .content{padding:12px;height:calc(100% - 44px);overflow:auto}
+    .window.minimized{transform:translateY(18px) scale(0.98) translateX(0);opacity:0.8}
 
-    .liquidGlass-wrapper{ padding:28px; text-align:center; width:100%; max-width:420px; }
-    .liquidGlass-text{ font-size:1.9rem; font-weight:700; text-transform:lowercase; margin-bottom:14px }
+    /* Animations / effects */
+    @keyframes fadeIn{from{transform:scale(.98);opacity:0}to{transform:scale(1);opacity:1}}
+    .glide{transition:transform 400ms cubic-bezier(.2,.9,.2,1)}
 
-    input[type=password],input[type=text],input[type=number],select{
-      width:100%; padding:12px; border-radius:12px; border:none;
-      background:rgba(255,255,255,0.10); color:var(--text); font-size:1rem; margin-bottom:10px;
-    }
-    input:focus,select:focus{ outline:none; background:rgba(255,255,255,0.18); transform: translateY(-2px) scale(1.01); box-shadow:0 8px 30px rgba(0,0,0,0.12) }
+    .glitch{animation:glitch 180ms steps(2) infinite}
+    @keyframes glitch{50%{transform:translateX(6px) skewX(6deg)}}
+    .pixelate{filter:contrast(1.2) saturate(0.5) blur(0.8px)}
+    .shake{animation:shake 700ms linear}
+    @keyframes shake{0%{transform:translate(0,0)}25%{transform:translate(6px,-4px)}50%{transform:translate(-6px,4px)}75%{transform:translate(4px,-6px)}100%{transform:translate(0,0)}}
 
-    .games-page{ display:none; width:100%; max-width:800px; padding:18px; text-align:center; }
-    .games-page.active{ display:block }
-    .games-grid{ display:grid; gap:18px; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); margin-top:18px }
-    .game-card{ border-radius:12px; overflow:hidden; height:200px; display:flex; flex-direction:column; cursor:pointer; transition: transform .28s cubic-bezier(.2,.9,.3,1) }
-    .game-card:hover{ transform: translateY(-6px) scale(1.02) }
-    .game-card img{ width:100%; height:72%; object-fit:cover; display:block }
-    .game-card span{ padding:10px; background: rgba(0,0,0,0.18); text-transform:uppercase; font-weight:600; font-size:0.95rem; text-align:center }
+    /* BSOD overlay */
+    .bso{position:fixed;inset:0;background:#071025;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:9999;color:#fff;font-size:20px;display:none}
+    .bso p{font-size:14px;margin-top:8px;color:#ffd6d6}
 
-    /* admin small button */
-    .admin-popup-button{ position:fixed; right:14px; bottom:14px; padding:8px 10px; font-size:0.78rem; border-radius:12px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.06); color:var(--text); z-index:300; cursor:pointer; }
+    /* Restore */
+    .restore{position:fixed;right:12px;bottom:86px;background:#0f1720;padding:8px 10px;border-radius:12px;display:none}
 
-    .admin-password-popup,.admin-panel{ position:fixed; right:14px; bottom:60px; width:320px; padding:14px; gap:10px; display:none; z-index:310; flex-direction:column; }
-    .admin-panel{ max-height:68vh; overflow:auto }
+    /* Small screens */
+    @media (max-width:900px){.window{width:92%;height:74%}}
+    .muted{color:var(--muted)}
 
-    /* notifications */
-    .notification-container{ position:fixed; top:28px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; gap:10px; align-items:center; z-index:400 }
-    .notification{ padding:12px 18px; border-radius:12px; min-width:240px; text-align:center; animation: bumpIn 420ms cubic-bezier(.2,.9,.3,1) both; }
-    @keyframes bumpIn{ 0% { transform: translateY(-10px) scale(.9); opacity:0 } 60% { transform: translateY(6px) scale(1.05); opacity:1 } 100% { transform: translateY(0) scale(1); opacity:1 } }
+    /* app-specific */
+    .calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+    .btn{padding:8px 10px;border-radius:8px;border:none;background:var(--accent);color:white;cursor:pointer}
+    input,textarea{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px;border-radius:8px;color:inherit}
 
-    /* events stack */
-    .events-stack{ position:fixed; left:14px; bottom:14px; display:flex; flex-direction:column; gap:10px; z-index:320; }
-    .event-pill{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; background: rgba(0,0,0,0.14); min-width:200px; }
-    .event-pill .icon{ font-size:1.4rem }
-    .event-pill .timer{ font-weight:700; margin-left:auto }
+    /* gallery thumbnails */
+    .thumbs{display:flex;gap:8px;flex-wrap:wrap}
+    .thumb{width:120px;height:80px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08));display:flex;align-items:center;justify-content:center;overflow:hidden}
 
-    /* taco/sparkle particles */
-    .particle{ position:fixed; pointer-events:none; z-index:350; font-size:1.9rem; will-change: transform, top, left; }
-
-    /* xp UI */
-    .xp-fab{ position:fixed; right:22px; top:22%; padding:10px 14px; border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; color:#fff; cursor:pointer; z-index:330; display:none; box-shadow:0 8px 30px rgba(0,0,0,0.2) }
-    .xp-counter{ position:fixed; right:22px; top:calc(22% + 60px); font-weight:700; z-index:330; color:#fff; display:none }
-    .xp-result{ position:fixed; right:22px; top:calc(22% + 110px); z-index:330; display:none }
-
-    /* disco background (animated rainbow) */
-    .disco-bg{ animation: discoBg 3s linear infinite; background-size:600% 600% }
-    @keyframes discoBg {
-      0%{ background:linear-gradient(135deg,#ffb3c6,#a06bff,#6ca3ff,#c78cff) }
-      25%{ background:linear-gradient(135deg,#6ca3ff,#c78cff,#ffb3c6,#a06bff) }
-      50%{ background:linear-gradient(135deg,#c78cff,#ffb3c6,#a06bff,#6ca3ff) }
-      75%{ background:linear-gradient(135deg,#a06bff,#6ca3ff,#c78cff,#ffb3c6) }
-      100%{ background:linear-gradient(135deg,#ffb3c6,#a06bff,#6ca3ff,#c78cff) }
-    }
-
-    @media (max-width:720px){
-      .centerWrap{ width:95%; padding:14px }
-      .admin-password-popup, .admin-panel{ right:12px; left:12px; width:auto }
-      .game-card{ height:180px }
-    }
   </style>
 </head>
-<body id="bodyRoot">
+<body>
+  <div class="wallpaper"></div>
+  <div class="desktop" id="desktop">
 
-  <div class="centerWrap">
-    <!-- login -->
-    <div class="liquidGlass liquidGlass-wrapper" id="login-card" aria-live="polite">
-      <div class="liquidGlass-text">welcome to fasthub</div>
-      <input id="password" type="password" placeholder="enter access key" autocomplete="off" />
-      <div id="error-msg" style="height:18px;color:#ffb3b3;margin-top:8px;"></div>
+    <!-- Start menu -->
+    <div class="start-menu" id="startMenu">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <strong>Apps</strong>
+        <small class="muted">Enhanced demo</small>
+      </div>
+      <div class="apps-grid">
+        <div class="app-card" data-app="notepad">📝<div>Notepad</div></div>
+        <div class="app-card" data-app="calc">🧮<div>Calculator</div></div>
+        <div class="app-card" data-app="browser">🌐<div>Browser</div></div>
+        <div class="app-card" data-app="gallery">🖼️<div>Gallery</div></div>
+        <div class="app-card" data-app="music">🎧<div>Music</div></div>
+        <div class="app-card" data-app="terminal">💻<div>Terminal</div></div>
+        <div class="app-card" data-app="settings">⚙️<div>Settings</div></div>
+        <div class="app-card" data-app="prank">🦠<div>Prank Virus</div></div>
+        <div class="app-card" data-app="about">ℹ️<div>About</div></div>
+      </div>
     </div>
 
-    <!-- games -->
-    <div class="liquidGlass games-page" id="games-page" role="region" aria-label="games">
-      <h2 class="liquidGlass-text">welcome to fasthub</h2>
-      <div class="games-grid">
-        <div class="liquidGlass game-card" id="eggy-card" title="Click to play eggy car">
-          <!-- file name you said: "eggy car.jpg" (include exactly that file in repo) -->
-          <img src="eggy car.jpg" alt="eggy car banner (placeholder)" />
-          <span>eggy car</span>
+    <!-- Taskbar -->
+    <div class="taskbar">
+      <div class="start-btn" id="startBtn">◻️</div>
+      <div class="task-icons" id="taskIcons"></div>
+      <div style="flex:1"></div>
+      <div style="display:flex;gap:10px;align-items:center;color:var(--muted);font-size:13px">EN · <span id="clock">18:42</span></div>
+    </div>
+
+    <!-- Notepad -->
+    <div class="window glide" id="notepadWindow" style="left:80px;top:60px;z-index:10">
+      <div class="titlebar"><div class="title">Notepad</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
+      <div class="content"><textarea id="notepadText" style="width:100%;height:100%;box-sizing:border-box;border:none;resize:none">This is a safe, local notepad. Your text is saved to localStorage.</textarea></div>
+    </div>
+
+    <!-- Calculator -->
+    <div class="window glide" id="calcWindow" style="left:120px;top:120px;z-index:11;width:360px;height:380px">
+      <div class="titlebar"><div class="title">Calculator</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
+      <div class="content">
+        <div id="calcDisplay" style="height:70px;background:rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:flex-end;padding:12px;font-size:28px;border-radius:10px">0</div>
+        <div class="calc-grid">
+          <button class="btn small" data-key="7">7</button><button class="btn small" data-key="8">8</button><button class="btn small" data-key="9">9</button><button class="btn small" data-key="/">÷</button>
+          <button class="btn" data-key="4">4</button><button class="btn" data-key="5">5</button><button class="btn" data-key="6">6</button><button class="btn" data-key="*">×</button>
+          <button class="btn" data-key="1">1</button><button class="btn" data-key="2">2</button><button class="btn" data-key="3">3</button><button class="btn" data-key="-">−</button>
+          <button class="btn" data-key="0">0</button><button class="btn" data-key=".">.</button><button class="btn" data-key="=">=</button><button class="btn" data-key="+">+</button>
         </div>
       </div>
     </div>
+
+    <!-- Browser -->
+    <div class="window glide" id="browserWindow" style="left:220px;top:90px;z-index:12;width:760px;height:520px">
+      <div class="titlebar"><div class="title">Safe Browser (Fake)</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
+      <div class="content">
+        <div style="display:flex;gap:8px;margin-bottom:8px"><input id="fakeUrl" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit" value="example.local"/><button class="btn" id="goBtn">Go</button></div>
+        <div id="fakePage" style="height:100%;border-radius:10px;padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.12));overflow:auto">
+          <h3>Welcome to example.local</h3>
+          <p>This is a toy page inside the emulator. Use the "Download" button below to trigger a safe prank (visual only).</p>
+          <button class="btn" id="fakeDownload">Download installer.exe</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gallery -->
+    <div class="window glide" id="galleryWindow" style="left:160px;top:140px;z-index:13;width:620px;height:420px">
+      <div class="titlebar"><div class="title">Gallery</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
+      <div class="content">
+        <div style="display:flex;gap:8px;margin-bottom:10px"><input type="file" id="imgUpload" accept="image/*" multiple/><button class="btn" id="clearGallery">Clear</button></div>
+        <div class="thumbs" id="thumbs"></div>
+      </div>
+    </div>
+
+    <!-- Music -->
+    <div class="window glide" id="musicWindow" style="left:260px;top:180px;z-index:14;width:520px;height:320px">
+      <div class="titlebar"><div class="title">Music Player (Demo)</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
+      <div class="content">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><button class="btn" id="playMusic">Play</button><button class="btn" id="stopMusic">Stop</button><div class="muted">(Generated sound, no external files)</div></div>
+        <div id="visual" style="height:180px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.08));border-radius:8px;display:flex;align-items:center;justify-content:center">🎶</div>
+      </div>
+    </div>
+
+    <!-- Terminal -->
+    <div class="window glide" id="terminalWindow" style="left:300px;top:200px;z-index:15;width:560px;height:340px">
+      <div class="titlebar"><div class="title">Terminal (Sim)</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
+      <div class="content"><div id="termOut" style="height:260px;background:#071022;padding:8px;border-radius:8px;overflow:auto;font-family:monospace;font-size:13px;color:#9ad3ff">Welcome to the fake terminal. Try: <code>help</code></div>
+      <div style="margin-top:8px;display:flex;gap:8px"><input id="termIn" style="flex:1" placeholder="type a command (e.g. help, time, clear)"/><button class="btn" id="termRun">Run</button></div></div>
+    </div>
+
+    <!-- Settings -->
+    <div class="window glide" id="settingsWindow" style="left:340px;top:220px;z-index:16;width:480px;height:360px">
+      <div class="titlebar"><div class="title">Settings</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
+      <div class="content">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label>Theme color: <input type="color" id="themeColor" value="#3b82f6"/></label>
+          <label>Wallpaper blur: <input type="range" id="wallBlur" min="0" max="8" value="0"/></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- About and Prank windows -->
+    <div class="window glide" id="aboutWindow" style="left:260px;top:260px;z-index:17;width:420px;height:220px">
+      <div class="titlebar"><div class="title">About</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
+      <div class="content"><h3>Enhanced Safe Windows 11 Emulator</h3><p>This demo is intentionally safe: it only modifies elements inside this page and never downloads or executes real files. The Prank app applies reversible visual effects only.</p></div>
+    </div>
+
+    <div class="bso" id="bso"><div style="font-size:36px">💥 Whoops!</div><p>Your fake emulator hit a prank. Nothing on your real computer is harmed. Press Restore.</p></div>
+    <div class="restore" id="restoreBtn"><button class="btn" id="restoreNow">Restore Emulator</button></div>
+
   </div>
 
-  <!-- admin UI -->
-  <button class="liquidGlass admin-popup-button" id="adminToggleBtn" aria-label="open admin">admin</button>
+  <script>
+    // Utilities & state
+    const startBtn = document.getElementById('startBtn');
+    const startMenu = document.getElementById('startMenu');
+    const taskIcons = document.getElementById('taskIcons');
+    const clock = document.getElementById('clock');
+    const bso = document.getElementById('bso');
+    const restoreBtn = document.getElementById('restoreBtn');
 
-  <div class="liquidGlass admin-password-popup" id="admin-password-popup" role="dialog" aria-hidden="true">
-    <input id="adminPass" type="password" placeholder="enter admin password" autocomplete="off" />
-    <button class="liquidGlass" id="unlockBtn">unlock admin panel</button>
-  </div>
+    // Clock
+    function tick(){ const d=new Date(); clock.textContent = d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
+    tick(); setInterval(tick,60000);
 
-  <div class="liquidGlass admin-panel" id="admin-panel" role="dialog" aria-hidden="true" style="display:none;">
-    <h3 style="margin:0 0 8px 0;text-align:center">global message</h3>
-    <input id="adminMessage" type="text" placeholder="Type global message" />
-    <input id="duration" type="number" placeholder="Duration (s)" min="1" />
-    <button class="liquidGlass" id="sendBtn">Send Message</button>
+    // Start menu toggle
+    startBtn.addEventListener('click', ()=> startMenu.style.display = (startMenu.style.display==='block' ? 'none' : 'block'));
 
-    <hr style="opacity:.08;margin:10px 0;border:none;height:1px;background:rgba(255,255,255,0.06)" />
+    // Task icons management
+    function addTask(id, label, emoji){ if(document.getElementById('task-'+id)) return; const el = document.createElement('div'); el.className='icon'; el.id='task-'+id; el.textContent=emoji; el.title=label; el.addEventListener('click', ()=> toggleWindow(id)); taskIcons.appendChild(el); }
+    function removeTask(id){ const e=document.getElementById('task-'+id); if(e) e.remove(); }
 
-    <h3 style="margin:0 0 8px 0;text-align:center">global event</h3>
-    <select id="eventSelect" aria-label="event type">
-      <option value="tacos">🌮 Raining Tacos</option>
-      <option value="doublexp">⚡ Double XP</option>
-      <option value="disco">✨ Disco</option>
-    </select>
-    <input id="eventDuration" type="number" placeholder="Event duration (s)" min="5" />
-    <button class="liquidGlass" id="startEventBtn">Start Event</button>
-  </div>
-
-  <!-- runtime containers -->
-  <div class="notification-container" id="notificationContainer" aria-live="polite"></div>
-  <div class="events-stack" id="eventsStack" aria-live="polite"></div>
-
-  <button class="xp-fab" id="xpFab">+ XP</button>
-  <div class="xp-counter" id="xpCounter">XP: 2</div>
-  <div class="xp-result" id="xpResult"></div>
-
-  <!-- particle layer -->
-  <div id="tacoLayer" aria-hidden="true"></div>
-
-  <!-- Firebase + script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
-    // Your Firebase config (you provided earlier)
-    const firebaseConfig = {
-      apiKey: "AIzaSyDJskELwuyHZVcFZXSX0QHU3e2UgTcRyLQ",
-      authDomain: "fasthub-messages.firebaseapp.com",
-      databaseURL: "https://fasthub-messages-default-rtdb.firebaseio.com",
-      projectId: "fasthub-messages",
-      storageBucket: "fasthub-messages.firebasestorage.app",
-      messagingSenderId: "788670666897",
-      appId: "1:788670666897:web:223bb6a9f8bff4af444730",
-      measurementId: "G-8DN5YXWV0V"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // UI refs
-    const pwInput = document.getElementById('password');
-    const errorMsg = document.getElementById('error-msg');
-    const loginCard = document.getElementById('login-card');
-    const gamesPage = document.getElementById('games-page');
-    const eggyCard = document.getElementById('eggy-card');
-    const adminToggleBtn = document.getElementById('adminToggleBtn');
-    const adminPasswordPopup = document.getElementById('admin-password-popup');
-    const adminPanel = document.getElementById('admin-panel');
-    const unlockBtn = document.getElementById('unlockBtn');
-    const sendBtn = document.getElementById('sendBtn');
-    const startEventBtn = document.getElementById('startEventBtn');
-    const notificationContainer = document.getElementById('notificationContainer');
-    const eventsStack = document.getElementById('eventsStack');
-    const xpFab = document.getElementById('xpFab');
-    const xpCounter = document.getElementById('xpCounter');
-    const xpResult = document.getElementById('xpResult');
-    const tacoLayer = document.getElementById('tacoLayer');
-    const bodyRoot = document.getElementById('bodyRoot') || document.body;
-
-    // PW constants
-    const SITE_PW = 'fast67';
-    const ADMIN_PW = 'fastadmin67';
-
-    // simple client id
-    const clientId = localStorage.getItem('fasthub_client') || ('c_' + Math.random().toString(36).slice(2,9));
-    localStorage.setItem('fasthub_client', clientId);
-
-    // helper format seconds -> m:ss
-    function fmtSeconds(sec){
-      sec = Math.max(0, Math.floor(sec));
-      const m = Math.floor(sec/60);
-      const s = sec % 60;
-      return `${m}:${String(s).padStart(2,'0')}`;
+    function toggleWindow(id){ const win = document.getElementById(id+'Window'); if(!win) return; if(win.style.display==='block'){ win.style.display='none'; win.classList.remove('open'); } else { openWindow(id); } }
+    function openWindow(id){ const win = document.getElementById(id+'Window'); if(!win) return;
+      // bring to front and animate
+      document.querySelectorAll('.window').forEach(w=> w.style.zIndex = 10);
+      win.style.zIndex = 100 + Math.floor(Math.random()*100);
+      win.style.display = 'block';
+      requestAnimationFrame(()=>{ win.classList.add('open'); win.style.transform = ''; win.style.opacity = '1'; });
     }
 
-    // login: Enter key
-    pwInput.addEventListener('keypress', (e)=>{
-      if(e.key === 'Enter'){
-        const v = pwInput.value.trim();
-        if(v === SITE_PW){
-          // animate out
-          loginCard.style.transition = 'all 420ms cubic-bezier(.22,1,.36,1)';
-          loginCard.style.opacity = '0';
-          loginCard.style.transform = 'translateY(-10px) scale(.98)';
-          setTimeout(()=>{ loginCard.style.display = 'none'; gamesPage.classList.add('active'); }, 360);
-        } else if(v === ADMIN_PW){
-          loginCard.style.transition = 'all 420ms cubic-bezier(.22,1,.36,1)';
-          loginCard.style.opacity = '0';
-          loginCard.style.transform = 'translateY(-10px) scale(.98)';
-          setTimeout(()=>{ loginCard.style.display = 'none'; gamesPage.classList.add('active'); adminPanel.style.display = 'flex'; makeDraggable(adminPanel); }, 360);
-        } else {
-          errorMsg.textContent = 'incorrect password. try again.';
-          pwInput.value = '';
-          pwInput.focus();
+    // App launchers in Start
+    document.querySelectorAll('.app-card').forEach(a=> a.addEventListener('click', ()=>{ const app=a.dataset.app; startMenu.style.display='none'; launchApp(app); }))
+
+    function launchApp(app){
+      if(app==='notepad'){ openWindow('notepad'); addTask('notepad','Notepad','📝'); }
+      if(app==='calc'){ openWindow('calc'); addTask('calc','Calculator','🧮'); }
+      if(app==='browser'){ openWindow('browser'); addTask('browser','Browser','🌐'); }
+      if(app==='gallery'){ openWindow('gallery'); addTask('gallery','Gallery','🖼️'); }
+      if(app==='music'){ openWindow('music'); addTask('music','Music','🎧'); }
+      if(app==='terminal'){ openWindow('terminal'); addTask('terminal','Terminal','💻'); }
+      if(app==='settings'){ openWindow('settings'); addTask('settings','Settings','⚙️'); }
+      if(app==='about'){ openWindow('about'); addTask('about','About','ℹ️'); }
+      if(app==='prank'){ runPrank(); addTask('prank','Prank','🦠'); }
+    }
+
+    // Window controls (close/min/max)
+    document.querySelectorAll('.window').forEach(win=>{
+      win.querySelectorAll('.ctrl').forEach(c=> c.addEventListener('click', ()=>{
+        const action = c.dataset.action; const id = win.id.replace('Window','');
+        if(action==='close'){ win.style.display='none'; win.classList.remove('open'); removeTask(id); }
+        if(action==='min'){ win.style.display='none'; win.classList.remove('open'); }
+        if(action==='max'){
+          if(win.classList.contains('max')){
+            win.style.width=''; win.style.height=''; win.style.left=''; win.style.top=''; win.classList.remove('max');
+          } else {
+            win.style.left='40px'; win.style.top='40px';
+            win.style.width = (window.innerWidth - 80) + 'px';
+            win.style.height = (window.innerHeight - 160) + 'px';
+            win.classList.add('max');
+          }
         }
-      }
+      }))
+
+      // Dragging
+      let dragging=false, ox=0, oy=0;
+      const title = win.querySelector('.titlebar');
+      title.addEventListener('pointerdown',(e)=>{ dragging=true; ox=e.clientX - win.offsetLeft; oy=e.clientY - win.offsetTop; win.style.zIndex=999; title.setPointerCapture(e.pointerId); });
+      window.addEventListener('pointerup',()=>dragging=false);
+      window.addEventListener('pointermove',(e)=>{ if(!dragging) return; win.style.left = (e.clientX - ox) + 'px'; win.style.top = (e.clientY - oy) + 'px'; });
+    })
+
+    // Notepad: persist content locally
+    const notepadText = document.getElementById('notepadText');
+    const NP_KEY = 'fakewin_notepad_v1';
+    if(localStorage.getItem(NP_KEY)) notepadText.value = localStorage.getItem(NP_KEY);
+    notepadText.addEventListener('input', ()=> localStorage.setItem(NP_KEY, notepadText.value));
+
+    // Calculator: safe eval via Function with whitelist
+    (function(){
+      const display = document.getElementById('calcDisplay'); let cur='';
+      document.querySelectorAll('#calcWindow .btn').forEach(b=> b.addEventListener('click', ()=>{ const k=b.dataset.key;
+        if(k==='='){
+          try{
+            // allow only digits, whitespace, parentheses and operators
+            if(!/^[0-9.+\\-*/\\s()]+$/.test(cur)) throw 'Bad';
+            const res = Function('return ('+cur+')')();
+            cur = String(res);
+          }catch(e){ cur='Err' }
+        } else cur += k;
+        display.textContent = cur || '0';
+      }))
+    })();
+
+    // Fake Browser
+    document.getElementById('goBtn').addEventListener('click', ()=>{
+      const url = document.getElementById('fakeUrl').value.trim(); const fakePage = document.getElementById('fakePage');
+      fakePage.innerHTML = `<h3>Fake site: ${escapeHtml(url)}</h3><p>This is a toy page inside the emulator. The "Download" button triggers a harmless visual prank only.</p><button class="btn" id="fakeDownload">Download installer.exe</button>`;
+      document.getElementById('fakeDownload').addEventListener('click', ()=>{ launchSmallPrank(); })
+    })
+    function escapeHtml(s){ return s.replace(/[&<>\"]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]||c)); }
+
+    // Gallery: file uploads to thumbnails (no upload to server)
+    const thumbs = document.getElementById('thumbs');
+    document.getElementById('imgUpload').addEventListener('change', (e)=>{
+      const files = Array.from(e.target.files).slice(0,12);
+      files.forEach(f=>{
+        const reader = new FileReader();
+        reader.onload = ev=>{
+          const d = ev.target.result;
+          const box = document.createElement('div'); box.className='thumb';
+          const img = document.createElement('img'); img.src = d; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+          box.appendChild(img); thumbs.appendChild(box);
+        };
+        reader.readAsDataURL(f);
+      })
     });
+    document.getElementById('clearGallery').addEventListener('click', ()=> thumbs.innerHTML='');
 
-    // admin toggle + unlock
-    adminToggleBtn.addEventListener('click', ()=>{
-      if(adminPasswordPopup.style.display === 'flex'){
-        adminPasswordPopup.style.display = 'none';
-      } else {
-        adminPasswordPopup.style.display = 'flex';
-        adminPasswordPopup.style.flexDirection = 'column';
-        adminPasswordPopup.querySelector('input')?.focus();
-      }
+    // Music: generated tone (no external files)
+    let audioCtx=null, playing=false, osc=null;
+    document.getElementById('playMusic').addEventListener('click', ()=>{
+      if(playing) return; playing=true;
+      if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+      osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+      osc.type='sine'; osc.frequency.value = 220; gain.gain.value = 0.02;
+      osc.connect(gain); gain.connect(audioCtx.destination); osc.start();
+      document.getElementById('visual').classList.add('glitch');
+      setTimeout(()=>document.getElementById('visual').classList.remove('glitch'),2000);
     });
-    unlockBtn.addEventListener('click', ()=>{
-      const v = document.getElementById('adminPass').value.trim();
-      if(v === ADMIN_PW){
-        adminPasswordPopup.style.display = 'none';
-        adminPanel.style.display = 'flex';
-        makeDraggable(adminPanel);
-      } else {
-        alert('Incorrect admin password');
-      }
-    });
+    document.getElementById('stopMusic').addEventListener('click', ()=>{ if(!playing) return; playing=false; if(osc){ osc.stop(); osc.disconnect(); osc=null; } });
 
-    // open Eggy Car in about:blank with iframe
-    eggyCard.addEventListener('click', ()=>{
-      const url = 'https://ubg742.github.io/egycr/index.html';
-      const w = window.open('about:blank', '_blank');
-      if(!w){ alert('Popup blocked: allow popups for this site'); return; }
-      const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>eggy car</title><style>html,body{height:100%;margin:0;background:#000}iframe{border:0;width:100%;height:100vh}</style></head><body><iframe src="${url}" allowfullscreen></iframe></body></html>`;
-      w.document.open();
-      w.document.write(html);
-      w.document.close();
-    });
-
-    // notifications
-    function showNotification(text, seconds=8){
-      const n = document.createElement('div');
-      n.className = 'liquidGlass notification';
-      n.textContent = text;
-      notificationContainer.appendChild(n);
-      setTimeout(()=>{
-        n.style.transition = 'transform 420ms ease, opacity 420ms ease';
-        n.style.transform = 'scale(.85) translateY(-10px)';
-        n.style.opacity = '0';
-        setTimeout(()=> n.remove(), 420);
-      }, seconds * 1000);
+    // Terminal: simulated commands
+    const termOut = document.getElementById('termOut'); const termIn = document.getElementById('termIn'); document.getElementById('termRun').addEventListener('click', runCmd);
+    function runCmd(){ const cmd = termIn.value.trim(); if(!cmd) return; appendOut('> '+cmd);
+      if(cmd==='help'){ appendOut('Available: help, time, rand, clear'); }
+      else if(cmd==='time'){ appendOut(new Date().toString()); }
+      else if(cmd==='rand'){ appendOut('Random: '+Math.floor(Math.random()*10000)); }
+      else if(cmd==='clear'){ termOut.innerHTML=''; }
+      else appendOut('Unknown command: '+cmd);
+      termIn.value=''; termOut.scrollTop = termOut.scrollHeight;
     }
+    function appendOut(s){ const p=document.createElement('div'); p.textContent=s; termOut.appendChild(p); }
 
-    // EVENTS: stackable
-    const activeEvents = {}; // key -> {dom, expiresAt, data}
-    const particleState = {}; // key -> {iv, elems, type}
+    // Settings controls
+    document.getElementById('themeColor').addEventListener('input', (e)=> document.documentElement.style.setProperty('--accent', e.target.value));
+    document.getElementById('wallBlur').addEventListener('input', (e)=> document.querySelector('.wallpaper').style.filter = `blur(${e.target.value}px)`);
 
-    function addEventToStack(key, data, remaining){
-      const pill = document.createElement('div');
-      pill.className = 'liquidGlass event-pill';
-      const icon = document.createElement('div'); icon.className = 'icon'; icon.textContent = data.icon || (data.type === 'tacos' ? '🌮' : (data.type === 'disco' ? '✨' : '⚡'));
-      const name = document.createElement('div'); name.textContent = data.name;
-      const timer = document.createElement('div'); timer.className = 'timer'; timer.textContent = fmtSeconds(remaining);
-      pill.appendChild(icon); pill.appendChild(name); pill.appendChild(timer);
-      eventsStack.appendChild(pill);
-
-      activeEvents[key] = { dom: pill, expiresAt: Date.now() + remaining*1000, data };
-
-      // start specific behavior
-      if(data.type === 'tacos') startTacos(key);
-      if(data.type === 'doublexp') startDoubleXP(key);
-      if(data.type === 'disco') startDisco(key);
-
-      // countdown updater
-      const iv = setInterval(()=>{
-        const ev = activeEvents[key];
-        if(!ev){ clearInterval(iv); return; }
-        const left = Math.ceil((ev.expiresAt - Date.now())/1000);
-        ev.dom.querySelector('.timer').textContent = fmtSeconds(left);
-        if(left <= 0){
-          clearInterval(iv);
-          removeEvent(key);
-        }
-      }, 900);
+    // Prank (harmless)
+    function runPrank(){
+      bso.style.display='flex'; restoreBtn.style.display='block';
+      document.body.classList.add('pixelate');
+      setTimeout(()=>{ document.body.classList.add('glitch'); document.querySelectorAll('.window').forEach(w=> w.classList.add('shake')); playBeepSequence(); }, 500);
     }
-
-    function removeEvent(key){
-      const ev = activeEvents[key];
-      if(!ev) return;
-      try{ ev.dom.remove(); }catch(e){}
-      // stop behaviors tied to key
-      stopParticlesFor(key);
-      stopDoubleXPForKey(key);
-      stopDiscoIfNeeded();
-      delete activeEvents[key];
+    function launchSmallPrank(){
+      const n = document.getElementById('notepadText'); if(n){ n.value = '...scanning...\\n' + randomGibberish(80) + '\\n(this is a safe demo)'; openWindow('notepad'); }
+      const np = document.getElementById('notepadWindow'); if(np){ np.classList.add('glitch'); setTimeout(()=> np.classList.remove('glitch'),2200); }
     }
+    function randomGibberish(n){ const chars='abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+='; let s=''; for(let i=0;i<n;i++) s+=chars[Math.floor(Math.random()*chars.length)]; return s }
+    function playBeepSequence(){ try{ const ctx = new (window.AudioContext || window.webkitAudioContext)(); const now = ctx.currentTime; for(let i=0;i<6;i++){ const o = ctx.createOscillator(); const g = ctx.createGain(); o.type='sine'; o.frequency.value = 200 + i*160; g.gain.value = 0.02; o.connect(g); g.connect(ctx.destination); o.start(now + i*0.08); o.stop(now + i*0.08 + 0.06); } }catch(e){ } }
 
-    // --- Tacos behavior ---
-    function startTacos(key){
-      // add rainbow-ish background as well (optional)
-      document.body.classList.add('disco-bg'); // lightweight reuse to add color while tacos fall (disco-bg is colorful)
-      // spawn particles
-      particleState[key] = { iv: setInterval(()=>spawnParticle(key,'🌮'), 260), elems: [], type:'tacos' };
-    }
-    function spawnParticle(key, emoji){
-      const el = document.createElement('div');
-      el.className = 'particle';
-      el.textContent = emoji;
-      const left = Math.random() * (window.innerWidth - 40);
-      el.style.left = left + 'px';
-      el.style.top = '-60px';
-      tacoLayer.appendChild(el);
-      particleState[key].elems.push(el);
+    // Restore button
+    document.getElementById('restoreNow').addEventListener('click', ()=>{
+      bso.style.display='none'; restoreBtn.style.display='none'; document.body.classList.remove('pixelate','glitch'); document.querySelectorAll('.window').forEach(w=> w.classList.remove('shake'));
+      const t = document.getElementById('notepadText'); if(t) t.value = localStorage.getItem(NP_KEY) || t.value.replace(/\.{3}scanning[\s\S]*/,'');
+    })
 
-      const dur = 3000 + Math.random()*1500;
-      requestAnimationFrame(()=>{
-        el.style.transition = `top ${dur}ms linear, transform ${dur}ms cubic-bezier(.2,.9,.2,1), opacity 400ms`;
-        el.style.top = (window.innerHeight + 80) + 'px';
-        el.style.transform = `rotate(${(Math.random()*80)-40}deg)`;
-        el.style.opacity = '1';
-      });
-      setTimeout(()=>{ try{ el.remove(); const a = particleState[key]?.elems; if(a) a.splice(a.indexOf(el),1) }catch(e){} }, dur + 300);
-    }
-    function stopParticlesFor(key){
-      if(!particleState[key]) return;
-      clearInterval(particleState[key].iv);
-      particleState[key].elems.forEach(el=>el.remove());
-      delete particleState[key];
-      // if no remaining taco/disco particles, remove disco-bg (we check disco separately)
-      const anyParticles = Object.values(particleState).length > 0;
-      if(!anyParticles){
-        document.body.classList.remove('disco-bg');
-      }
-    }
+    // Block external navigation in demo
+    document.addEventListener('click', (e)=>{ const a = e.target.closest('a'); if(!a) return; e.preventDefault(); alert('External navigation is blocked in this safe demo.'); })
 
-    // --- Disco behavior (sparkles + rainbow background) ---
-    function startDisco(key){
-      // add rainbow background class
-      document.body.classList.add('disco-bg');
-      // spawn sparkle emojis (✨)
-      particleState[key] = { iv: setInterval(()=>spawnParticle(key,'✨'), 180), elems: [], type:'disco' };
-    }
-    function stopDiscoIfNeeded(){
-      // remove disco-bg if no disco events active
-      const anyDisco = Object.values(activeEvents).some(e => e.data.type === 'disco');
-      if(!anyDisco){
-        // stop disco particles if any (they are cleaned in stopParticlesFor when event removed)
-        document.body.classList.remove('disco-bg');
-      }
-    }
-
-    // --- Double XP behavior ---
-    const doubleXPMap = {}; // key -> true
-    function startDoubleXP(key){
-      doubleXPMap[key] = true;
-      // show xp UI and init xp to 2 for this client
-      xpFab.style.display = 'block';
-      xpCounter.style.display = 'block';
-      localStorage.setItem('fasthub_xp_' + clientId, '2');
-      xpCounter.textContent = 'XP: 2';
-    }
-    function stopDoubleXPForKey(key){
-      if(doubleXPMap[key]) delete doubleXPMap[key];
-      // if no other doublexp active, hide and show final result then reset
-      const anyDouble = Object.keys(activeEvents).some(k => activeEvents[k].data.type === 'doublexp');
-      if(!anyDouble){
-        const final = parseInt(localStorage.getItem('fasthub_xp_' + clientId) || '2', 10);
-        // show result popup
-        xpResult.style.display = 'block';
-        xpResult.innerHTML = `<div class="liquidGlass" style="padding:10px;border-radius:10px">final xp: <strong>${final}</strong></div>`;
-        setTimeout(()=>{ xpResult.style.opacity = 1; }, 10);
-        setTimeout(()=>{ xpResult.style.opacity = 0; setTimeout(()=> xpResult.style.display = 'none', 420); }, 3000);
-        // reset xp to 2 and hide UI
-        localStorage.setItem('fasthub_xp_' + clientId, '2');
-        xpCounter.style.display = 'none';
-        xpFab.style.display = 'none';
-      }
-    }
-
-    xpFab.addEventListener('click', ()=>{
-      let cur = parseInt(localStorage.getItem('fasthub_xp_' + clientId) || '2', 10);
-      cur = Math.max(2, cur * 2);
-      localStorage.setItem('fasthub_xp_' + clientId, String(cur));
-      xpCounter.textContent = 'XP: ' + cur;
-      // small temporary notification
-      const b = document.createElement('div');
-      b.className = 'liquidGlass notification';
-      b.textContent = 'xp doubled to ' + cur;
-      notificationContainer.appendChild(b);
-      setTimeout(()=>{ b.style.transition='transform .42s, opacity .42s'; b.style.transform='scale(.85) translateY(-8px)'; b.style.opacity='0'; setTimeout(()=>b.remove(),420); }, 1200);
-    });
-
-    // --- Firebase realtime push/listen ---
-    const messagesRef = ref(db, 'global/messages');
-    const eventsRef = ref(db, 'global/events');
-
-    // Admin sends message (keeps text in input — you asked to be able to spam)
-    sendBtn.addEventListener('click', ()=>{
-      const text = document.getElementById('adminMessage').value.trim();
-      const duration = Math.max(1, parseInt(document.getElementById('duration').value, 10) || 8);
-      if(!text) return;
-      push(messagesRef, { text, duration, timestamp: Date.now() });
-    });
-
-    // Admin starts events
-    startEventBtn.addEventListener('click', ()=>{
-      const type = document.getElementById('eventSelect').value;
-      const duration = Math.max(5, parseInt(document.getElementById('eventDuration').value, 10) || 30);
-      const map = {
-        tacos: { name: 'Raining Tacos', icon: '🌮', type: 'tacos' },
-        doublexp: { name: 'Double XP', icon: '⚡', type: 'doublexp' },
-        disco: { name: 'Disco', icon: '✨', type: 'disco' }
-      };
-      const d = map[type] || { name: type, icon: '', type };
-      push(eventsRef, { name: d.name, icon: d.icon, type: d.type, duration, timestamp: Date.now() });
-    });
-
-// --- Only show messages created after user joined ---
-const joinTime = Date.now();
-
-onChildAdded(messagesRef, snapshot => {
-  const m = snapshot.val();
-  if (!m) return;
-  // only show if this message was created after we loaded
-  if ((m.timestamp || 0) >= joinTime) {
-    showNotification(m.text, m.duration || 8);
-  }
-});
-
-    // Listen for new events (global)
-    onChildAdded(eventsRef, snapshot => {
-      const e = snapshot.val();
-      if(!e) return;
-      const now = Date.now();
-      const expiresAt = (e.timestamp || now) + ( (e.duration || 0) * 1000 );
-      const remaining = Math.max(0, Math.ceil((expiresAt - now) / 1000));
-      if(remaining <= 0) return;
-      const key = snapshot.key;
-      addEventToStack(key, { name: e.name, icon: e.icon, type: e.type }, remaining);
-    });
-
-    // draggable helper for admin panel
-    function makeDraggable(el){
-      el.style.position = 'fixed';
-      let dragging = false, offX = 0, offY = 0;
-      el.addEventListener('mousedown', (e)=>{
-        dragging = true;
-        offX = e.clientX - (el.offsetLeft || 0);
-        offY = e.clientY - (el.offsetTop || 0);
-        el.style.cursor = 'grabbing';
-      });
-      document.addEventListener('mouseup', ()=>{ dragging = false; el.style.cursor = 'grab'; });
-      document.addEventListener('mousemove', (e)=>{
-        if(!dragging) return;
-        e.preventDefault();
-        let left = e.clientX - offX;
-        let top = e.clientY - offY;
-        left = Math.max(8, Math.min(window.innerWidth - el.offsetWidth - 8, left));
-        top = Math.max(8, Math.min(window.innerHeight - el.offsetHeight - 8, top));
-        el.style.left = left + 'px';
-        el.style.top = top + 'px';
-      });
-    }
-
-    // console
-    console.log('gofasthub loaded — clientId:', clientId);
+    // Keyboard shortcuts
+    window.addEventListener('keydown',(e)=>{
+      if(e.key==='Escape'){ startMenu.style.display='none'; }
+      if(e.ctrlKey && e.key==='1'){ launchApp('notepad'); }
+    })
   </script>
 </body>
 </html>
