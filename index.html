@@ -460,12 +460,17 @@
       push(eventsRef, { name: d.name, icon: d.icon, type: d.type, duration, timestamp: Date.now() });
     });
 
-    // Listen for new messages (global)
-    onChildAdded(messagesRef, snapshot => {
-      const m = snapshot.val();
-      if(!m) return;
-      showNotification(m.text, m.duration || 8);
-    });
+// --- Only show messages created after user joined ---
+const joinTime = Date.now();
+
+onChildAdded(messagesRef, snapshot => {
+  const m = snapshot.val();
+  if (!m) return;
+  // only show if this message was created after we loaded
+  if ((m.timestamp || 0) >= joinTime) {
+    showNotification(m.text, m.duration || 8);
+  }
+});
 
     // Listen for new events (global)
     onChildAdded(eventsRef, snapshot => {
