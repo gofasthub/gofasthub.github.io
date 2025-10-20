@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Fake Windows 11 Emulator — Virus Simulator (Safe)</title>
+<title>Fake Windows 11 Emulator — Malware Simulator (Safe)</title>
 <style>
 :root{
   --accent:#0a64ff;
@@ -11,6 +11,7 @@
   --taskbar:#ffffffcc;
   --window-bg:#ffffffdd;
   --text:#111;
+  --glass: rgba(255,255,255,0.6);
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;font-family:Segoe UI, Inter, system-ui, -apple-system, Arial; background:var(--bg); color:var(--text); overflow:hidden}
@@ -37,18 +38,18 @@ html,body{height:100%;margin:0;font-family:Segoe UI, Inter, system-ui, -apple-sy
 .start-btn{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px; transition:transform 140ms}
 .start-btn:hover{transform:scale(1.03); background:rgba(10,100,255,0.08)}
 .task-icons{display:flex;gap:8px}
-.icon{width:44px;height:44px;border-radius:8px;background:rgba(255,255,255,0.45);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 140ms, box-shadow 140ms}
+.icon{width:44px;height:44px;border-radius:8px;background:var(--glass);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 140ms, box-shadow 140ms}
 .icon:hover{transform:translateY(-4px); box-shadow:0 8px 20px rgba(8,24,48,0.12)}
 
 /* start menu */
 .start-menu{
-  position:fixed; left:12px; bottom:78px; width:360px; padding:12px; border-radius:12px;
+  position:fixed; left:12px; bottom:78px; width:420px; padding:12px; border-radius:12px;
   background:var(--window-bg); backdrop-filter: blur(12px); box-shadow:0 16px 40px rgba(8,24,48,0.16);
-  display: none; flex-direction: column; z-index:3000; opacity:0; transform:scale(0.98);
+  display:none; flex-direction: column; z-index:3000; opacity:0; transform:scale(0.98);
   transition: opacity 180ms ease, transform 180ms ease;
 }
 .start-menu.open{opacity:1; transform:scale(1);}
-.apps-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+.apps-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:10px}
 .app-card{padding:10px;border-radius:10px;text-align:center;background:rgba(255,255,255,0.4);cursor:pointer;transition:transform 140ms}
 .app-card:hover{transform:translateY(-6px); background:rgba(10,100,255,0.12)}
 
@@ -66,7 +67,7 @@ html,body{height:100%;margin:0;font-family:Segoe UI, Inter, system-ui, -apple-sy
 .controls{display:flex; gap:6px}
 .ctrl{width:34px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 120ms}
 .ctrl:hover{background:rgba(10,100,255,0.08)}
-.content{padding:12px; flex:1; overflow:auto}
+.content{padding:12px; flex:1; overflow:auto;}
 
 /* app-specific */
 .btn{padding:8px 10px;border-radius:8px;border:none;background:var(--accent);color:white;cursor:pointer}
@@ -75,6 +76,14 @@ html,body{height:100%;margin:0;font-family:Segoe UI, Inter, system-ui, -apple-sy
 .thumbs{display:flex;gap:8px;flex-wrap:wrap}
 .thumb{width:120px;height:80px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.5), rgba(240,240,255,0.2));overflow:hidden;display:flex;align-items:center;justify-content:center}
 
+/* calendar & clock simple */
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.day{padding:6px;border-radius:6px;text-align:center}
+
+/* mini-game */
+.tictac{display:grid;grid-template-columns:repeat(3,100px);gap:6px}
+.ticcell{width:100px;height:100px;background:rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;border-radius:8px}
+
 /* prank effects */
 .pixelate{filter:contrast(1.15) saturate(0.6) blur(.9px)}
 .glitch{animation:glitch 160ms steps(2) infinite}
@@ -82,6 +91,10 @@ html,body{height:100%;margin:0;font-family:Segoe UI, Inter, system-ui, -apple-sy
 .shake{animation:shake 700ms linear}
 @keyframes shake{0%{transform:translate(0,0)}25%{transform:translate(6px,-4px)}50%{transform:translate(-6px,4px)}75%{transform:translate(4px,-6px)}100%{transform:translate(0,0)}}
 .invert{filter:invert(1) hue-rotate(10deg)}
+
+/* cpu meter for cryptominer */
+.cpuMeter{height:12px;background:#e6eef6;border-radius:8px;overflow:hidden}
+.cpuFill{height:100%;width:0%;background:linear-gradient(90deg,#ffd166,#ff6b6b)}
 
 /* restore UI */
 .restore{position:fixed;right:12px;bottom:86px;background:#0f1720;padding:8px 12px;border-radius:12px;color:white;display:none;z-index:2000}
@@ -98,6 +111,7 @@ html,body{height:100%;margin:0;font-family:Segoe UI, Inter, system-ui, -apple-sy
   <div class="start-menu" id="startMenu">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>Apps</strong><small style="opacity:.7">Safe demo</small></div>
     <div class="apps-grid">
+      <!-- Core -->
       <div class="app-card" data-app="notepad">📝<div>Notepad</div></div>
       <div class="app-card" data-app="calc">🧮<div>Calculator</div></div>
       <div class="app-card" data-app="browser">🌐<div>Browser</div></div>
@@ -105,47 +119,22 @@ html,body{height:100%;margin:0;font-family:Segoe UI, Inter, system-ui, -apple-sy
       <div class="app-card" data-app="music">🎧<div>Music</div></div>
       <div class="app-card" data-app="terminal">💻<div>Terminal</div></div>
       <div class="app-card" data-app="settings">⚙️<div>Settings</div></div>
+      <div class="app-card" data-app="clock">⏰<div>Clock</div></div>
+      <div class="app-card" data-app="calendar">📅<div>Calendar</div></div>
+      <div class="app-card" data-app="explorer">🗂️<div>Explorer</div></div>
+      <div class="app-card" data-app="game">🎮<div>Game</div></div>
       <div class="app-card" data-app="prank">🦠<div>Virus</div></div>
     </div>
   </div>
 
   <!-- Taskbar -->
   <div class="taskbar">
-    <div class="start-btn" id="startBtn">🪟</div>
+    <div class="start-btn" id="startBtn" title="Start">🪟</div>
     <div class="task-icons" id="taskIcons"></div>
     <div style="flex:1"></div>
     <div style="color:#3b5360;font-size:13px;padding-right:8px">EN · <span id="clock">—</span></div>
   </div>
 
-  <!-- Windows: Notepad, Calculator, Browser, Gallery, Music, Terminal, Settings, etc. (same as before, omitted here for brevity) -->
-
-</div>
-
-<button class="restore" id="restoreBtn">Restore Emulator</button>
-
-<script>
-/* ---------- Start Menu Fix ---------- */
-const startBtn = document.getElementById('startBtn');
-const startMenu = document.getElementById('startMenu');
-
-function toggleStartMenu() {
-  if (startMenu.classList.contains('open')) {
-    startMenu.classList.remove('open');
-    startMenu.style.display = 'none';
-  } else {
-    startMenu.style.display = 'flex';
-    startMenu.style.zIndex = 3000;
-    requestAnimationFrame(()=> startMenu.classList.add('open'));
-  }
-}
-startBtn.addEventListener('click', e=> { e.stopPropagation(); toggleStartMenu(); });
-document.addEventListener('click', e=> { if(!startMenu.contains(e.target) && e.target!==startBtn){ startMenu.classList.remove('open'); startMenu.style.display='none'; } });
-
-/* ---------- Clock ---------- */
-const clockEl = document.getElementById('clock');
-function tick(){ clockEl.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
-tick(); setInterval(tick,60000);
-  
   <!-- Notepad -->
   <div class="window" id="notepadWindow" style="left:80px;top:80px;z-index:600">
     <div class="titlebar"><div class="title">Notepad</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
@@ -166,21 +155,25 @@ tick(); setInterval(tick,60000);
     </div>
   </div>
 
-  <!-- Browser (with fake virus simulator) -->
-  <div class="window" id="browserWindow" style="left:220px;top:100px;width:740px;height:460px;z-index:620">
-    <div class="titlebar"><div class="title">Safe Browser — Virus Simulator</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
+  <!-- Browser (with fake malware simulator) -->
+  <div class="window" id="browserWindow" style="left:220px;top:100px;width:780px;height:500px;z-index:620">
+    <div class="titlebar"><div class="title">Safe Browser — Malware Simulator</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
     <div class="content">
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
         <input id="fakeUrl" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.06)" value="fake-viruses.local">
         <button class="btn" id="goBtn">Go</button>
       </div>
 
-      <div id="browserInner" style="min-height:220px;">
-        <p>This is a safe fake browser. Choose a fake virus below to download & run (harmless simulation):</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn virusBtn" data-virus="ransomware">🛑 Ransomware (Lock desktop)</button>
-          <button class="btn virusBtn" data-virus="adware">📢 Adware (Popups)</button>
+      <div id="browserInner" style="min-height:240px;">
+        <p>This is a safe fake browser. Click a virus to "download" and run (simulation only):</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <button class="btn virusBtn" data-virus="ransomware">🛑 Ransomware</button>
+          <button class="btn virusBtn" data-virus="adware">📢 Adware</button>
           <button class="btn virusBtn" data-virus="flash">🌈 Flash & Beep</button>
+          <button class="btn virusBtn" data-virus="worm">🐛 Worm</button>
+          <button class="btn virusBtn" data-virus="cryptominer">⛏️ Cryptominer</button>
+          <button class="btn virusBtn" data-virus="phishing">🎣 Phishing</button>
+          <button class="btn virusBtn" data-virus="spyware">🕵️ Spyware-sim</button>
         </div>
         <div id="virusLog" style="margin-top:12px;padding:8px;border-radius:8px;background:rgba(0,0,0,0.03);height:140px;overflow:auto"></div>
       </div>
@@ -214,13 +207,49 @@ tick(); setInterval(tick,60000);
     </div>
   </div>
 
-  <!-- Settings -->
-  <div class="window" id="settingsWindow" style="left:380px;top:240px;width:460px;height:320px;z-index:660">
-    <div class="titlebar"><div class="title">Settings</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
+  <!-- Explorer (mock) -->
+  <div class="window" id="explorerWindow" style="left:380px;top:220px;width:520px;height:380px;z-index:660">
+    <div class="titlebar"><div class="title">File Explorer (Mock)</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
     <div class="content">
-      <label>Accent color: <input type="color" id="themeColor" value="#0a64ff"/></label>
-      <br><label>Wallpaper blur: <input type="range" id="wallBlur" min="0" max="10" value="0"/></label>
-      <p style="opacity:.7;margin-top:10px">All settings are local and cosmetic.</p>
+      <div style="display:flex;gap:8px">
+        <div style="width:160px">
+          <div style="font-weight:600;margin-bottom:6px">Folders</div>
+          <ul id="fakeFolders" style="padding-left:18px;opacity:.9">
+            <li><a href="#" class="fakefile" data-type="text">Documents</a></li>
+            <li><a href="#" class="fakefile" data-type="image">Pictures</a></li>
+            <li><a href="#" class="fakefile" data-type="text">Notes</a></li>
+          </ul>
+        </div>
+        <div style="flex:1;padding-left:10px">
+          <div id="previewArea" style="height:260px;background:rgba(0,0,0,0.03);border-radius:8px;padding:10px">Select a file to preview</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar -->
+  <div class="window" id="calendarWindow" style="left:420px;top:240px;width:420px;height:360px;z-index:670">
+    <div class="titlebar"><div class="title">Calendar</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="max">▢</div><div class="ctrl" data-action="close">✕</div></div></div>
+    <div class="content">
+      <div id="calHere"></div>
+    </div>
+  </div>
+
+  <!-- Clock -->
+  <div class="window" id="clockWindow" style="left:460px;top:260px;width:320px;height:220px;z-index:680">
+    <div class="titlebar"><div class="title">Clock</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="close">✕</div></div></div>
+    <div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center">
+      <div id="bigClock" style="font-size:40px">--:--</div>
+      <div id="dateLine" style="opacity:.7;margin-top:6px"></div>
+    </div>
+  </div>
+
+  <!-- Mini game (Tic Tac Toe) -->
+  <div class="window" id="gameWindow" style="left:500px;top:300px;width:340px;height:360px;z-index:690">
+    <div class="titlebar"><div class="title">Tic-Tac-Toe</div><div class="controls"><div class="ctrl" data-action="min">—</div><div class="ctrl" data-action="close">✕</div></div></div>
+    <div class="content" style="display:flex;flex-direction:column;align-items:center;gap:8px">
+      <div id="tictacBoard" class="tictac"></div>
+      <div><button class="btn" id="resetTic">Reset</button></div>
     </div>
   </div>
 
@@ -229,7 +258,9 @@ tick(); setInterval(tick,60000);
 <button class="restore" id="restoreBtn">Restore Emulator</button>
 
 <script>
-/* ---------- Core UI behavior ---------- */
+/* ===========================
+   Core helpers & UI behavior
+   =========================== */
 const startBtn = document.getElementById('startBtn');
 const startMenu = document.getElementById('startMenu');
 const taskIcons = document.getElementById('taskIcons');
@@ -237,26 +268,24 @@ const clockEl = document.getElementById('clock');
 const restoreBtn = document.getElementById('restoreBtn');
 const wallpaper = document.querySelector('.wallpaper');
 
-function tick(){ const d=new Date(); clockEl.textContent = d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
+function tick(){ clockEl.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
 tick(); setInterval(tick,60000);
 
-/* Fixed Start menu toggle: uses block display and closes on outside click */
-startBtn.addEventListener('click', () => {
-  if (startMenu.style.display === 'block') {
-    startMenu.style.display = 'none';
+/* Start menu toggle (robust) */
+function toggleStartMenu() {
+  if (startMenu.classList.contains('open')) {
+    startMenu.classList.remove('open');
+    setTimeout(()=> startMenu.style.display='none',180);
   } else {
-    startMenu.style.display = 'block';
-    startMenu.style.zIndex = 2000; // appear above all windows
+    startMenu.style.display = 'flex';
+    startMenu.style.zIndex = 3000;
+    requestAnimationFrame(()=> startMenu.classList.add('open'));
   }
-});
-// close Start menu when clicking outside
-document.addEventListener('click', (e) => {
-  if (!startMenu.contains(e.target) && e.target !== startBtn) {
-    startMenu.style.display = 'none';
-  }
-});
+}
+startBtn.addEventListener('click', e => { e.stopPropagation(); toggleStartMenu(); });
+document.addEventListener('click', e=> { if(!startMenu.contains(e.target) && e.target !== startBtn){ startMenu.classList.remove('open'); setTimeout(()=> startMenu.style.display='none',180); } });
 
-/* ---------- Taskbar / Windows ---------- */
+/* Taskbar helper */
 function addTask(id,label,emoji){
   if(document.getElementById('task-'+id)) return;
   const el = document.createElement('div'); el.className='icon'; el.id='task-'+id; el.textContent = emoji; el.title = label;
@@ -265,7 +294,7 @@ function addTask(id,label,emoji){
 }
 function removeTask(id){ const e=document.getElementById('task-'+id); if(e) e.remove(); }
 
-/* open/close/toggle windows */
+/* Window open/close/toggle */
 function toggleWindow(id){
   const win = document.getElementById(id+'Window');
   if(!win) return;
@@ -274,17 +303,16 @@ function toggleWindow(id){
 }
 function openWindow(id){
   const win = document.getElementById(id+'Window'); if(!win) return;
-  // ensure base z-indexes then bring selected window forward
   document.querySelectorAll('.window').forEach((w,i)=> { if(!w.style.zIndex) w.style.zIndex = 500 + i; });
   win.style.zIndex = 1000 + Math.floor(Math.random()*100);
   win.style.display = 'flex';
   requestAnimationFrame(()=> win.classList.add('open'));
 }
 
-/* attach start menu app clicks */
+/* Attach start menu app clicks */
 document.querySelectorAll('.app-card').forEach(a=>{
   a.addEventListener('click', ()=>{
-    const app = a.dataset.app; startMenu.style.display = 'none';
+    const app = a.dataset.app; startMenu.classList.remove('open'); setTimeout(()=> startMenu.style.display='none',180);
     if(app==='notepad'){ openWindow('notepad'); addTask('notepad','Notepad','📝'); }
     if(app==='calc'){ openWindow('calc'); addTask('calc','Calculator','🧮'); }
     if(app==='browser'){ openWindow('browser'); addTask('browser','Browser','🌐'); }
@@ -292,11 +320,15 @@ document.querySelectorAll('.app-card').forEach(a=>{
     if(app==='music'){ openWindow('music'); addTask('music','Music','🎧'); }
     if(app==='terminal'){ openWindow('terminal'); addTask('terminal','Terminal','💻'); }
     if(app==='settings'){ openWindow('settings'); addTask('settings','Settings','⚙️'); }
+    if(app==='clock'){ openWindow('clock'); addTask('clock','Clock','⏰'); }
+    if(app==='calendar'){ openWindow('calendar'); addTask('calendar','Calendar','📅'); }
+    if(app==='explorer'){ openWindow('explorer'); addTask('explorer','Explorer','🗂️'); }
+    if(app==='game'){ openWindow('game'); addTask('game','TicTacToe','🎮'); }
     if(app==='prank'){ runPrank(); addTask('prank','Virus','🦠'); }
   })
 });
 
-/* ---------- Window controls (close/min/max) & dragging ---------- */
+/* Window controls & dragging */
 document.querySelectorAll('.window').forEach(win=>{
   const ctrls = win.querySelectorAll('.ctrl')||[];
   ctrls.forEach(c=>{
@@ -327,28 +359,31 @@ document.querySelectorAll('.window').forEach(win=>{
   }
 });
 
-/* ---------- Notepad (localStorage) ---------- */
+/* ===========================
+   Notepad (localStorage)
+   =========================== */
 const notepadText = document.getElementById('notepadText');
-const NP_KEY = 'fakewin_notepad_v2';
+const NP_KEY = 'fakewin_notepad_v3';
 if(localStorage.getItem(NP_KEY)) notepadText.value = localStorage.getItem(NP_KEY);
 notepadText.addEventListener('input', ()=> localStorage.setItem(NP_KEY, notepadText.value));
 
-/* ---------- Calculator ---------- */
+/* ===========================
+   Calculator
+   =========================== */
 (function(){
   const display = document.getElementById('calcDisplay'); let cur='';
   document.querySelectorAll('#calcWindow .btn').forEach(b=> b.addEventListener('click', ()=>{
     const k = b.dataset.key;
     if(k==='='){
-      try{
-        if(!/^[0-9.+\\-*/\\s()]+$/.test(cur)) throw 'err';
-        cur = String(Function('return ('+cur+')')());
-      }catch(e){ cur='Err'; }
+      try{ if(!/^[0-9.+\\-*/\\s()]+$/.test(cur)) throw 'err'; cur = String(Function('return ('+cur+')')()); }catch(e){ cur='Err'; }
     } else cur += k;
     display.textContent = cur || '0';
   }));
 })();
 
-/* ---------- Gallery (client-side uploads) ---------- */
+/* ===========================
+   Gallery (client-side uploads)
+   =========================== */
 const thumbs = document.getElementById('thumbs');
 const imgUpload = document.getElementById('imgUpload');
 if(imgUpload){
@@ -368,7 +403,9 @@ if(imgUpload){
 }
 const clearBtn = document.getElementById('clearGallery'); if(clearBtn) clearBtn.addEventListener('click', ()=> thumbs.innerHTML='');
 
-/* ---------- Music (generated tone) ---------- */
+/* ===========================
+   Music (generated tone)
+   =========================== */
 let audioCtx=null, playing=false, osc=null;
 const playBtn = document.getElementById('playMusic');
 const stopBtn = document.getElementById('stopMusic');
@@ -383,7 +420,9 @@ if(playBtn) playBtn.addEventListener('click', ()=>{
 });
 if(stopBtn) stopBtn.addEventListener('click', ()=>{ if(!playing) return; playing=false; if(osc){ try{ osc.stop() }catch{} osc.disconnect(); osc=null } });
 
-/* ---------- Terminal ---------- */
+/* ===========================
+   Terminal
+   =========================== */
 const termOut = document.getElementById('termOut'), termIn = document.getElementById('termIn'), termRun = document.getElementById('termRun');
 if(termRun) termRun.addEventListener('click', ()=>{
   const cmd = termIn.value.trim(); if(!cmd) return; appendTerm('> '+cmd);
@@ -396,56 +435,117 @@ if(termRun) termRun.addEventListener('click', ()=>{
 });
 function appendTerm(s){ const p=document.createElement('div'); p.textContent=s; termOut.appendChild(p); }
 
-/* ---------- Settings ---------- */
-const themeColor = document.getElementById('themeColor'); if(themeColor) themeColor.addEventListener('input', e=> document.documentElement.style.setProperty('--accent', e.target.value));
-const wallBlur = document.getElementById('wallBlur'); if(wallBlur) wallBlur.addEventListener('input', e=> wallpaper.style.filter = `blur(${e.target.value}px)`);
+/* ===========================
+   Explorer (mock preview)
+   =========================== */
+document.querySelectorAll('.fakefile').forEach(f => {
+  f.addEventListener('click', (e)=>{
+    e.preventDefault();
+    const t = f.dataset.type;
+    const preview = document.getElementById('previewArea');
+    if(t==='text') preview.innerHTML = '<pre style="white-space:pre-wrap">This is a fake document preview. Nothing is loaded from disk.</pre>';
+    else preview.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;">🖼️ Sample Image Preview</div>';
+    openWindow('explorer');
+    addTask('explorer','Explorer','🗂️');
+  });
+});
 
-/* ---------- Browser: fake virus simulator ---------- */
+/* ===========================
+   Calendar + Clock
+   =========================== */
+function renderCalendar(){
+  const out = document.getElementById('calHere'); out.innerHTML='';
+  const d = new Date();
+  const month = d.getMonth(); const year = d.getFullYear();
+  const first = new Date(year, month, 1); const start = first.getDay();
+  const days = new Date(year, month+1,0).getDate();
+  const header = document.createElement('div'); header.style.fontWeight='600'; header.style.marginBottom='8px';
+  header.textContent = d.toLocaleString(undefined,{month:'long',year:'numeric'});
+  out.appendChild(header);
+  const grid = document.createElement('div'); grid.className='calendar-grid';
+  for(let i=0;i<start;i++) grid.appendChild(document.createElement('div'));
+  for(let day=1; day<=days; day++){
+    const el = document.createElement('div'); el.className='day'; el.textContent = day;
+    if(day===d.getDate()) el.style.background='rgba(10,100,255,0.12)'; grid.appendChild(el);
+  }
+  out.appendChild(grid);
+}
+renderCalendar();
+function renderClockWindow(){
+  const bc = document.getElementById('bigClock'); const dl = document.getElementById('dateLine');
+  function tickBig(){ const now = new Date(); bc.textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'}); dl.textContent = now.toDateString(); }
+  tickBig(); setInterval(tickBig,1000);
+}
+renderClockWindow();
+
+/* ===========================
+   Tic-Tac-Toe (simple)
+   =========================== */
+const tBoard = document.getElementById('tictacBoard'); let tState = Array(9).fill(null); let tTurn='X';
+function renderTic(){
+  tBoard.innerHTML=''; tBoard.style.gridTemplateColumns='repeat(3,100px)';
+  for(let i=0;i<9;i++){
+    const c = document.createElement('div'); c.className='ticcell'; c.textContent = tState[i]||''; c.addEventListener('click', ()=>{
+      if(tState[i]) return;
+      tState[i]=tTurn; tTurn = tTurn==='X'?'O':'X'; renderTic();
+    });
+    tBoard.appendChild(c);
+  }
+}
+document.getElementById('resetTic').addEventListener('click', ()=>{ tState=Array(9).fill(null); tTurn='X'; renderTic();});
+renderTic();
+
+/* ===========================
+   Fake Malware Simulator (browser)
+   =========================== */
 const virusLog = document.getElementById('virusLog');
 document.querySelectorAll('.virusBtn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     const t = btn.dataset.virus;
-    logVirus(`Downloaded: ${t}`);
+    logVirus(`Downloaded simulated payload: ${t}`);
     if(t==='ransomware') runRansomware();
     if(t==='adware') runAdware();
     if(t==='flash') runFlashBeep();
+    if(t==='worm') runWorm();
+    if(t==='cryptominer') runCryptominer();
+    if(t==='phishing') runPhishing();
+    if(t==='spyware') runSpywareSim();
   });
 });
-function logVirus(msg){ virusLog.innerHTML += msg + '<br>'; virusLog.scrollTop = virusLog.scrollHeight; }
+function logVirus(msg){ const time = new Date().toLocaleTimeString(); virusLog.innerHTML += `[${time}] ${msg}<br>`; virusLog.scrollTop = virusLog.scrollHeight; }
 
-/* Ransomware: lock overlay + unlock button (harmless) */
+/* Ransomware: full-screen overlay with safe unlock */
 function runRansomware(){
-  if(document.getElementById('ransomOverlay')) { logVirus('Ransomware already active'); return; }
+  if(document.getElementById('ransomOverlay')){ logVirus('Ransomware already active'); return; }
   const overlay = document.createElement('div'); overlay.id='ransomOverlay';
   Object.assign(overlay.style, {
-    position:'fixed', inset:'0', background:'#0b0b0b', color:'#ffdede', zIndex:3000,
+    position:'fixed', inset:'0', background:'#0b0b0b', color:'#ffdede', zIndex:4000,
     display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', fontSize:'20px', padding:'20px'
   });
-  overlay.innerHTML = `<div style="max-width:820px;padding:20px;text-align:center">
+  overlay.innerHTML = `<div style="max-width:900px;padding:20px;text-align:center">
     <div style="font-size:40px;margin-bottom:12px">💀 Your fake desktop is locked</div>
-    <div style="opacity:.9;margin-bottom:14px">This is simulated ransomware for demo purposes only. No files were harmed.</div>
+    <div style="opacity:.9;margin-bottom:14px">This is **simulated ransomware** for demo purposes only. No files were harmed.</div>
     <button id="ransomUnlock" style="padding:10px 14px;border-radius:10px;border:none;background:var(--accent);color:white;font-size:16px;cursor:pointer">Unlock (Safe)</button>
   </div>`;
   document.body.appendChild(overlay);
   logVirus('Ransomware activated — desktop locked (simulation).');
   restoreBtn.style.display = 'block';
   document.getElementById('ransomUnlock').addEventListener('click', ()=>{
-    overlay.remove();
-    logVirus('Ransomware removed (safe).');
+    overlay.remove(); logVirus('Ransomware removed (safe).');
   });
 }
 
-/* Adware: spawn many small popups (click to close) */
+/* Adware: spawn popup ads (click to close) */
 function runAdware(){
   const count = 6;
   for(let i=0;i<count;i++){
     const p = document.createElement('div'); p.className = 'adPopup';
     Object.assign(p.style, {
       position:'fixed', left: (10 + Math.random()*70) + '%', top: (10 + Math.random()*60) + '%',
-      width:'220px', height:'120px', background:'#fff', border:'2px solid #'+(Math.floor(Math.random()*0xffffff).toString(16)), zIndex:2500,
+      width:'220px', height:'120px', background:'#fff', border:'2px solid #'+(Math.floor(Math.random()*0xffffff).toString(16)).padStart(6,'0'), zIndex:3500,
       borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', textAlign:'center', padding:'6px', cursor:'pointer', boxShadow:'0 8px 24px rgba(0,0,0,0.15)'
     });
-    p.innerHTML = `<div style="font-weight:600">📢 Sponsored</div><div style="font-size:12px;opacity:.8;margin-top:6px">Click to close</div>`;
+    p.innerHTML = `<div style="font-weight:700">📢 Sponsored</div><div style="font-size:12px;opacity:.8;margin-top:6px">Click to close</div>`;
     p.addEventListener('click', ()=> p.remove());
     document.body.appendChild(p);
   }
@@ -453,52 +553,177 @@ function runAdware(){
   restoreBtn.style.display = 'block';
 }
 
-/* Flash & Beep: invert/pixelate + beeps */
+/* Flash & Beep: rapid visuals + audio */
 function runFlashBeep(){
   document.body.classList.add('invert','pixelate','shake');
-  logVirus('Flash/Beep virus running (visual + audio).');
+  logVirus('Flash/Beep running (visual + audio).');
   try{
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const now = ctx.currentTime;
-    for(let i=0;i<10;i++){
+    for(let i=0;i<12;i++){
       const o = ctx.createOscillator(); const g = ctx.createGain();
-      o.type = (i%2===0 ? 'sine' : 'square'); o.frequency.value = 220 + i*80;
+      o.type = (i%2===0 ? 'sine' : 'square'); o.frequency.value = 200 + i*60;
       g.gain.value = 0.02;
       o.connect(g); g.connect(ctx.destination);
-      o.start(now + i*0.08); o.stop(now + i*0.08 + 0.06);
+      o.start(now + i*0.06); o.stop(now + i*0.06 + 0.05);
     }
   }catch(e){}
   setTimeout(()=>{
     document.body.classList.remove('invert','pixelate','shake');
     logVirus('Flash/Beep ended.');
-  }, 4200);
+  }, 3800);
   restoreBtn.style.display = 'block';
 }
 
-/* ---------- Restore button ---------- */
+/* Worm: spawn many small fake windows locally (no network) */
+function runWorm(){
+  const spawned = [];
+  for(let i=0;i<8;i++){
+    const w = document.createElement('div'); w.className='window worm'; 
+    w.style.left = (50 + Math.random()*300) + 'px'; w.style.top = (60 + Math.random()*200) + 'px'; w.style.width='240px'; w.style.height='120px';
+    w.style.zIndex = 3600;
+    w.innerHTML = `<div style="height:28px;background:rgba(0,0,0,0.06);padding:4px;border-bottom:1px solid rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px">worm.exe</span><button style="margin-right:6px">✕</button></div><div style="padding:8px;font-size:12px">Infected: simulation</div>`;
+    w.querySelector('button').addEventListener('click', ()=> { w.remove(); });
+    document.body.appendChild(w);
+    spawned.push(w);
+  }
+  logVirus(`Worm spawned ${spawned.length} local windows (simulation).`);
+  restoreBtn.style.display = 'block';
+}
+
+/* Cryptominer: simulate CPU spike UI and progress */
+function runCryptominer(){
+  // show small overlay panel
+  if(document.getElementById('minerPanel')) return logVirus('Cryptominer already running (sim).');
+  const panel = document.createElement('div'); panel.id = 'minerPanel';
+  Object.assign(panel.style, {position:'fixed', right:'18px', bottom:'92px', width:'260px', padding:'12px', background:'#fff', borderRadius:'12px', zIndex:3600, boxShadow:'0 8px 30px rgba(0,0,0,0.15)'});
+  panel.innerHTML = `<div style="font-weight:700;margin-bottom:8px">⛏️ Fake Miner</div><div style="font-size:12px;margin-bottom:8px">Simulating CPU usage</div><div class="cpuMeter"><div class="cpuFill" id="cpuFill"></div></div><div style="margin-top:8px;font-size:12px">Progress: <span id="mineProg">0%</span></div><div style="margin-top:8px"><button id="stopMiner" class="btn">Stop</button></div>`;
+  document.body.appendChild(panel);
+  let prog = 0;
+  const cpu = document.getElementById('cpuFill'); const ptext = document.getElementById('mineProg');
+  const t = setInterval(()=>{
+    prog = Math.min(100, prog + Math.random()*8);
+    cpu.style.width = (30 + Math.random()*60) + '%';
+    ptext.textContent = Math.floor(prog) + '%';
+    if(prog >= 100){ clearInterval(t); logVirus('Cryptominer finished (simulation).'); document.getElementById('cpuFill').style.width='0%'; setTimeout(()=> panel.remove(),1200); }
+  }, 600);
+  document.getElementById('stopMiner').addEventListener('click', ()=> { clearInterval(t); panel.remove(); logVirus('Cryptominer stopped (simulation).'); });
+  logVirus('Cryptominer started (simulation).');
+  restoreBtn.style.display = 'block';
+}
+
+/* Phishing: show credential prompt but DO NOT store user input */
+function runPhishing(){
+  // modal fosters input but we will ignore it — we will display fake "stolen" sample data, not the user's entry
+  if(document.getElementById('phishModal')) return logVirus('Phishing modal already open.');
+  const m = document.createElement('div'); m.id='phishModal';
+  Object.assign(m.style,{position:'fixed',inset:0,background:'rgba(0,0,0,0.6)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:4000});
+  m.innerHTML = `<div style="background:#fff;padding:18px;border-radius:10px;width:360px;text-align:center"><div style="font-weight:700;margin-bottom:8px">🔒 Fake Login</div><div style="margin-bottom:8px">Enter credentials (demo) — input is NOT saved.</div><input id="phUser" placeholder="user@example.com" style="width:100%;padding:8px;margin-bottom:8px"/><input id="phPass" placeholder="password" type="password" style="width:100%;padding:8px;margin-bottom:10px"/><div style="display:flex;gap:8px;justify-content:center"><button id="submitPh" class="btn">Submit</button><button id="closePh" class="btn" style="background:#666">Close</button></div></div>`;
+  document.body.appendChild(m);
+  document.getElementById('closePh').addEventListener('click', ()=> { m.remove(); logVirus('Phishing modal closed (simulation).'); });
+  document.getElementById('submitPh').addEventListener('click', ()=> {
+    // DO NOT read or save user inputs. Show fake sample stolen data instead.
+    const fake = [
+      'user: alice@example.com / pass: qwerty123',
+      'user: bob@nowhere / pass: letmein',
+      'user: carol@demo / pass: hunter2'
+    ];
+    m.innerHTML = `<div style="background:#fff;padding:18px;border-radius:10px;width:480px;text-align:center"><div style="font-weight:700;margin-bottom:8px">🎣 Phishing (Simulation)</div><div style="margin-bottom:8px">Sample captured credentials (fake):</div><pre style="text-align:left;background:#f3f6ff;padding:8px;border-radius:6px">${fake.join('\n')}</pre><div style="margin-top:10px"><button id="closePh2" class="btn">Close</button></div></div>`;
+    document.getElementById('closePh2').addEventListener('click', ()=> { m.remove(); logVirus('Phishing simulation ended (no real data used).'); });
+  });
+  logVirus('Phishing modal opened (simulation).');
+  restoreBtn.style.display='block';
+}
+
+/* Spyware-sim: show randomly generated "captured" items (does NOT capture actual input) */
+function runSpywareSim(){
+  const samples = [];
+  for(let i=0;i<10;i++){
+    samples.push(`${['Visited URL','Typed','Email','Search'][Math.floor(Math.random()*4)]}: ${Math.random().toString(36).slice(2,8)}${i}`);
+  }
+  const p = document.createElement('div'); p.id='spyPanel';
+  Object.assign(p.style,{position:'fixed',left:'18px',bottom:'92px',width:'340px',padding:'12px',background:'#fff',borderRadius:'12px',zIndex:3600,boxShadow:'0 8px 30px rgba(0,0,0,0.15)'});
+  p.innerHTML = `<div style="font-weight:700;margin-bottom:8px">🕵️ Spyware (Simulation)</div><div style="font-size:12px;height:140px;overflow:auto;background:#f7f9ff;padding:8px;border-radius:8px">${samples.join('<br>')}</div><div style="margin-top:8px"><button id="closeSpy" class="btn">Close</button></div>`;
+  document.body.appendChild(p);
+  document.getElementById('closeSpy').addEventListener('click', ()=> { p.remove(); logVirus('Spyware simulation closed.'); });
+  logVirus('Spyware simulation displayed fake captured items (no real data).');
+  restoreBtn.style.display='block';
+}
+
+/* ===========================
+   Restore button: undo effects
+   =========================== */
 restoreBtn.addEventListener('click', ()=>{
   restoreBtn.style.display = 'none';
   document.body.classList.remove('invert','pixelate','shake');
   document.querySelectorAll('.adPopup').forEach(n => n.remove());
   const ro = document.getElementById('ransomOverlay'); if(ro) ro.remove();
+  const miner = document.getElementById('minerPanel'); if(miner) miner.remove();
+  document.querySelectorAll('.worm').forEach(w=> w.remove());
+  const ph = document.getElementById('phishModal'); if(ph) ph.remove();
+  const spy = document.getElementById('spyPanel'); if(spy) spy.remove();
   logVirus('Emulator restored to normal.');
 });
 
-/* ---------- Prevent external navigation (demo safety) ---------- */
+/* ===========================
+   Extra: Browser 'Go' button behavior
+   =========================== */
+document.getElementById('goBtn').addEventListener('click', ()=>{
+  const url = document.getElementById('fakeUrl').value || 'example.local';
+  const inner = document.getElementById('browserInner');
+  inner.innerHTML = `<p>Fake page: <strong>${escapeHtml(url)}</strong></p><p>This is a toy site. Try the simulated malware buttons below.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      <button class="btn virusBtn" data-virus="ransomware">🛑 Ransomware</button>
+      <button class="btn virusBtn" data-virus="adware">📢 Adware</button>
+      <button class="btn virusBtn" data-virus="flash">🌈 Flash & Beep</button>
+      <button class="btn virusBtn" data-virus="worm">🐛 Worm</button>
+      <button class="btn virusBtn" data-virus="cryptominer">⛏️ Cryptominer</button>
+      <button class="btn virusBtn" data-virus="phishing">🎣 Phishing</button>
+      <button class="btn virusBtn" data-virus="spyware">🕵️ Spyware-sim</button>
+    </div>
+    <div id="virusLog" style="margin-top:12px;padding:8px;border-radius:8px;background:rgba(0,0,0,0.03);height:140px;overflow:auto"></div>`;
+  // reattach handlers
+  document.querySelectorAll('.virusBtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const t = btn.dataset.virus;
+      logVirus(`Downloaded simulated payload: ${t}`);
+      if(t==='ransomware') runRansomware();
+      if(t==='adware') runAdware();
+      if(t==='flash') runFlashBeep();
+      if(t==='worm') runWorm();
+      if(t==='cryptominer') runCryptominer();
+      if(t==='phishing') runPhishing();
+      if(t==='spyware') runSpywareSim();
+    });
+  });
+});
+
+/* ===========================
+   Utility: escapeHtml
+   =========================== */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
+
+/* ===========================
+   Prevent external navigation (safety)
+   =========================== */
 document.addEventListener('click', (e)=>{
   const a = e.target.closest && e.target.closest('a');
   if(!a) return;
   e.preventDefault();
-  alert('External navigation is blocked in this demo for safety.');
+  alert('External navigation is blocked in this safe demo.');
 });
 
-/* ---------- Small keyboard helpers ---------- */
-window.addEventListener('keydown', (e)=>{
-  if(e.key==='Escape'){ startMenu.style.display = 'none'; }
-  if(e.ctrlKey && e.key==='1'){ openWindow('notepad'); addTask('notepad','Notepad','📝'); }
-});
+/* ===========================
+   Final notes (safety)
+   =========================== */
+/*
+  IMPORTANT:
+  - All malware items in this emulator are purely visual simulations.
+  - The demo NEVER stores or exfiltrates actual user input.
+  - The phishing modal intentionally does NOT read or save typed values; it shows randomly generated fake samples.
+  - Do not attempt to run or distribute real malware.
+*/
 
-/* ---------- End of script ---------- */
 </script>
 </body>
 </html>
