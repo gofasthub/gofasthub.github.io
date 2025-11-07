@@ -60,15 +60,18 @@
       margin-top: 0.35rem;
     }
 
-    /* Christmas Lights */
+    /* Full-width Christmas Lights */
     .lights {
-      position: absolute;
-      top: -25px;
-      left: 50%;
-      transform: translateX(-50%);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
       display: flex;
-      gap: 10px;
-      z-index: 1;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0.5rem 0;
+      background: transparent;
+      z-index: 3;
     }
 
     .bulb {
@@ -80,9 +83,10 @@
       box-shadow: 0 0 8px currentColor;
     }
 
-    .bulb:nth-child(2n) { background-color: #4ade80; animation-delay: .5s; }
-    .bulb:nth-child(3n) { background-color: #60a5fa; animation-delay: 1s; }
-    .bulb:nth-child(4n) { background-color: #facc15; animation-delay: 1.5s; }
+    .bulb:nth-child(4n+1) { background-color: #ff4444; animation-delay: .2s; }
+    .bulb:nth-child(4n+2) { background-color: #4ade80; animation-delay: .5s; }
+    .bulb:nth-child(4n+3) { background-color: #60a5fa; animation-delay: .8s; }
+    .bulb:nth-child(4n+4) { background-color: #facc15; animation-delay: 1.1s; }
 
     @keyframes twinkle {
       0%, 100% { opacity: 0.8; transform: scale(1); filter: brightness(1); }
@@ -119,7 +123,7 @@
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
+      gap: 1.2rem;
       width: 100%;
       max-width: 1000px;
       margin-top: 1rem;
@@ -144,13 +148,13 @@
     }
 
     .grid:hover .card {
-      transform: scale(0.9);
-      opacity: 0.6;
-      filter: blur(1px);
+      transform: scale(0.92);
+      opacity: 0.8;
+      filter: brightness(0.8);
     }
 
     .card:hover {
-      transform: scale(1.08);
+      transform: scale(1.1);
       opacity: 1;
       filter: none;
       box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15), 0 0 12px rgba(255, 68, 68, 0.3);
@@ -206,17 +210,9 @@
 <body>
   <canvas id="snow"></canvas>
 
+  <div class="lights" id="lights"></div>
+
   <header>
-    <div class="lights">
-      <div class="bulb"></div>
-      <div class="bulb"></div>
-      <div class="bulb"></div>
-      <div class="bulb"></div>
-      <div class="bulb"></div>
-      <div class="bulb"></div>
-      <div class="bulb"></div>
-      <div class="bulb"></div>
-    </div>
     <h1>🎄 gofasthub.github.io 🎅</h1>
     <div class="subtitle">Find and play awesome games this Christmas!</div>
   </header>
@@ -257,8 +253,16 @@
   </footer>
 
   <script>
-    // Update year
+    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Lights generator
+    const lights = document.getElementById('lights');
+    for (let i = 0; i < 40; i++) {
+      const bulb = document.createElement('div');
+      bulb.classList.add('bulb');
+      lights.appendChild(bulb);
+    }
 
     // Search filter
     const searchInput = document.getElementById('searchInput');
@@ -271,10 +275,11 @@
       });
     });
 
-    // Snowfall animation
+    // Snow with mouse interaction
     const canvas = document.getElementById('snow');
     const ctx = canvas.getContext('2d');
     let snowflakes = [];
+    let mouse = { x: null, y: null };
 
     function resize() {
       canvas.width = window.innerWidth;
@@ -282,6 +287,11 @@
     }
     window.addEventListener('resize', resize);
     resize();
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
 
     function createSnowflake() {
       return {
@@ -300,7 +310,6 @@
     let angle = 0;
     function drawSnow() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
       snowflakes.forEach((flake) => {
         ctx.beginPath();
         ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
@@ -316,6 +325,18 @@
       snowflakes.forEach((flake) => {
         flake.y += flake.speedY;
         flake.x += Math.sin(angle + flake.swing) * 0.5 + flake.speedX;
+
+        // Light mouse repulsion
+        if (mouse.x && mouse.y) {
+          let dx = flake.x - mouse.x;
+          let dy = flake.y - mouse.y;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 100) {
+            flake.x += dx / dist * 2;
+            flake.y += dy / dist * 2;
+          }
+        }
+
         if (flake.y > canvas.height) {
           flake.y = -flake.radius;
           flake.x = Math.random() * canvas.width;
