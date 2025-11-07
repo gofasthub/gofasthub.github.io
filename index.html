@@ -15,11 +15,7 @@
       --muted: #a7b2c2;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background: var(--bg);
@@ -37,8 +33,8 @@
     header {
       text-align: center;
       margin-bottom: 2rem;
-      z-index: 2;
       position: relative;
+      z-index: 2;
       animation: fadeIn 1.4s ease-out;
     }
 
@@ -54,12 +50,43 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       letter-spacing: 0.5px;
+      position: relative;
+      z-index: 3;
     }
 
     .subtitle {
       color: var(--muted);
       font-size: 1rem;
       margin-top: 0.35rem;
+    }
+
+    /* Christmas Lights */
+    .lights {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 1;
+    }
+
+    .bulb {
+      width: 10px;
+      height: 18px;
+      border-radius: 50% 50% 35% 35%;
+      background-color: red;
+      animation: twinkle 2s infinite ease-in-out;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .bulb:nth-child(2n) { background-color: #4ade80; animation-delay: .5s; }
+    .bulb:nth-child(3n) { background-color: #60a5fa; animation-delay: 1s; }
+    .bulb:nth-child(4n) { background-color: #facc15; animation-delay: 1.5s; }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.8; transform: scale(1); filter: brightness(1); }
+      50% { opacity: 1; transform: scale(1.2); filter: brightness(1.4); }
     }
 
     .search-bar {
@@ -96,9 +123,10 @@
       width: 100%;
       max-width: 1000px;
       margin-top: 1rem;
-      z-index: 2;
       position: relative;
+      z-index: 2;
       animation: fadeIn 2.2s ease-out;
+      transition: transform 0.3s ease;
     }
 
     .card {
@@ -107,15 +135,26 @@
       padding: 1rem;
       text-align: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      transition: 0.35s;
+      transition: all 0.4s ease;
       cursor: pointer;
       backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.07);
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .grid:hover .card {
+      transform: scale(0.9);
+      opacity: 0.6;
+      filter: blur(1px);
     }
 
     .card:hover {
-      transform: translateY(-6px) scale(1.03);
+      transform: scale(1.08);
+      opacity: 1;
+      filter: none;
       box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15), 0 0 12px rgba(255, 68, 68, 0.3);
+      z-index: 3;
     }
 
     .card img {
@@ -168,6 +207,16 @@
   <canvas id="snow"></canvas>
 
   <header>
+    <div class="lights">
+      <div class="bulb"></div>
+      <div class="bulb"></div>
+      <div class="bulb"></div>
+      <div class="bulb"></div>
+      <div class="bulb"></div>
+      <div class="bulb"></div>
+      <div class="bulb"></div>
+      <div class="bulb"></div>
+    </div>
     <h1>🎄 gofasthub.github.io 🎅</h1>
     <div class="subtitle">Find and play awesome games this Christmas!</div>
   </header>
@@ -222,7 +271,7 @@
       });
     });
 
-    // Fancy Snowfall Animation
+    // Snowfall animation
     const canvas = document.getElementById('snow');
     const ctx = canvas.getContext('2d');
     let snowflakes = [];
