@@ -4,35 +4,47 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GoFastHub 🎄</title>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: linear-gradient(180deg, #0b0f19 0%, #102b1f 100%);
-      --card: rgba(255, 255, 255, 0.07);
-      --accent: #e63946;
-      --accent2: #4caf50;
+      --bg: linear-gradient(180deg, #0c1422 0%, #15321e 100%);
+      --card: rgba(255, 255, 255, 0.06);
+      --accent: #ff4444;
+      --accent2: #4ade80;
       --text: #ffffff;
-      --muted: #b8c4d4;
+      --muted: #a7b2c2;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Poppins', system-ui, sans-serif;
+      font-family: 'Urbanist', system-ui, sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 2rem 1rem;
       overflow-x: hidden;
+      position: relative;
     }
 
     header {
       text-align: center;
       margin-bottom: 2rem;
-      position: relative;
       z-index: 2;
+      position: relative;
+      animation: fadeIn 1.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
@@ -41,12 +53,13 @@
       background: linear-gradient(90deg, var(--accent), var(--accent2));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
     }
 
     .subtitle {
       color: var(--muted);
       font-size: 1rem;
-      margin-top: 0.25rem;
+      margin-top: 0.35rem;
     }
 
     .search-bar {
@@ -55,12 +68,13 @@
       margin: 1.5rem auto;
       position: relative;
       z-index: 2;
+      animation: fadeIn 1.8s ease-out;
     }
 
     .search-bar input {
       width: 100%;
       padding: 0.9rem 1rem;
-      border-radius: 12px;
+      border-radius: 14px;
       border: 2px solid rgba(255, 255, 255, 0.1);
       background: var(--card);
       color: var(--text);
@@ -72,40 +86,41 @@
 
     .search-bar input:focus {
       border-color: var(--accent2);
-      box-shadow: 0 0 12px var(--accent2);
+      box-shadow: 0 0 14px var(--accent2);
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1.5rem;
       width: 100%;
       max-width: 1000px;
       margin-top: 1rem;
-      position: relative;
       z-index: 2;
+      position: relative;
+      animation: fadeIn 2.2s ease-out;
     }
 
     .card {
       background: var(--card);
-      border-radius: 16px;
+      border-radius: 18px;
       padding: 1rem;
       text-align: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      transition: 0.3s;
+      transition: 0.35s;
       cursor: pointer;
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.07);
     }
 
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15), 0 0 12px rgba(255, 68, 68, 0.3);
     }
 
     .card img {
       width: 100%;
-      border-radius: 10px;
+      border-radius: 12px;
       aspect-ratio: 1 / 1;
       object-fit: cover;
       margin-bottom: 0.75rem;
@@ -114,6 +129,7 @@
     .card h3 {
       font-size: 1.1rem;
       margin-bottom: 0.25rem;
+      font-weight: 600;
     }
 
     .card p {
@@ -136,7 +152,7 @@
       text-decoration: none;
     }
 
-    /* Snow canvas */
+    /* Snow Canvas */
     #snow {
       position: fixed;
       top: 0;
@@ -152,16 +168,12 @@
   <canvas id="snow"></canvas>
 
   <header>
-    <h1>🎅 GoFastHub 🎄</h1>
+    <h1>🎄 gofasthub.github.io 🎅</h1>
     <div class="subtitle">Find and play awesome games this Christmas!</div>
   </header>
 
   <div class="search-bar">
-    <input
-      type="text"
-      id="searchInput"
-      placeholder="Search for a game..."
-    />
+    <input type="text" id="searchInput" placeholder="Search for a game..." />
   </div>
 
   <div class="grid" id="gameGrid">
@@ -210,7 +222,7 @@
       });
     });
 
-    // Snowfall animation
+    // Fancy Snowfall Animation
     const canvas = document.getElementById('snow');
     const ctx = canvas.getContext('2d');
     let snowflakes = [];
@@ -223,35 +235,38 @@
     resize();
 
     function createSnowflake() {
-      const size = Math.random() * 4 + 1;
       return {
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        radius: size,
-        speed: Math.random() * 1 + 0.5,
-        wind: Math.random() * 0.5 - 0.25,
+        radius: Math.random() * 3 + 1,
+        speedY: Math.random() * 1 + 0.5,
+        speedX: Math.random() * 0.6 - 0.3,
+        opacity: Math.random() * 0.8 + 0.2,
+        swing: Math.random() * 2,
       };
     }
 
-    for (let i = 0; i < 150; i++) snowflakes.push(createSnowflake());
+    for (let i = 0; i < 200; i++) snowflakes.push(createSnowflake());
 
+    let angle = 0;
     function drawSnow() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "white";
-      ctx.beginPath();
+      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
       snowflakes.forEach((flake) => {
-        ctx.moveTo(flake.x, flake.y);
+        ctx.beginPath();
         ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${flake.opacity})`;
+        ctx.fill();
       });
-      ctx.fill();
       updateSnow();
       requestAnimationFrame(drawSnow);
     }
 
     function updateSnow() {
+      angle += 0.002;
       snowflakes.forEach((flake) => {
-        flake.y += flake.speed;
-        flake.x += flake.wind;
+        flake.y += flake.speedY;
+        flake.x += Math.sin(angle + flake.swing) * 0.5 + flake.speedX;
         if (flake.y > canvas.height) {
           flake.y = -flake.radius;
           flake.x = Math.random() * canvas.width;
