@@ -155,8 +155,17 @@
       cursor: pointer;
       backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.07);
-      transform: scale(1);
       opacity: 1;
+      transform: scale(1);
+    }
+
+    .card.fade-in {
+      animation: fadeCard 0.4s ease forwards;
+    }
+
+    @keyframes fadeCard {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     .card:hover {
@@ -215,7 +224,7 @@
       position: fixed;
       bottom: 0;
       left: 0;
-      width: 180px;
+      width: 260px;
       z-index: 2;
     }
 
@@ -223,7 +232,7 @@
       position: fixed;
       bottom: 0;
       right: 0;
-      width: 220px;
+      width: 300px;
       z-index: 2;
     }
   </style>
@@ -263,8 +272,18 @@
     </div>
   </div>
 
-  <img src="https://cdn.jsdelivr.net/gh/iamshaunjp/web-dev-assets/presents.png" alt="Presents" class="presents" />
-<img src="https://cdn.jsdelivr.net/gh/iamshaunjp/web-dev-assets/christmas-tree.png" alt="Christmas Tree" class="tree" />
+  <!-- Corner decorations -->
+  <img
+    src="https://th.bing.com/th/id/R.9fb612f033d37e0d2a350e82cfbb9f70?rik=j4HsZp1b9Xz9dA&riu=http%3a%2f%2fclipart-library.com%2fimages_k%2fchristmas-presents-transparent-background%2fchristmas-presents-transparent-background-23.png&ehk=bX%2ffvE8xkrSmoc1mC8KI%2bw3tJVGbl3D45cbzSLU1YdY%3d&risl=&pid=ImgRaw&r=0"
+    alt="Presents"
+    class="presents"
+  />
+
+  <img
+    src="https://png.pngtree.com/png-clipart/20201208/original/pngtree-christmas-tree-with-lights-and-gifts-png-image_5596976.png"
+    alt="Christmas Tree"
+    class="tree"
+  />
 
   <footer>
     © <span id="year"></span> GoFastHub | Made with 🎁 & ❤️ by
@@ -272,9 +291,10 @@
   </footer>
 
   <script>
+    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Lights generation
+    // Lights
     const lights = document.getElementById('lights');
     for (let i = 0; i < 40; i++) {
       const bulb = document.createElement('div');
@@ -282,14 +302,21 @@
       lights.appendChild(bulb);
     }
 
-    // Search
+    // Search filter with fade-in animation
     const searchInput = document.getElementById('searchInput');
     const cards = document.querySelectorAll('.card');
     searchInput.addEventListener('input', e => {
       const query = e.target.value.toLowerCase();
       cards.forEach(card => {
         const name = card.dataset.name.toLowerCase();
-        card.style.display = name.includes(query) ? 'block' : 'none';
+        if (name.includes(query)) {
+          card.style.display = 'block';
+          card.classList.remove('fade-in');
+          void card.offsetWidth; // restart animation
+          card.classList.add('fade-in');
+        } else {
+          card.style.display = 'none';
+        }
       });
     });
 
