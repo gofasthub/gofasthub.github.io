@@ -60,7 +60,7 @@
       margin-top: 0.35rem;
     }
 
-    /* Full-width Christmas Lights */
+    /* Christmas Lights with Wire */
     .lights {
       position: fixed;
       top: 0;
@@ -68,10 +68,21 @@
       width: 100%;
       display: flex;
       justify-content: space-around;
-      align-items: center;
-      padding: 0.5rem 0;
+      align-items: flex-start;
+      padding-top: 10px;
       background: transparent;
       z-index: 3;
+    }
+
+    .wire {
+      position: absolute;
+      top: 22px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(70, 70, 70, 0.8);
+      border-radius: 1px;
+      z-index: 1;
     }
 
     .bulb {
@@ -81,6 +92,8 @@
       background-color: red;
       animation: twinkle 2s infinite ease-in-out;
       box-shadow: 0 0 8px currentColor;
+      position: relative;
+      z-index: 2;
     }
 
     .bulb:nth-child(4n+1) { background-color: #ff4444; animation-delay: .2s; }
@@ -130,7 +143,6 @@
       position: relative;
       z-index: 2;
       animation: fadeIn 2.2s ease-out;
-      transition: transform 0.3s ease;
     }
 
     .card {
@@ -147,26 +159,18 @@
       opacity: 1;
     }
 
-    .grid:hover .card {
-      transform: scale(0.92);
-      opacity: 0.8;
-      filter: brightness(0.8);
-    }
-
     .card:hover {
-      transform: scale(1.1);
-      opacity: 1;
-      filter: none;
-      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15), 0 0 12px rgba(255, 68, 68, 0.3);
-      z-index: 3;
+      animation: bounce 0.6s ease;
+      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15),
+                  0 0 12px rgba(255, 68, 68, 0.3);
     }
 
-    .card img {
-      width: 100%;
-      border-radius: 12px;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      margin-bottom: 0.75rem;
+    @keyframes bounce {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.15); }
+      50% { transform: scale(0.95); }
+      70% { transform: scale(1.08); }
+      100% { transform: scale(1); }
     }
 
     .card h3 {
@@ -205,12 +209,31 @@
       pointer-events: none;
       z-index: 1;
     }
+
+    /* Decorative Elements */
+    .presents {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 180px;
+      z-index: 2;
+    }
+
+    .tree {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 220px;
+      z-index: 2;
+    }
   </style>
 </head>
 <body>
   <canvas id="snow"></canvas>
 
-  <div class="lights" id="lights"></div>
+  <div class="lights" id="lights">
+    <div class="wire"></div>
+  </div>
 
   <header>
     <h1>🎄 gofasthub.github.io 🎅</h1>
@@ -223,29 +246,25 @@
 
   <div class="grid" id="gameGrid">
     <div class="card" data-name="Santa Dash">
-      <img src="https://via.placeholder.com/300x300.png?text=Santa+Dash" alt="Santa Dash">
       <h3>Santa Dash</h3>
       <p>Help Santa deliver gifts fast!</p>
     </div>
-
     <div class="card" data-name="Snowball Fight">
-      <img src="https://via.placeholder.com/300x300.png?text=Snowball+Fight" alt="Snowball Fight">
       <h3>Snowball Fight</h3>
       <p>Throw snowballs and dodge others!</p>
     </div>
-
     <div class="card" data-name="Elf Builder">
-      <img src="https://via.placeholder.com/300x300.png?text=Elf+Builder" alt="Elf Builder">
       <h3>Elf Builder</h3>
       <p>Build toys and spread cheer.</p>
     </div>
-
     <div class="card" data-name="Reindeer Race">
-      <img src="https://via.placeholder.com/300x300.png?text=Reindeer+Race" alt="Reindeer Race">
       <h3>Reindeer Race</h3>
       <p>Race through snowy skies!</p>
     </div>
   </div>
+
+  <img src="https://i.imgur.com/yRWAnlZ.png" alt="Presents" class="presents" />
+  <img src="https://i.imgur.com/Ck6hRsf.png" alt="Christmas Tree" class="tree" />
 
   <footer>
     © <span id="year"></span> GoFastHub | Made with 🎁 & ❤️ by
@@ -253,10 +272,9 @@
   </footer>
 
   <script>
-    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Lights generator
+    // Lights generation
     const lights = document.getElementById('lights');
     for (let i = 0; i < 40; i++) {
       const bulb = document.createElement('div');
@@ -264,10 +282,10 @@
       lights.appendChild(bulb);
     }
 
-    // Search filter
+    // Search
     const searchInput = document.getElementById('searchInput');
     const cards = document.querySelectorAll('.card');
-    searchInput.addEventListener('input', (e) => {
+    searchInput.addEventListener('input', e => {
       const query = e.target.value.toLowerCase();
       cards.forEach(card => {
         const name = card.dataset.name.toLowerCase();
@@ -275,7 +293,7 @@
       });
     });
 
-    // Snow with mouse interaction
+    // Snow
     const canvas = document.getElementById('snow');
     const ctx = canvas.getContext('2d');
     let snowflakes = [];
@@ -288,7 +306,7 @@
     window.addEventListener('resize', resize);
     resize();
 
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener('mousemove', e => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
     });
@@ -310,7 +328,7 @@
     let angle = 0;
     function drawSnow() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      snowflakes.forEach((flake) => {
+      snowflakes.forEach(flake => {
         ctx.beginPath();
         ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255,255,255,${flake.opacity})`;
@@ -322,11 +340,9 @@
 
     function updateSnow() {
       angle += 0.002;
-      snowflakes.forEach((flake) => {
+      snowflakes.forEach(flake => {
         flake.y += flake.speedY;
         flake.x += Math.sin(angle + flake.swing) * 0.5 + flake.speedX;
-
-        // Light mouse repulsion
         if (mouse.x && mouse.y) {
           let dx = flake.x - mouse.x;
           let dy = flake.y - mouse.y;
@@ -336,7 +352,6 @@
             flake.y += dy / dist * 2;
           }
         }
-
         if (flake.y > canvas.height) {
           flake.y = -flake.radius;
           flake.x = Math.random() * canvas.width;
