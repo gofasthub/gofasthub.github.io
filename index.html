@@ -25,42 +25,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem;
+      padding: 0;
       overflow-x: hidden;
       position: relative;
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-      position: relative;
-      z-index: 2;
-      animation: fadeIn 1.4s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    h1 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: 0.5px;
-      position: relative;
-      z-index: 3;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: 1rem;
-      margin-top: 0.35rem;
-    }
-
-    /* Lights and Wire */
+    /* Lights */
     .lights {
       position: fixed;
       top: 0;
@@ -71,7 +41,7 @@
       align-items: flex-start;
       padding-top: 10px;
       background: transparent;
-      z-index: 3;
+      z-index: 4;
     }
 
     .wire {
@@ -106,13 +76,100 @@
       50% { opacity: 1; transform: scale(1.15); filter: brightness(1.4); }
     }
 
+    /* Top Bar */
+    .top-bar {
+      position: fixed;
+      top: 50px;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 3;
+      animation: fadeIn 1s ease;
+    }
+
+    .bar-title {
+      font-weight: 700;
+      font-size: 1.3rem;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+
+    .nav-btn:hover {
+      color: var(--accent2);
+      transform: scale(1.05);
+    }
+
+    .nav-btn span {
+      font-size: 1.2rem;
+    }
+
+    header {
+      margin-top: 130px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      animation: fadeIn 1.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-top: 0.35rem;
+    }
+
     .search-bar {
       width: 100%;
       max-width: 500px;
       margin: 1.5rem auto;
       position: relative;
       z-index: 2;
-      animation: fadeIn 1.8s ease-out;
+      transition: opacity 0.5s ease;
     }
 
     .search-bar input {
@@ -128,11 +185,6 @@
       backdrop-filter: blur(5px);
     }
 
-    .search-bar input:focus {
-      border-color: var(--accent2);
-      box-shadow: 0 0 14px var(--accent2);
-    }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -142,7 +194,7 @@
       margin-top: 1rem;
       position: relative;
       z-index: 2;
-      animation: fadeIn 2.2s ease-out;
+      transition: opacity 0.5s ease;
     }
 
     .card {
@@ -160,21 +212,13 @@
     }
 
     .card:hover {
-      transform: scale(1.05);
+      transform: scale(1.04);
       box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15),
                   0 0 12px rgba(255, 68, 68, 0.3);
     }
 
-    .card h3 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .card p {
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
+    .card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+    .card p { font-size: 0.9rem; color: var(--muted); }
 
     .play-button {
       position: absolute;
@@ -198,6 +242,26 @@
       opacity: 1;
     }
 
+    /* Options Section */
+    .options {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      margin-top: 2rem;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .options h2 {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .options p {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
     footer {
       margin-top: auto;
       text-align: center;
@@ -208,23 +272,14 @@
       position: relative;
     }
 
-    footer a {
-      color: var(--accent2);
-      text-decoration: none;
-    }
-
-    /* Snow Canvas */
     #snow {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       pointer-events: none;
       z-index: 1;
     }
 
-    /* Decorations */
     .presents {
       position: fixed;
       bottom: -40px;
@@ -245,8 +300,14 @@
 <body>
   <canvas id="snow"></canvas>
 
-  <div class="lights" id="lights">
-    <div class="wire"></div>
+  <div class="lights" id="lights"><div class="wire"></div></div>
+
+  <div class="top-bar">
+    <div class="bar-title">🎄 GoFastHub</div>
+    <div class="nav-right">
+      <button class="nav-btn" id="homeBtn"><span>🏠</span>Home</button>
+      <button class="nav-btn" id="optionsBtn"><span>⚙️</span>Options</button>
+    </div>
   </div>
 
   <header>
@@ -254,7 +315,7 @@
     <div class="subtitle">Find and play awesome games this Christmas!</div>
   </header>
 
-  <div class="search-bar">
+  <div class="search-bar" id="searchBar">
     <input type="text" id="searchInput" placeholder="Search for a game..." />
   </div>
 
@@ -264,7 +325,6 @@
       <p>Race through the city in real-time.</p>
       <button class="play-button">Play</button>
     </div>
-
     <div class="card" data-name="Drive Online V2">
       <h3>Drive Online V2</h3>
       <p>The sequel with new cars and maps!</p>
@@ -272,18 +332,13 @@
     </div>
   </div>
 
-  <!-- Corner Decorations -->
-  <img
-    src="https://th.bing.com/th/id/R.9fb612f033d37e0d2a350e82cfbb9f70?rik=j4HsZp1b9Xz9dA&riu=http%3a%2f%2fclipart-library.com%2fimages_k%2fchristmas-presents-transparent-background%2fchristmas-presents-transparent-background-23.png&ehk=bX%2ffvE8xkrSmoc1mC8KI%2bw3tJVGbl3D45cbzSLU1YdY%3d&risl=&pid=ImgRaw&r=0"
-    alt="Presents"
-    class="presents"
-  />
+  <div class="options" id="optionsPanel">
+    <h2>🎅 Options</h2>
+    <p>Coming soon: Customize your snow, background, and game themes!</p>
+  </div>
 
-  <img
-    src="https://freepngimg.com/thumb/christmas/30416-3-christmas-tree-transparent-background.png"
-    alt="Christmas Tree"
-    class="tree"
-  />
+  <img src="https://th.bing.com/th/id/R.9fb612f033d37e0d2a350e82cfbb9f70?rik=j4HsZp1b9Xz9dA&riu=http%3a%2f%2fclipart-library.com%2fimages_k%2fchristmas-presents-transparent-background%2fchristmas-presents-transparent-background-23.png&ehk=bX%2ffvE8xkrSmoc1mC8KI%2bw3tJVGbl3D45cbzSLU1YdY%3d&risl=&pid=ImgRaw&r=0" class="presents">
+  <img src="https://freepngimg.com/thumb/christmas/30416-3-christmas-tree-transparent-background.png" class="tree">
 
   <footer>
     © <span id="year"></span> GoFastHub | Made with 🎁 & ❤️ by
@@ -293,7 +348,6 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Lights
     const lights = document.getElementById('lights');
     for (let i = 0; i < 40; i++) {
       const bulb = document.createElement('div');
@@ -301,7 +355,6 @@
       lights.appendChild(bulb);
     }
 
-    // Search filter
     const searchInput = document.getElementById('searchInput');
     const cards = document.querySelectorAll('.card');
     searchInput.addEventListener('input', e => {
@@ -312,54 +365,48 @@
       });
     });
 
+    const homeBtn = document.getElementById('homeBtn');
+    const optionsBtn = document.getElementById('optionsBtn');
+    const gameGrid = document.getElementById('gameGrid');
+    const searchBar = document.getElementById('searchBar');
+    const optionsPanel = document.getElementById('optionsPanel');
+
+    optionsBtn.onclick = () => {
+      gameGrid.style.opacity = 0;
+      searchBar.style.opacity = 0;
+      setTimeout(() => {
+        gameGrid.style.display = 'none';
+        searchBar.style.display = 'none';
+        optionsPanel.style.display = 'block';
+        setTimeout(() => optionsPanel.style.opacity = 1, 50);
+      }, 400);
+    };
+
+    homeBtn.onclick = () => {
+      optionsPanel.style.opacity = 0;
+      setTimeout(() => {
+        optionsPanel.style.display = 'none';
+        gameGrid.style.display = 'grid';
+        searchBar.style.display = 'block';
+        setTimeout(() => {
+          gameGrid.style.opacity = 1;
+          searchBar.style.opacity = 1;
+        }, 50);
+      }, 400);
+    };
+
     // Snow
     const canvas = document.getElementById('snow');
     const ctx = canvas.getContext('2d');
     let snowflakes = [];
-
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    function createSnowflake() {
-      return {
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * 3 + 1,
-        speedY: Math.random() * 1 + 0.5,
-        speedX: Math.random() * 0.6 - 0.3,
-        opacity: Math.random() * 0.8 + 0.2,
-      };
-    }
-
-    for (let i = 0; i < 200; i++) snowflakes.push(createSnowflake());
-
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize); resize();
+    for (let i = 0; i < 200; i++) snowflakes.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*3+1,speedY:Math.random()+0.5,opacity:Math.random()*0.8+0.2});
     function drawSnow() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      snowflakes.forEach(flake => {
-        ctx.beginPath();
-        ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${flake.opacity})`;
-        ctx.fill();
-      });
-      updateSnow();
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      snowflakes.forEach(flake=>{ctx.beginPath();ctx.arc(flake.x,flake.y,flake.radius,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${flake.opacity})`;ctx.fill();flake.y+=flake.speedY;if(flake.y>canvas.height){flake.y=-flake.radius;flake.x=Math.random()*canvas.width;}});
       requestAnimationFrame(drawSnow);
     }
-
-    function updateSnow() {
-      snowflakes.forEach(flake => {
-        flake.y += flake.speedY;
-        flake.x += flake.speedX;
-        if (flake.y > canvas.height) {
-          flake.y = -flake.radius;
-          flake.x = Math.random() * canvas.width;
-        }
-      });
-    }
-
     drawSnow();
   </script>
 </body>
