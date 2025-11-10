@@ -63,7 +63,7 @@ body {
 .nav-right{display:flex;align-items:center;gap:1rem;}
 .nav-btn{display:flex;align-items:center;gap:.4rem;background:transparent;border:none;color:var(--text);
   font-size:1rem;cursor:pointer;transition:.3s;font-weight:600;}
-.nav-btn:hover{color:var(--accent2);transform:scale(1.05);}
+.nav-btn:hover,.nav-btn.active{color:var(--accent2);transform:scale(1.05);}
 
 /* header */
 header{text-align:center;margin-top:130px;z-index:2;}
@@ -85,7 +85,7 @@ h1{font-size:2.2rem;font-weight:700;background:linear-gradient(90deg,var(--accen
   gap:1.5rem;width:100%;max-width:800px;margin-top:1rem;z-index:2;transition:opacity .5s;}
 .card{background:rgba(255,255,255,.06);border-radius:var(--radius);
   text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.3);
-  transition:all .3s ease;cursor:pointer;padding:1.5rem 1rem;border:1px solid rgba(255,255,255,.07);position:relative;overflow:hidden;}
+  transition:all .3s ease;cursor:pointer;padding:1.5rem 1rem;border:1px solid rgba(255,255,255,.07);position:relative;}
 .card:hover{transform:scale(1.03);box-shadow:0 6px 20px rgba(255,255,255,.15),0 0 12px rgba(255,68,68,.3);}
 .card h3{font-size:1.2rem;margin-bottom:.5rem;}
 .card p{font-size:.9rem;color:var(--muted);}
@@ -135,7 +135,7 @@ footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem
 <div class="top-bar">
   <div class="bar-title">🎄 GoFastHub</div>
   <div class="nav-right">
-    <button class="nav-btn" id="homeBtn">🏠 Home</button>
+    <button class="nav-btn active" id="homeBtn">🏠 Home</button>
     <button class="nav-btn" id="optionsBtn">⚙️ Options</button>
   </div>
 </div>
@@ -162,8 +162,13 @@ footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem
   </div>
   <div class="card" data-name="Kart Bros">
     <h3>Kart Bros</h3>
-    <p>Compete with friends in kart racing fun!</p>
+    <p>Compete with friends in fun kart races!</p>
     <button class="play-button" onclick="window.location.href='https://kartbros.io'">Play</button>
+  </div>
+  <div class="card" data-name="Winter Clash 3D">
+    <h3>Winter Clash 3D</h3>
+    <p>Battle in snowy arenas this holiday season!</p>
+    <button class="play-button" onclick="window.location.href='WinterClash3D.html'">Play</button>
   </div>
 </div>
 
@@ -187,27 +192,47 @@ footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem
 document.getElementById("year").textContent = new Date().getFullYear();
 const lights=document.getElementById("lights");
 for(let i=0;i<40;i++){const b=document.createElement("div");b.classList.add("bulb");lights.appendChild(b);}
+
+/* search */
 const searchInput=document.getElementById("searchInput");
 const cards=document.querySelectorAll(".card");
 searchInput.addEventListener("input",e=>{
   const q=e.target.value.toLowerCase();
   cards.forEach(c=>{
     const match=c.dataset.name.toLowerCase().includes(q);
-    if(match){c.classList.remove("hidden");}
-    else{c.classList.add("hidden");}
+    c.classList.toggle("hidden",!match);
   });
 });
+
+/* nav */
 const homeBtn=document.getElementById("homeBtn"),
 optionsBtn=document.getElementById("optionsBtn"),
 gameGrid=document.getElementById("gameGrid"),
 searchBar=document.getElementById("searchBar"),
 optionsPanel=document.getElementById("optionsPanel");
-optionsBtn.onclick=()=>{gameGrid.style.opacity=0;searchBar.style.opacity=0;
-  setTimeout(()=>{gameGrid.style.display="none";searchBar.style.display="none";optionsPanel.style.display="block";
-    setTimeout(()=>optionsPanel.style.opacity=1,50);},400);}
-homeBtn.onclick=()=>{optionsPanel.style.opacity=0;
-  setTimeout(()=>{optionsPanel.style.display="none";gameGrid.style.display="grid";searchBar.style.display="block";
-    setTimeout(()=>{gameGrid.style.opacity=1;searchBar.style.opacity=1;},50);},400);}
+
+function setActive(btn){
+  [homeBtn,optionsBtn].forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+optionsBtn.onclick=()=>{
+  setActive(optionsBtn);
+  gameGrid.style.opacity=0;searchBar.style.opacity=0;
+  setTimeout(()=>{
+    gameGrid.style.display="none";searchBar.style.display="none";optionsPanel.style.display="block";
+    setTimeout(()=>optionsPanel.style.opacity=1,50);
+  },400);
+}
+
+homeBtn.onclick=()=>{
+  setActive(homeBtn);
+  optionsPanel.style.opacity=0;
+  setTimeout(()=>{
+    optionsPanel.style.display="none";gameGrid.style.display="grid";searchBar.style.display="block";
+    setTimeout(()=>{gameGrid.style.opacity=1;searchBar.style.opacity=1;},50);
+  },400);
+}
 
 /* snow */
 const canvas=document.getElementById("snow"),ctx=canvas.getContext("2d");
@@ -254,15 +279,10 @@ if(!snowOn)canvas.style.display="none";
 
 /* Handlers */
 snowToggle.onclick=()=>{snowOn=!snowOn;setToggleState(snowToggle,snowOn);canvas.style.display=snowOn?"block":"none";save();}
-presentsToggle.onclick=()=>{presentsOn=!presentsOn;setToggleState(presentsToggle,presentsOn);
-  presentsImg.style.opacity=presentsOn?1:0;save();}
-treeToggle.onclick=()=>{treeOn=!treeOn;setToggleState(treeToggle,treeOn);
-  treeImg.style.opacity=treeOn?1:0;save();}
-bgToggle.onclick=()=>{bgIndex=(bgIndex+1)%bgs.length;
-  document.body.style.background=bgs[bgIndex];save();}
-function save(){
-  localStorage.setItem("settings",JSON.stringify({snow:snowOn,presents:presentsOn,tree:treeOn,bg:bgIndex}));
-}
+presentsToggle.onclick=()=>{presentsOn=!presentsOn;setToggleState(presentsToggle,presentsOn);presentsImg.style.opacity=presentsOn?1:0;save();}
+treeToggle.onclick=()=>{treeOn=!treeOn;setToggleState(treeToggle,treeOn);treeImg.style.opacity=treeOn?1:0;save();}
+bgToggle.onclick=()=>{bgIndex=(bgIndex+1)%bgs.length;document.body.style.background=bgs[bgIndex];save();}
+function save(){localStorage.setItem("settings",JSON.stringify({snow:snowOn,presents:presentsOn,tree:treeOn,bg:bgIndex}));}
 </script>
 </body>
 </html>
