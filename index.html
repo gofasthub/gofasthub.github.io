@@ -63,6 +63,7 @@ body {
 .nav-right{display:flex;align-items:center;gap:1rem;}
 .nav-btn{display:flex;align-items:center;gap:.4rem;background:transparent;border:none;color:var(--text);
   font-size:1rem;cursor:pointer;transition:.3s;font-weight:600;}
+.nav-btn:hover{color:var(--accent2);transform:scale(1.05);}
 .nav-btn:hover,.nav-btn.active{color:var(--accent2);transform:scale(1.05);}
 
 /* header */
@@ -85,7 +86,7 @@ h1{font-size:2.2rem;font-weight:700;background:linear-gradient(90deg,var(--accen
   gap:1.5rem;width:100%;max-width:800px;margin-top:1rem;z-index:2;transition:opacity .5s;}
 .card{background:rgba(255,255,255,.06);border-radius:var(--radius);
   text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.3);
-  transition:all .3s ease;cursor:pointer;padding:1.5rem 1rem;border:1px solid rgba(255,255,255,.07);position:relative;}
+  transition:all .3s ease;cursor:pointer;padding:1.5rem 1rem;border:1px solid rgba(255,255,255,.07);position:relative;overflow:hidden;}
 .card:hover{transform:scale(1.03);box-shadow:0 6px 20px rgba(255,255,255,.15),0 0 12px rgba(255,68,68,.3);}
 .card h3{font-size:1.2rem;margin-bottom:.5rem;}
 .card p{font-size:.9rem;color:var(--muted);}
@@ -170,13 +171,13 @@ footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem
     <p>Battle in snowy arenas this holiday season!</p>
     <button class="play-button" onclick="window.location.href='WinterClash3D.html'">Play</button>
   </div>
-  </div>
   <div class="card" data-name="Parkour Snowboard">
     <h3>Parkour Snowboard</h3>
-    <p>Shred the slopes with style in this epic parkour challenge!</p>
+    <p>Show off your snowboarding and parkour skills!</p>
     <button class="play-button" onclick="window.location.href='https://st.8games.net/10/8g/igra-obbi-snoubord-parkur/'">Play</button>
   </div>
-  
+</div>
+
 <div class="options" id="optionsPanel">
   <h2>🎅 Options</h2>
   <div class="switch"><span>Toggle Snow ❄️</span><div class="toggle" id="snowToggle"></div></div>
@@ -209,35 +210,18 @@ searchInput.addEventListener("input",e=>{
   });
 });
 
-/* nav */
+/* nav + options */
 const homeBtn=document.getElementById("homeBtn"),
 optionsBtn=document.getElementById("optionsBtn"),
 gameGrid=document.getElementById("gameGrid"),
 searchBar=document.getElementById("searchBar"),
 optionsPanel=document.getElementById("optionsPanel");
 
-function setActive(btn){
-  [homeBtn,optionsBtn].forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-}
-
-optionsBtn.onclick=()=>{
-  setActive(optionsBtn);
-  gameGrid.style.opacity=0;searchBar.style.opacity=0;
-  setTimeout(()=>{
-    gameGrid.style.display="none";searchBar.style.display="none";optionsPanel.style.display="block";
-    setTimeout(()=>optionsPanel.style.opacity=1,50);
-  },400);
-}
-
-homeBtn.onclick=()=>{
-  setActive(homeBtn);
-  optionsPanel.style.opacity=0;
-  setTimeout(()=>{
-    optionsPanel.style.display="none";gameGrid.style.display="grid";searchBar.style.display="block";
-    setTimeout(()=>{gameGrid.style.opacity=1;searchBar.style.opacity=1;},50);
-  },400);
-}
+function setActive(btn){[homeBtn,optionsBtn].forEach(b=>b.classList.remove("active"));btn.classList.add("active");}
+optionsBtn.onclick=()=>{setActive(optionsBtn);gameGrid.style.opacity=0;searchBar.style.opacity=0;
+  setTimeout(()=>{gameGrid.style.display="none";searchBar.style.display="none";optionsPanel.style.display="block";setTimeout(()=>optionsPanel.style.opacity=1,50);},400);}
+homeBtn.onclick=()=>{setActive(homeBtn);optionsPanel.style.opacity=0;
+  setTimeout(()=>{optionsPanel.style.display="none";gameGrid.style.display="grid";searchBar.style.display="block";setTimeout(()=>{gameGrid.style.opacity=1;searchBar.style.opacity=1;},50);},400);}
 
 /* snow */
 const canvas=document.getElementById("snow"),ctx=canvas.getContext("2d");
@@ -246,48 +230,21 @@ function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeigh
 window.addEventListener("resize",resize);resize();
 for(let i=0;i<200;i++)flakes.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*3+1,speedY:Math.random()+0.5,opacity:Math.random()*0.8+0.2});
 window.addEventListener("mousemove",e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
-function drawSnow(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  flakes.forEach(f=>{
-    ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(255,255,255,${f.opacity})`;ctx.fill();
-    let dx=f.x-mouse.x,dy=f.y-mouse.y,dist=Math.sqrt(dx*dx+dy*dy);
-    if(dist<100){f.x+=dx/dist;}f.y+=f.speedY;
-    if(f.y>canvas.height){f.y=-f.r;f.x=Math.random()*canvas.width;}
-  });
-  requestAnimationFrame(drawSnow);
-}
-drawSnow();
+function drawSnow(){ctx.clearRect(0,0,canvas.width,canvas.height);flakes.forEach(f=>{ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${f.opacity})`;ctx.fill();let dx=f.x-mouse.x,dy=f.y-mouse.y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<100){f.x+=dx/dist;}f.y+=f.speedY;if(f.y>canvas.height){f.y=-f.r;f.x=Math.random()*canvas.width;}});requestAnimationFrame(drawSnow);}drawSnow();
 
 /* options toggles */
-const snowToggle=document.getElementById("snowToggle");
-const presentsToggle=document.getElementById("presentsToggle");
-const treeToggle=document.getElementById("treeToggle");
-const bgToggle=document.getElementById("bgToggle");
-const presentsImg=document.getElementById("presentsImg");
-const treeImg=document.getElementById("treeImg");
-let bgIndex=0;
-const bgs=["var(--bg1)","var(--bg2)","var(--bg3)","var(--bg4)"];
-
+const snowToggle=document.getElementById("snowToggle"),presentsToggle=document.getElementById("presentsToggle"),treeToggle=document.getElementById("treeToggle"),bgToggle=document.getElementById("bgToggle");
+const presentsImg=document.getElementById("presentsImg"),treeImg=document.getElementById("treeImg");
+let bgIndex=0;const bgs=["var(--bg1)","var(--bg2)","var(--bg3)","var(--bg4)"];
 function setToggleState(el,state){el.classList.toggle("active",state);}
-
-/* Load saved settings */
 const settings=JSON.parse(localStorage.getItem("settings")||"{}");
-let snowOn=settings.snow!==false, presentsOn=settings.presents!==false, treeOn=settings.tree!==false, bg=settings.bg||0;
-setToggleState(snowToggle,snowOn);
-setToggleState(presentsToggle,presentsOn);
-setToggleState(treeToggle,treeOn);
-document.body.style.background=bgs[bg];
-presentsImg.style.opacity=presentsOn?1:0;
-treeImg.style.opacity=treeOn?1:0;
-if(!snowOn)canvas.style.display="none";
-
-/* Handlers */
+let snowOn=settings.snow!==false,presentsOn=settings.presents!==false,treeOn=settings.tree!==false,bg=settings.bg||0;
+setToggleState(snowToggle,snowOn);setToggleState(presentsToggle,presentsOn);setToggleState(treeToggle,treeOn);document.body.style.background=bgs[bg];presentsImg.style.opacity=presentsOn?1:0;treeImg.style.opacity=treeOn?1:0;if(!snowOn)canvas.style.display="none";
+function save(){localStorage.setItem("settings",JSON.stringify({snow:snowOn,presents:presentsOn,tree:treeOn,bg:bgIndex}));}
 snowToggle.onclick=()=>{snowOn=!snowOn;setToggleState(snowToggle,snowOn);canvas.style.display=snowOn?"block":"none";save();}
 presentsToggle.onclick=()=>{presentsOn=!presentsOn;setToggleState(presentsToggle,presentsOn);presentsImg.style.opacity=presentsOn?1:0;save();}
 treeToggle.onclick=()=>{treeOn=!treeOn;setToggleState(treeToggle,treeOn);treeImg.style.opacity=treeOn?1:0;save();}
 bgToggle.onclick=()=>{bgIndex=(bgIndex+1)%bgs.length;document.body.style.background=bgs[bgIndex];save();}
-function save(){localStorage.setItem("settings",JSON.stringify({snow:snowOn,presents:presentsOn,tree:treeOn,bg:bgIndex}));}
 </script>
 </body>
 </html>
