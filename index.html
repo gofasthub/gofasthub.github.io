@@ -254,56 +254,86 @@ footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem
 </footer>
 
 <script>
-// password system
+/* ---------- Password gate (DO NOT remember password) ---------- */
 const passwordScreen = document.getElementById('passwordScreen');
 const passwordInput = document.getElementById('passwordInput');
 const passwordButton = document.getElementById('passwordButton');
+
+function hidePasswordScreen(){
+  passwordScreen.classList.add('hidden');
+  setTimeout(()=>{ if(passwordScreen && passwordScreen.parentNode) passwordScreen.parentNode.removeChild(passwordScreen); }, 650);
+}
+
+// exact password: fastxmas ; do NOT store it anywhere
 passwordButton.addEventListener('click', ()=>{
   if(passwordInput.value === 'fastxmas'){
-    passwordScreen.classList.add('hidden');
-    setTimeout(()=>passwordScreen.remove(),600);
+    hidePasswordScreen();
   } else {
-    passwordInput.value='';
-    passwordInput.placeholder='Wrong password ❌';
+    passwordInput.value = '';
+    passwordInput.placeholder = 'Wrong password ❌';
+    // subtle shake
+    passwordInput.animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:300});
   }
 });
-passwordInput.addEventListener('keypress',e=>{
-  if(e.key==='Enter')passwordButton.click();
+passwordInput.addEventListener('keypress', e=>{
+  if(e.key === 'Enter') passwordButton.click();
 });
 
+/* ---------- Year + lights ---------- */
 document.getElementById("year").textContent = new Date().getFullYear();
 const lights=document.getElementById("lights");
 for(let i=0;i<40;i++){const b=document.createElement("div");b.classList.add("bulb");lights.appendChild(b);}
 
-/* search with fade and bring to top */
+/* ---------- Improved search – bring matches to top + smooth effects ---------- */
 const searchInput=document.getElementById("searchInput");
-const cards=document.querySelectorAll(".card");
-searchInput.addEventListener("input",e=>{
-  const q=e.target.value.toLowerCase();
-  let matchFound=false;
-  cards.forEach(c=>{
-    const match=c.dataset.name.toLowerCase().includes(q);
-    if(match && q!==''){
-      matchFound=true;
-      c.style.order="-1";
-      c.classList.remove("hidden");
-      c.style.opacity="0";
-      setTimeout(()=>c.style.opacity="1",100);
-    } else if(q===''){
-      c.style.order="0";
-      c.classList.remove("hidden");
+const gameGrid=document.getElementById("gameGrid");
+searchInput.addEventListener("input", e=>{
+  const q = e.target.value.toLowerCase();
+  const cards = Array.from(gameGrid.querySelectorAll('.card'));
+
+  // give cards a transition so reflow looks smooth
+  cards.forEach(c => c.style.transition = 'all .35s ease');
+
+  // sort: matches first (stable)
+  cards.sort((a,b)=>{
+    const am = a.dataset.name.toLowerCase().includes(q);
+    const bm = b.dataset.name.toLowerCase().includes(q);
+    if(am === bm) return 0;
+    return am ? -1 : 1;
+  });
+
+  // re-append in sorted order
+  cards.forEach((c, idx) => {
+    gameGrid.appendChild(c);
+    const match = q && c.dataset.name.toLowerCase().includes(q);
+    if(q){
+      // dim non-matches, highlight matches
+      if(match){
+        c.classList.remove('hidden');
+        c.style.opacity = '1';
+        c.style.transform = 'scale(1.05)';
+        c.style.boxShadow = '0 0 25px rgba(255,255,255,0.25)';
+      } else {
+        c.style.opacity = '0.6';
+        c.style.transform = 'scale(1)';
+        c.style.boxShadow = '';
+      }
     } else {
-      c.classList.add("hidden");
+      // cleared search: reset
+      c.classList.remove('hidden');
+      c.style.opacity = '1';
+      c.style.transform = '';
+      c.style.boxShadow = '';
     }
   });
 });
 
-/* nav + options */
+/* ---------- nav + options (unchanged behavior) ---------- */
 const homeBtn=document.getElementById("homeBtn"),
-optionsBtn=document.getElementById("optionsBtn"),
-gameGrid=document.getElementById("gameGrid"),
-searchBar=document.getElementById("searchBar"),
-optionsPanel=document.getElementById("optionsPanel");
+      optionsBtn=document.getElementById("optionsBtn"),
+      searchBar=document.getElementById("searchBar"),
+      optionsPanel=document.getElementById("optionsPanel"),
+      gameGridEl = document.getElementById("gameGrid");
 
 function setActive(btn){
   [homeBtn,optionsBtn].forEach(b=>b.classList.remove("active"));
@@ -312,53 +342,135 @@ function setActive(btn){
 
 optionsBtn.onclick=()=>{
   setActive(optionsBtn);
-  gameGrid.style.opacity=0;searchBar.style.opacity=0;
+  gameGridEl.style.opacity=0;searchBar.style.opacity=0;
   setTimeout(()=>{
-    gameGrid.style.display="none";searchBar.style.display="none";optionsPanel.style.display="block";
+    gameGridEl.style.display="none";searchBar.style.display="none";optionsPanel.style.display="block";
     setTimeout(()=>optionsPanel.style.opacity=1,50);
   },400);
 }
-
 homeBtn.onclick=()=>{
   setActive(homeBtn);
   optionsPanel.style.opacity=0;
   setTimeout(()=>{
-    optionsPanel.style.display="none";gameGrid.style.display="grid";searchBar.style.display="block";
-    setTimeout(()=>{gameGrid.style.opacity=1;searchBar.style.opacity=1;},50);
+    optionsPanel.style.display="none";gameGridEl.style.display="grid";searchBar.style.display="block";
+    setTimeout(()=>{gameGridEl.style.opacity=1;searchBar.style.opacity=1;},50);
   },400);
 }
 
-/* snow */
-const canvas=document.getElementById("snow"),ctx=canvas.getContext("2d");
-let flakes=[],mouse={x:null,y:null};
-function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
-window.addEventListener("resize",resize);resize();
-for(let i=0;i<200;i++)flakes.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*3+1,speedY:Math.random()+0.5,opacity:Math.random()*0.8+0.2});
-window.addEventListener("mousemove",e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+/* ---------- Snow (restored interactive behavior) ---------- */
+const canvas=document.getElementById("snow"), ctx=canvas.getContext("2d");
+let flakes=[], mouse={x:-9999,y:-9999};
+function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+window.addEventListener('resize', resize); resize();
+
+for(let i=0;i<220;i++){
+  flakes.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*3 + 0.8,
+    vy: (Math.random()*0.6)+0.4,
+    swing: Math.random()*2,
+    opacity: Math.random()*0.8+0.2
+  });
+}
+
+window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
 function drawSnow(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle="white";
   flakes.forEach(f=>{
-    ctx.globalAlpha=f.opacity;
     ctx.beginPath();
-    ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+    ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
     ctx.fill();
-    f.y+=f.speedY;f.x+=Math.sin(f.y*0.01);
-    if(f.y>canvas.height)f.y=-10;
+
+    // interactive repulsion: smooth push away from mouse
+    const dx = f.x - mouse.x;
+    const dy = f.y - mouse.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if(dist < 120){
+      const push = (120 - dist) / 120; // 0..1
+      // move away gently
+      f.x += (dx / (dist || 1)) * push * 2.0;
+      f.y += (dy / (dist || 1)) * push * 0.6;
+    } else {
+      // gentle horizontal swing so flakes don't fall straight
+      f.x += Math.sin((f.y + Date.now()/2000) * 0.002) * 0.6;
+    }
+
+    f.y += f.vy;
+    if(f.y > canvas.height + 10){
+      f.y = -10;
+      f.x = Math.random()*canvas.width;
+    }
+    // keep inside horizontally
+    if(f.x < -20) f.x = canvas.width + 20;
+    if(f.x > canvas.width + 20) f.x = -20;
   });
   requestAnimationFrame(drawSnow);
 }
 drawSnow();
 
-/* toggles */
-function toggleSwitch(id,callback){const t=document.getElementById(id);t.addEventListener("click",()=>{t.classList.toggle("active");callback(t.classList.contains("active"));});}
-toggleSwitch("snowToggle",a=>canvas.style.display=a?"none":"block");
-const presents=document.getElementById("presentsImg");
-toggleSwitch("presentsToggle",a=>presents.style.opacity=a?0:1);
-const tree=document.getElementById("treeImg");
-toggleSwitch("treeToggle",a=>tree.style.opacity=a?0:1);
-let bgIndex=1;
-toggleSwitch("bgToggle",()=>{bgIndex=(bgIndex%4)+1;document.body.style.setProperty("--current-bg",`var(--bg${bgIndex})`);});
+/* ---------- Options toggles with localStorage (REMEMBERS these settings) ---------- */
+const snowToggle=document.getElementById("snowToggle"),
+      presentsToggle=document.getElementById("presentsToggle"),
+      treeToggle=document.getElementById("treeToggle"),
+      bgToggle=document.getElementById("bgToggle"),
+      presentsImg=document.getElementById("presentsImg"),
+      treeImg=document.getElementById("treeImg");
+
+const bgs=["var(--bg1)","var(--bg2)","var(--bg3)","var(--bg4)"];
+function setToggleState(el,state){ el.classList.toggle("active", !!state); el.setAttribute('aria-checked', !!state); }
+
+const settings = JSON.parse(localStorage.getItem("settings")||"{}");
+let snowOn = settings.snow !== false;
+let presentsOn = settings.presents !== false;
+let treeOn = settings.tree !== false;
+let bgIndex = settings.bg || 0;
+
+setToggleState(snowToggle, snowOn);
+setToggleState(presentsToggle, presentsOn);
+setToggleState(treeToggle, treeOn);
+document.body.style.background = bgs[bgIndex];
+presentsImg.style.opacity = presentsOn ? 1 : 0;
+treeImg.style.opacity = treeOn ? 1 : 0;
+if(!snowOn) canvas.style.display = 'none';
+
+function saveSettings(){
+  localStorage.setItem("settings", JSON.stringify({ snow: snowOn, presents: presentsOn, tree: treeOn, bg: bgIndex }));
+}
+
+snowToggle.addEventListener('click', ()=>{
+  snowOn = !snowOn;
+  setToggleState(snowToggle, snowOn);
+  canvas.style.display = snowOn ? 'block' : 'none';
+  saveSettings();
+});
+presentsToggle.addEventListener('click', ()=>{
+  presentsOn = !presentsOn;
+  setToggleState(presentsToggle, presentsOn);
+  presentsImg.style.opacity = presentsOn ? 1 : 0;
+  saveSettings();
+});
+treeToggle.addEventListener('click', ()=>{
+  treeOn = !treeOn;
+  setToggleState(treeToggle, treeOn);
+  treeImg.style.opacity = treeOn ? 1 : 0;
+  saveSettings();
+});
+bgToggle.addEventListener('click', ()=>{
+  bgIndex = (bgIndex + 1) % bgs.length;
+  document.body.style.background = bgs[bgIndex];
+  saveSettings();
+});
+
+/* accessibility: allow Enter/Space to toggle */
+[snowToggle,presentsToggle,treeToggle,bgToggle].forEach(t=>{
+  t.tabIndex = 0;
+  t.addEventListener('keydown', e=>{
+    if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); t.click(); }
+  });
+});
 </script>
 </body>
 </html>
