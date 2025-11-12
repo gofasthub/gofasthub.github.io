@@ -19,14 +19,12 @@
   --radius: 20px;
 }
 
-/* reset */
-* {box-sizing:border-box;margin:0;padding:0;font-family:'Urbanist',system-ui,sans-serif;}
-html,body{height:100%}
+* {box-sizing:border-box;margin:0;padding:0;}
 
-/* page */
 body {
   background: var(--current-bg);
   color: var(--text);
+  font-family:'Urbanist',system-ui,sans-serif;
   min-height:100vh;
   display:flex;
   flex-direction:column;
@@ -36,34 +34,8 @@ body {
   transition:background 1s ease;
 }
 
-/* --- PASSWORD SCREEN --- */
-#passwordScreen {
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:rgba(6,12,22,0.88);
-  backdrop-filter:blur(10px);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-  transition:opacity 0.5s ease;
-}
-#passwordScreen.hidden { opacity:0; pointer-events:none; }
-#passwordScreen h2 { font-size:2rem; margin-bottom:1rem; color:var(--text); }
-#passwordInput {
-  padding:0.8rem 1rem; border-radius:12px; border:none; width:260px; font-size:1rem; outline:none;
-  text-align:center; background: rgba(255,255,255,0.04); color:var(--text);
-}
-#passwordButton {
-  margin-top:1rem; background:var(--accent); border:none; padding:0.7rem 1.2rem;color:#fff;border-radius:12px;
-  cursor:pointer; font-weight:700;
-}
-#passwordButton:hover{background:var(--accent2)}
-
 /* lights */
-.lights {position:fixed;top:0;left:0;width:100%;display:flex;justify-content:space-around;padding-top:10px;z-index:5;pointer-events:none;}
+.lights {position:fixed;top:0;left:0;width:100%;display:flex;justify-content:space-around;padding-top:10px;z-index:5;}
 .wire {position:absolute;top:22px;left:0;width:100%;height:2px;background:rgba(70,70,70,.8);border-radius:1px;z-index:1;}
 .bulb {width:10px;height:18px;border-radius:50% 50% 35% 35%;animation:twinkle 2s infinite ease-in-out;box-shadow:0 0 8px currentColor;z-index:2;}
 .bulb:nth-child(4n+1){background-color:#ff4444;animation-delay:.2s;}
@@ -90,9 +62,8 @@ body {
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .nav-right{display:flex;align-items:center;gap:1rem;}
 .nav-btn{display:flex;align-items:center;gap:.4rem;background:transparent;border:none;color:var(--text);
-  font-size:1rem;cursor:pointer;transition:.25s;font-weight:600;padding:.3rem .6rem;border-radius:12px;}
-.nav-btn:hover{color:var(--accent2);transform:translateY(-2px);}
-.nav-btn.active{color:var(--accent2);}
+  font-size:1rem;cursor:pointer;transition:.3s;font-weight:600;}
+.nav-btn:hover,.nav-btn.active{color:var(--accent2);transform:scale(1.05);}
 
 /* header */
 header{text-align:center;margin-top:130px;z-index:2;}
@@ -101,77 +72,80 @@ h1{font-size:2.2rem;font-weight:700;background:linear-gradient(90deg,var(--accen
 .subtitle{color:var(--muted);margin-top:.3rem;}
 
 /* search bar */
-.search-bar{width:100%;max-width:520px;margin:1.5rem auto;z-index:2;transition:opacity .4s;}
+.search-bar{width:100%;max-width:500px;margin:1.5rem auto;z-index:2;transition:opacity .5s;}
 .search-bar input{
-  width:100%;padding:.9rem 1rem;border-radius:14px;
-  border:2px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,0.03);
-  color:var(--text);font-size:1rem;outline:none;transition:.2s;backdrop-filter:blur(3px);
+  width:100%;padding:.9rem 1rem;border-radius:var(--radius);
+  border:2px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,0.06);
+  color:var(--text);font-size:1rem;outline:none;transition:.3s;backdrop-filter:blur(5px);
 }
 
 /* grid */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:1.4rem;
+  gap:1.5rem;
   width:100%;
-  max-width:980px;
+  max-width:800px;
   margin-top:1rem;
   z-index:2;
-  transition:opacity .4s ease;
+  transition:opacity .5s, grid-template-columns .5s;
+  justify-content:center;
 }
 .card{
-  background:rgba(255,255,255,.04);
-  border-radius:18px;
+  background:rgba(255,255,255,.06);
+  border-radius:var(--radius);
   text-align:center;
-  box-shadow:0 4px 12px rgba(0,0,0,.32);
-  transition:transform .35s ease, box-shadow .35s ease, opacity .35s ease;
-  cursor:pointer;padding:1.4rem 1rem;border:1px solid rgba(255,255,255,.06);
-  position:relative;overflow:hidden;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+  transition:all .4s ease;
+  cursor:pointer;
+  padding:1.5rem 1rem;
+  border:1px solid rgba(255,255,255,.07);
+  position:relative;
+  overflow:hidden;
   opacity:1;
 }
-.card.hide-anim{opacity:0}
-.card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 12px rgba(255,68,68,.08);}
-.card h3{font-size:1.15rem;margin-bottom:.45rem;}
-.card p{font-size:.88rem;color:var(--muted);margin-bottom:.8rem;}
-.card .play-button{
-  position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);
-  background:var(--accent);color:#fff;border:none;padding:.55rem 1.4rem;border-radius:12px;font-size:.95rem;cursor:pointer;opacity:0;transition:all .35s ease;
+.card.hidden{
+  opacity:0;
+  transform:scale(0.95);
+  pointer-events:none;
 }
-.card:hover .play-button{bottom:12px;opacity:1;}
+.card:hover{transform:scale(1.03);box-shadow:0 6px 20px rgba(255,255,255,.15),0 0 12px rgba(255,68,68,.3);}
+.card h3{font-size:1.2rem;margin-bottom:.5rem;}
+.card p{font-size:.9rem;color:var(--muted);}
+.play-button{
+  position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);
+  background:var(--accent);color:#fff;border:none;padding:.6rem 1.5rem;
+  border-radius:12px;font-size:.95rem;cursor:pointer;opacity:0;transition:all .4s ease;
+}
+.card:hover .play-button{bottom:1rem;opacity:1;}
 
 /* options */
-.options{display:none;opacity:0;transition:opacity .35s ease;margin-top:2rem;z-index:2;text-align:center;
-  background:rgba(255,255,255,.04);backdrop-filter:blur(6px);padding:1.6rem;border-radius:16px;
-  border:1px solid rgba(255,255,255,.06);max-width:760px;margin-left:auto;margin-right:auto;}
-.options h2{font-size:1.4rem;margin-bottom:1rem;}
-.switch{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.035);margin:.6rem auto;padding:.7rem .9rem;width:320px;border-radius:14px;border:1px solid rgba(255,255,255,.05);}
+.options{display:none;opacity:0;transition:opacity .5s ease;margin-top:2rem;z-index:2;text-align:center;
+  background:rgba(255,255,255,.06);backdrop-filter:blur(8px);padding:2rem;border-radius:var(--radius);
+  border:1px solid rgba(255,255,255,.1);}
+.options h2{font-size:1.6rem;margin-bottom:1rem;}
+.switch{display:flex;align-items:center;justify-content:space-between;
+  background:rgba(255,255,255,.08);margin:.7rem auto;padding:.8rem 1rem;width:280px;
+  border-radius:var(--radius);border:1px solid rgba(255,255,255,.1);}
 .switch span{font-weight:600;}
-.toggle{width:50px;height:26px;border-radius:13px;background:#b91c1c;position:relative;cursor:pointer;transition:.25s;}
-.toggle::after{content:"";position:absolute;top:3px;left:4px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.25s;}
+.toggle{width:50px;height:26px;border-radius:13px;background:#b91c1c;position:relative;cursor:pointer;transition:.3s;}
+.toggle::after{content:"";position:absolute;top:3px;left:4px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.3s;}
 .toggle.active{background:#22c55e;box-shadow:0 0 8px #22c55e;}
 .toggle.active::after{left:26px;}
 
-/* presents and tree */
-.presents{position:fixed;bottom:-40px;left:-30px;width:380px;z-index:2;transition:opacity .35s;}
-.tree{position:fixed;bottom:-50px;right:-40px;width:420px;z-index:2;transition:opacity .35s;}
+/* presents & tree */
+.presents{position:fixed;bottom:-40px;left:-30px;width:340px;z-index:2;transition:opacity .5s;}
+.tree{position:fixed;bottom:-50px;right:-40px;width:380px;z-index:2;transition:opacity .5s;}
 
 /* footer */
 footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem;z-index:2;position:relative;}
 
-/* snow canvas */
+/* snow */
 #snow{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
 </style>
 </head>
 <body>
-<!-- PASSWORD SCREEN -->
-<div id="passwordScreen">
-  <h2>🎅 Enter Password to Access GoFastHub</h2>
-  <input type="password" id="passwordInput" placeholder="Enter password...">
-  <button id="passwordButton">Enter</button>
-</div>
-
-<!-- MAIN CONTENT -->
 <canvas id="snow"></canvas>
 <div class="lights" id="lights"><div class="wire"></div></div>
 
@@ -189,97 +163,77 @@ footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem
 </header>
 
 <div class="search-bar" id="searchBar">
-  <input type="text" id="searchInput" placeholder="Search for a game..." autocomplete="off" />
+  <input type="text" id="searchInput" placeholder="Search for a game..." />
 </div>
 
-<!-- GAMES GRID (all games) -->
 <div class="grid" id="gameGrid">
   <div class="card" data-name="Drive Online">
     <h3>Drive Online</h3>
     <p>Race through the city in real-time.</p>
     <button class="play-button" onclick="window.location.href='https://sites.google.com/classroom.center/view/driving-games/drive-online?authuser=0'">Play</button>
   </div>
-
   <div class="card" data-name="Drive Online V2">
     <h3>Drive Online V2</h3>
     <p>The sequel with new cars and maps!</p>
     <button class="play-button" onclick="window.location.href='https://playhop.com/dist-app/422450?skip-guard=1&header=no&utm_source=distrib&utm_medium=cursoralabs'">Play</button>
   </div>
-
   <div class="card" data-name="Kart Bros">
     <h3>Kart Bros</h3>
     <p>Compete with friends in fun kart races!</p>
     <button class="play-button" onclick="window.location.href='https://kartbros.io'">Play</button>
   </div>
-
   <div class="card" data-name="Winter Clash 3D">
     <h3>Winter Clash 3D</h3>
     <p>Battle in snowy arenas this holiday season!</p>
     <button class="play-button" onclick="window.location.href='WinterClash3D.html'">Play</button>
   </div>
-
   <div class="card" data-name="Parkour Snowboard">
     <h3>Parkour Snowboard</h3>
     <p>Shred the slopes with style in this epic parkour challenge!</p>
     <button class="play-button" onclick="window.location.href='https://st.8games.net/10/8g/igra-obbi-snoubord-parkur/'">Play</button>
   </div>
-
-  <div class="card" data-name="Geo FS">
-    <h3>Geo FS</h3>
-    <p>Fly realistic aircraft in a global multiplayer world.</p>
-    <button class="play-button" onclick="window.location.href='https://www.geo-fs.com/geofs.php'">Play</button>
-  </div>
-
   <div class="card" data-name="ARC">
     <h3>ARC</h3>
-    <p>Master your aim and dominate in ragdoll archer battles!</p>
+    <p>Master the bow in this ragdoll archer showdown!</p>
     <button class="play-button" onclick="window.location.href='https://ragdollhit.gg/games/ragdoll-archers/'">Play</button>
   </div>
-
   <div class="card" data-name="Ragdoll Hit">
     <h3>Ragdoll Hit</h3>
-    <p>Use physics-based combat to defeat hilarious enemies!</p>
+    <p>Battle hilarious ragdoll fighters in chaotic duels!</p>
     <button class="play-button" onclick="window.location.href='https://ragdollhit.gg/games/ragdoll-hit-unblocked/'">Play</button>
   </div>
-
   <div class="card" data-name="Poly Track">
     <h3>Poly Track</h3>
-    <p>Build and race your own low-poly tracks!</p>
+    <p>Build and race on your own unique tracks!</p>
     <button class="play-button" onclick="window.location.href='https://www.kodub.com/apps/polytrack'">Play</button>
   </div>
-
   <div class="card" data-name="Melon Playground">
     <h3>Melon Playground</h3>
-    <p>Create chaos and experiment with physics in the sandbox world!</p>
+    <p>Unleash your creativity in a sandbox physics world!</p>
     <button class="play-button" onclick="window.location.href='Melon.html'">Play</button>
   </div>
-
   <div class="card" data-name="Aimbot Shooter">
     <h3>Aimbot Shooter</h3>
-    <p>Test your reflexes and precision in this fast-paced FPS challenge!</p>
+    <p>Test your reflexes and accuracy!</p>
     <button class="play-button" onclick="window.location.href='AimbotShooter.html'">Play</button>
   </div>
-
   <div class="card" data-name="Squid Playground">
     <h3>Squid Playground</h3>
-    <p>Survive, fight, and experiment in this dark twist on the playground world!</p>
+    <p>Survive and experiment in a Squid Game world!</p>
     <button class="play-button" onclick="window.location.href='SquidPlayground.html'">Play</button>
   </div>
-
   <div class="card" data-name="BeamNG">
     <h3>BeamNG</h3>
-    <p>Crash, race, and simulate realistic car physics!</p>
+    <p>Crash and experiment with realistic vehicle physics!</p>
     <button class="play-button" onclick="window.location.href='CarCrash.html'">Play</button>
   </div>
-
   <div class="card" data-name="Snow Rider 4K">
     <h3>Snow Rider 4K</h3>
-    <p>Ride down snowy mountains in stunning 4K detail!</p>
+    <p>Ride through snowy mountains in stunning 4K!</p>
     <button class="play-button" onclick="window.location.href='SnowRider.html'">Play</button>
   </div>
 </div>
 
-<!-- options -->
 <div class="options" id="optionsPanel">
   <h2>🎅 Options</h2>
   <div class="switch"><span>Toggle Snow ❄️</span><div class="toggle" id="snowToggle"></div></div>
@@ -288,8 +242,8 @@ footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem
   <div class="switch"><span>Change Background 🌈</span><div class="toggle" id="bgToggle"></div></div>
 </div>
 
-<img id="presentsImg" src="https://th.bing.com/th/id/R.9fb612f033d37e0d2a350e82cfbb9f70?rik=j4HsZp1b9Xz9dA&riu=http%3a%2f%2fclipart-library.com%2fimages_k%2fchristmas-presents-transparent-background%2fchristmas-presents-transparent-background-23.png&ehk=bX%2ffvE8xkrSmoc1mC8KI%2bw3tJVGbl3D45cbzSLU1YdY%3d&risl=&pid=ImgRaw&r=0" class="presents" alt="presents">
-<img id="treeImg" src="https://freepngimg.com/thumb/christmas/30416-3-christmas-tree-transparent-background.png" class="tree" alt="tree">
+<img id="presentsImg" src="https://th.bing.com/th/id/R.9fb612f033d37e0d2a350e82cfbb9f70?rik=j4HsZp1b9Xz9dA&riu=http%3a%2f%2fclipart-library.com%2fimages_k%2fchristmas-presents-transparent-background%2fchristmas-presents-transparent-background-23.png&ehk=bX%2ffvE8xkrSmoc1mC8KI%2bw3tJVGbl3D45cbzSLU1YdY%3d&risl=&pid=ImgRaw&r=0" class="presents">
+<img id="treeImg" src="https://freepngimg.com/thumb/christmas/30416-3-christmas-tree-transparent-background.png" class="tree">
 
 <footer>
   © <span id="year"></span> GoFastHub | Made with 🎁 & ❤️ by
@@ -297,219 +251,93 @@ footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem
 </footer>
 
 <script>
-/* ---------- PASSWORD gate (DO NOT remember password) ---------- */
-const passwordScreen = document.getElementById('passwordScreen');
-const passwordInput = document.getElementById('passwordInput');
-const passwordButton = document.getElementById('passwordButton');
-
-function hidePasswordScreen(){
-  passwordScreen.classList.add('hidden');
-  setTimeout(()=>{ if(passwordScreen && passwordScreen.parentNode) passwordScreen.parentNode.removeChild(passwordScreen); }, 520);
-}
-
-// exact password: fastxmas ; do NOT store it anywhere
-passwordButton.addEventListener('click', ()=>{
-  if(passwordInput.value === 'fastxmas'){
-    hidePasswordScreen();
-  } else {
-    passwordInput.value = '';
-    passwordInput.placeholder = 'Wrong password ❌';
-    passwordInput.animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:260});
-  }
-});
-passwordInput.addEventListener('keypress',e=>{ if(e.key==='Enter') passwordButton.click(); });
-
-/* ---------- Year + lights ---------- */
 document.getElementById("year").textContent = new Date().getFullYear();
 const lights=document.getElementById("lights");
 for(let i=0;i<40;i++){const b=document.createElement("div");b.classList.add("bulb");lights.appendChild(b);}
 
-/* ---------- Search: move matches to top + fade-in for visible cards ---------- */
-const searchInput = document.getElementById('searchInput');
-const gameGrid = document.getElementById('gameGrid');
+/* SEARCH + ANIMATIONS */
+const searchInput=document.getElementById("searchInput");
+const cards=document.querySelectorAll(".card");
+const grid=document.querySelector(".grid");
 
-function fadeInElements(elements){
-  elements.forEach((el, idx) => {
-    el.style.transition = 'opacity .32s ease, transform .32s ease';
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(6px)';
-    // stagger slightly for nicer feel
-    setTimeout(()=>{ el.style.opacity='1'; el.style.transform='translateY(0)'; }, 40 + idx*40);
+searchInput.addEventListener("input", e => {
+  const q=e.target.value.toLowerCase();
+  let visibleCount = 0;
+
+  cards.forEach(c => {
+    const match=c.dataset.name.toLowerCase().includes(q);
+    c.classList.toggle("hidden",!match);
+    if (match) visibleCount++;
   });
-}
 
-searchInput.addEventListener('input', (e) => {
-  const q = e.target.value.toLowerCase().trim();
-  const cards = Array.from(gameGrid.querySelectorAll('.card'));
-
-  // reset transitions quickly to avoid weird state
-  cards.forEach(c => { c.style.transition = 'opacity .32s ease, transform .32s ease'; });
-
-  if (q === '') {
-    // show all in original DOM order (we'll keep the current appended order)
-    cards.forEach(c => { c.style.display = 'block'; c.style.opacity = '1'; c.style.transform = ''; });
-    return;
+  if(q.length>0){
+    grid.style.gridTemplateColumns = visibleCount === 1 
+      ? "repeat(auto-fit, minmax(240px, 240px))"
+      : "repeat(auto-fit, minmax(240px, 1fr))";
+    grid.style.justifyContent = visibleCount === 1 ? "center" : "initial";
+  } else {
+    grid.style.gridTemplateColumns = "repeat(auto-fit, minmax(240px, 1fr))";
+    grid.style.justifyContent = "initial";
   }
-
-  // find matches
-  const matches = cards.filter(c => c.dataset.name.toLowerCase().includes(q));
-  const nonMatches = cards.filter(c => !c.dataset.name.toLowerCase().includes(q));
-
-  // hide non-matches (fade)
-  nonMatches.forEach((c)=> {
-    c.style.opacity = '0';
-    setTimeout(()=>{ c.style.display = 'none'; }, 320);
-  });
-
-  // make sure matches are visible and move them to top in original relative order
-  // maintain the order among matches as they appear in the existing cards array
-  matches.reverse().forEach(m => { // reverse so prepend preserves original matches order
-    m.style.display = 'block';
-    m.style.opacity = '0';
-    gameGrid.prepend(m);
-  });
-
-  // fade in visible cards (matches) with a slight stagger
-  const visible = Array.from(gameGrid.querySelectorAll('.card')).filter(c => c.style.display !== 'none');
-  fadeInElements(visible);
 });
 
-/* ---------- Home / Options navigation (fade) ---------- */
-const homeBtn = document.getElementById('homeBtn');
-const optionsBtn = document.getElementById('optionsBtn');
-const searchBar = document.getElementById('searchBar');
-const optionsPanel = document.getElementById('optionsPanel');
+/* NAV + OPTIONS */
+const homeBtn=document.getElementById("homeBtn"),
+optionsBtn=document.getElementById("optionsBtn"),
+gameGrid=document.getElementById("gameGrid"),
+searchBar=document.getElementById("searchBar"),
+optionsPanel=document.getElementById("optionsPanel");
 
-function setActive(btn){ [homeBtn, optionsBtn].forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+function setActive(btn){
+  [homeBtn,optionsBtn].forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+}
 
-optionsBtn.addEventListener('click', ()=>{
+optionsBtn.onclick=()=>{
   setActive(optionsBtn);
-  gameGrid.style.opacity = '0';
-  searchBar.style.opacity = '0';
+  gameGrid.style.opacity=0;
+  searchBar.style.opacity=0;
   setTimeout(()=>{
-    gameGrid.style.display = 'none';
-    searchBar.style.display = 'none';
-    optionsPanel.style.display = 'block';
-    setTimeout(()=> optionsPanel.style.opacity = '1', 50);
-  }, 360);
-});
+    gameGrid.style.display="none";
+    searchBar.style.display="none";
+    optionsPanel.style.display="block";
+    document.body.style.overflowY="auto";
+    setTimeout(()=>optionsPanel.style.opacity=1,50);
+  },400);
+}
 
-homeBtn.addEventListener('click', ()=>{
+homeBtn.onclick=()=>{
   setActive(homeBtn);
-  optionsPanel.style.opacity = '0';
+  optionsPanel.style.opacity=0;
   setTimeout(()=>{
-    optionsPanel.style.display = 'none';
-    gameGrid.style.display = 'grid';
-    searchBar.style.display = 'block';
-    setTimeout(()=>{ gameGrid.style.opacity = '1'; searchBar.style.opacity = '1'; }, 50);
-  }, 360);
-});
-
-/* ---------- Snow (interactive restored) ---------- */
-const canvas = document.getElementById('snow');
-const ctx = canvas.getContext('2d');
-let flakes = [], mouse = { x: -9999, y: -9999 };
-
-function resizeCanvas(){ canvas.width = innerWidth; canvas.height = innerHeight; }
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-for(let i=0;i<220;i++){
-  flakes.push({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    r: Math.random()*3 + 0.8,
-    vy: Math.random()*0.8 + 0.3,
-    opacity: Math.random()*0.8 + 0.15,
-    swing: Math.random()*2*Math.PI
-  });
+    optionsPanel.style.display="none";
+    gameGrid.style.display="grid";
+    searchBar.style.display="block";
+    document.body.style.overflowY="auto";
+    setTimeout(()=>{gameGrid.style.opacity=1;searchBar.style.opacity=1;},50);
+  },400);
 }
 
-window.addEventListener('mousemove', (e)=>{ mouse.x = e.clientX; mouse.y = e.clientY; });
-window.addEventListener('mouseout', ()=>{ mouse.x = -9999; mouse.y = -9999; });
-
-function drawSnow(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  const time = Date.now();
-  flakes.forEach((f)=>{
-    // draw
-    ctx.beginPath();
-    ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
-    ctx.fill();
-
-    // interaction with mouse: gentle repulsion
-    const dx = f.x - mouse.x;
-    const dy = f.y - mouse.y;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-    if(dist < 120){
-      const push = (120 - dist)/120;
-      const nx = (dx/dist) || 0;
-      const ny = (dy/dist) || 0;
-      f.x += nx * push * 2.2;
-      f.y += ny * push * 0.9;
-    } else {
-      // slight horizontal swing to make falling natural
-      f.x += Math.sin((f.y + time*0.001) * 0.002) * 0.6;
-    }
-
-    f.y += f.vy;
-    if(f.y > canvas.height + 10){
-      f.y = -10;
-      f.x = Math.random()*canvas.width;
-    }
-    if(f.x < -20) f.x = canvas.width + 20;
-    if(f.x > canvas.width + 20) f.x = -20;
-  });
-  requestAnimationFrame(drawSnow);
+/* SNOW EFFECT (reactive) */
+const snowCanvas=document.getElementById("snow"),ctx=snowCanvas.getContext("2d");
+let w,h;function resize(){w=snowCanvas.width=window.innerWidth;h=snowCanvas.height=window.innerHeight;}
+window.addEventListener("resize",resize);resize();
+let snowflakes=[];for(let i=0;i<100;i++)snowflakes.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*3+1,d:Math.random()*0.5+0.5});
+let mx=w/2,my=h/2;
+document.addEventListener("mousemove",e=>{mx=e.clientX;my=e.clientY;});
+function drawSnow(){ctx.clearRect(0,0,w,h);ctx.fillStyle="rgba(255,255,255,0.9)";ctx.beginPath();
+for(let f of snowflakes){ctx.moveTo(f.x,f.y);ctx.arc(f.x,f.y,f.r,0,Math.PI*2);}
+ctx.fill();updateSnow();}
+function updateSnow(){
+  for(let f of snowflakes){
+    f.y+=f.d;
+    const dx=f.x-mx,dy=f.y-my,dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<100){f.x+=(dx/dist)*2;f.y+=(dy/dist)*2;}
+    if(f.y>h){f.y=0;f.x=Math.random()*w;}
+  }
 }
-drawSnow();
-
-/* ---------- Options toggles (remember these) ---------- */
-const snowToggle = document.getElementById('snowToggle'),
-      presentsToggle = document.getElementById('presentsToggle'),
-      treeToggle = document.getElementById('treeToggle'),
-      bgToggle = document.getElementById('bgToggle'),
-      presentsImg = document.getElementById('presentsImg'),
-      treeImg = document.getElementById('treeImg');
-
-const bgs = ["var(--bg1)","var(--bg2)","var(--bg3)","var(--bg4)"];
-function setToggleState(el, state){ el.classList.toggle('active', !!state); el.setAttribute('aria-checked', !!state); }
-
-const settings = JSON.parse(localStorage.getItem('settings') || '{}');
-let snowOn = settings.snow !== false;
-let presentsOn = settings.presents !== false;
-let treeOn = settings.tree !== false;
-let bgIndex = settings.bg || 0;
-
-setToggleState(snowToggle, snowOn);
-setToggleState(presentsToggle, presentsOn);
-setToggleState(treeToggle, treeOn);
-document.body.style.background = bgs[bgIndex];
-presentsImg.style.opacity = presentsOn ? 1 : 0;
-treeImg.style.opacity = treeOn ? 1 : 0;
-if(!snowOn) canvas.style.display = 'none';
-
-function saveSettings(){ localStorage.setItem('settings', JSON.stringify({ snow: snowOn, presents: presentsOn, tree: treeOn, bg: bgIndex })); }
-
-snowToggle.addEventListener('click', ()=>{
-  snowOn = !snowOn; setToggleState(snowToggle, snowOn); canvas.style.display = snowOn ? 'block' : 'none'; saveSettings();
-});
-presentsToggle.addEventListener('click', ()=>{
-  presentsOn = !presentsOn; setToggleState(presentsToggle, presentsOn); presentsImg.style.opacity = presentsOn ? 1 : 0; saveSettings();
-});
-treeToggle.addEventListener('click', ()=>{
-  treeOn = !treeOn; setToggleState(treeToggle, treeOn); treeImg.style.opacity = treeOn ? 1 : 0; saveSettings();
-});
-bgToggle.addEventListener('click', ()=>{
-  bgIndex = (bgIndex + 1) % bgs.length; document.body.style.background = bgs[bgIndex]; saveSettings();
-});
-
-/* keyboard accessibility for toggles */
-[snowToggle,presentsToggle,treeToggle,bgToggle].forEach(t=>{
-  t.tabIndex = 0;
-  t.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); t.click(); } });
-});
+function animateSnow(){drawSnow();requestAnimationFrame(animateSnow);}
+animateSnow();
 </script>
 </body>
 </html>
