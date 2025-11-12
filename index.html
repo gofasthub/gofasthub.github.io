@@ -504,6 +504,179 @@ bgToggle.addEventListener('click', ()=>{
     if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); t.click(); }
   });
 });
+<script>
+/* 🎄 Setup year in footer */
+document.getElementById("year").textContent = new Date().getFullYear();
+
+/* 🎅 Lights */
+const lights = document.getElementById("lights");
+for (let i = 0; i < 40; i++) {
+  const bulb = document.createElement("div");
+  bulb.classList.add("bulb");
+  lights.appendChild(bulb);
+}
+
+/* ❄️ Search system */
+const searchInput = document.getElementById("searchInput");
+const gameGrid = document.getElementById("gameGrid");
+const cards = Array.from(document.querySelectorAll(".card"));
+
+searchInput.addEventListener("input", (e) => {
+  const q = e.target.value.toLowerCase();
+  const matches = cards.filter(c => c.dataset.name.toLowerCase().includes(q));
+
+  cards.forEach(c => c.style.display = "none");
+
+  if (q.trim() === "") {
+    cards.forEach(c => c.style.display = "block");
+    return;
+  }
+
+  matches.forEach(c => {
+    c.style.display = "block";
+    gameGrid.prepend(c);
+  });
+});
+
+/* 🧭 Navigation between Home and Options */
+const homeBtn = document.getElementById("homeBtn");
+const optionsBtn = document.getElementById("optionsBtn");
+const searchBar = document.getElementById("searchBar");
+const optionsPanel = document.getElementById("optionsPanel");
+
+function setActive(btn) {
+  [homeBtn, optionsBtn].forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+optionsBtn.onclick = () => {
+  setActive(optionsBtn);
+  gameGrid.style.opacity = 0;
+  searchBar.style.opacity = 0;
+  setTimeout(() => {
+    gameGrid.style.display = "none";
+    searchBar.style.display = "none";
+    optionsPanel.style.display = "block";
+    setTimeout(() => optionsPanel.style.opacity = 1, 50);
+  }, 400);
+};
+
+homeBtn.onclick = () => {
+  setActive(homeBtn);
+  optionsPanel.style.opacity = 0;
+  setTimeout(() => {
+    optionsPanel.style.display = "none";
+    gameGrid.style.display = "grid";
+    searchBar.style.display = "block";
+    setTimeout(() => {
+      gameGrid.style.opacity = 1;
+      searchBar.style.opacity = 1;
+    }, 50);
+  }, 400);
+};
+
+/* 🎁 Snowfall (with mouse interaction) */
+const canvas = document.getElementById("snow"), ctx = canvas.getContext("2d");
+let flakes = [], mouse = {x: null, y: null};
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
+
+for (let i = 0; i < 200; i++) {
+  flakes.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 3 + 1,
+    speedY: Math.random() + 0.5,
+    opacity: Math.random() * 0.8 + 0.2
+  });
+}
+
+window.addEventListener("mousemove", e => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+});
+
+function drawSnow() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  flakes.forEach(f => {
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
+    ctx.fill();
+    const dx = f.x - mouse.x, dy = f.y - mouse.y, dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 100) f.x += dx / dist;
+    f.y += f.speedY;
+    if (f.y > canvas.height) {
+      f.y = -f.r;
+      f.x = Math.random() * canvas.width;
+    }
+  });
+  requestAnimationFrame(drawSnow);
+}
+drawSnow();
+
+/* ⚙️ Options toggles (keeps your saved settings) */
+const snowToggle = document.getElementById("snowToggle");
+const presentsToggle = document.getElementById("presentsToggle");
+const treeToggle = document.getElementById("treeToggle");
+const bgToggle = document.getElementById("bgToggle");
+const presentsImg = document.getElementById("presentsImg");
+const treeImg = document.getElementById("treeImg");
+let bgIndex = 0;
+const bgs = ["var(--bg1)", "var(--bg2)", "var(--bg3)", "var(--bg4)"];
+
+function setToggleState(el, state) { el.classList.toggle("active", state); }
+
+/* Load saved settings */
+const settings = JSON.parse(localStorage.getItem("settings") || "{}");
+let snowOn = settings.snow !== false,
+    presentsOn = settings.presents !== false,
+    treeOn = settings.tree !== false,
+    bg = settings.bg || 0;
+
+setToggleState(snowToggle, snowOn);
+setToggleState(presentsToggle, presentsOn);
+setToggleState(treeToggle, treeOn);
+document.body.style.background = bgs[bg];
+presentsImg.style.opacity = presentsOn ? 1 : 0;
+treeImg.style.opacity = treeOn ? 1 : 0;
+if (!snowOn) canvas.style.display = "none";
+
+function save() {
+  localStorage.setItem("settings", JSON.stringify({
+    snow: snowOn, presents: presentsOn, tree: treeOn, bg: bgIndex
+  }));
+}
+
+/* Toggle actions */
+snowToggle.onclick = () => {
+  snowOn = !snowOn;
+  setToggleState(snowToggle, snowOn);
+  canvas.style.display = snowOn ? "block" : "none";
+  save();
+};
+presentsToggle.onclick = () => {
+  presentsOn = !presentsOn;
+  setToggleState(presentsToggle, presentsOn);
+  presentsImg.style.opacity = presentsOn ? 1 : 0;
+  save();
+};
+treeToggle.onclick = () => {
+  treeOn = !treeOn;
+  setToggleState(treeToggle, treeOn);
+  treeImg.style.opacity = treeOn ? 1 : 0;
+  save();
+};
+bgToggle.onclick = () => {
+  bgIndex = (bgIndex + 1) % bgs.length;
+  document.body.style.background = bgs[bgIndex];
+  save();
+};
 </script>
 </body>
 </html>
