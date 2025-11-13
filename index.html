@@ -319,16 +319,37 @@ function hidePasswordScreen(){
 }
 
 // exact password: fastxmas ; do NOT store it anywhere
-passwordButton.addEventListener('click', ()=>{
-  if(passwordInput.value === 'fastxmas'){
-    hidePasswordScreen();
-  } else {
-    passwordInput.value = '';
-    passwordInput.placeholder = 'Wrong password ❌';
-    passwordInput.animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:260});
-  }
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const passwordScreen = document.getElementById("password-screen");
+    const mainContent = document.getElementById("main-content");
+    const passwordInput = document.getElementById("password-input");
+    const submitBtn = document.getElementById("password-submit");
+    const gameGrid = document.getElementById("gameGrid");
+
+    submitBtn.addEventListener("click", () => {
+        const pass = passwordInput.value.trim();
+
+        if (pass === "fastxmas") {
+            // Normal login → full site
+            passwordScreen.style.display = "none";
+            mainContent.style.display = "block";
+            gameGrid.style.display = "grid";  // show all games
+        }
+
+        else if (pass === "fastchristmas") {
+            // Easter Egg → site with NO games
+            passwordScreen.style.display = "none";
+            mainContent.style.display = "block";
+            gameGrid.style.display = "none";  // hide games
+        }
+
+        else {
+            alert("Incorrect password.");
+        }
+    });
 });
-passwordInput.addEventListener('keypress',e=>{ if(e.key==='Enter') passwordButton.click(); });
+</script>
 
 /* ---------- Year + lights ---------- */
 document.getElementById("year").textContent = new Date().getFullYear();
