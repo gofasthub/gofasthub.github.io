@@ -1,166 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>GoFastHub 🎄</title>
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg1: linear-gradient(180deg, #0c1422 0%, #15321e 100%);
-  --bg2: linear-gradient(180deg, #2d0c0c 0%, #5f2c0f 100%);
-  --bg3: linear-gradient(180deg, #1c1440 0%, #0c0f2e 100%);
-  --bg4: linear-gradient(180deg, #0e3020 0%, #062d1a 100%);
-  --current-bg: var(--bg1);
-  --accent: #ff4444;
-  --accent2: #4ade80;
-  --text: #ffffff;
-  --muted: #a7b2c2;
-  --radius: 20px;
+:root{
+  --bg1: linear-gradient(180deg,#0c1422 0%,#15321e 100%);
+  --bg2: linear-gradient(180deg,#2d0c0c 0%,#5f2c0f 100%);
+  --bg3: linear-gradient(180deg,#1c1440 0%,#0c0f2e 100%);
+  --bg4: linear-gradient(180deg,#0e3020 0%,#062d1a 100%);
+  --accent:#ff4444; --accent2:#4ade80; --text:#fff; --muted:#a7b2c2; --radius:20px;
 }
 
 /* reset */
-* {box-sizing:border-box;margin:0;padding:0;font-family:'Urbanist',system-ui,sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Urbanist',system-ui,sans-serif}
 html,body{height:100%}
 
 /* page */
-body {
-  background: var(--current-bg);
-  color: var(--text);
+body{
+  background:var(--bg1);
+  color:var(--text);
   min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  overflow-x:hidden;
-  position:relative;
-  transition:background 1s ease;
+  display:flex;flex-direction:column;align-items:center;
+  overflow-x:hidden;position:relative;transition:background 1s ease;
 }
 
 /* --- PASSWORD SCREEN --- */
-#passwordScreen {
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:rgba(6,12,22,0.88);
-  backdrop-filter:blur(10px);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-  transition:opacity 0.5s ease;
+#passwordScreen{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(6,12,22,0.88);backdrop-filter:blur(10px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:999;transition:opacity .5s ease;
 }
-#passwordScreen.hidden { opacity:0; pointer-events:none; }
-#passwordScreen h2 { font-size:2rem; margin-bottom:1rem; color:var(--text); }
-#passwordInput {
-  padding:0.8rem 1rem; border-radius:12px; border:none; width:260px; font-size:1rem; outline:none;
-  text-align:center; background: rgba(255,255,255,0.04); color:var(--text);
-}
-#passwordButton {
-  margin-top:1rem; background:var(--accent); border:none; padding:0.7rem 1.2rem;color:#fff;border-radius:12px;
-  cursor:pointer; font-weight:700;
-}
+#passwordScreen.hidden{opacity:0;pointer-events:none}
+#passwordScreen h2{font-size:2rem;margin-bottom:1rem;color:var(--text)}
+#passwordInput{padding:.8rem 1rem;border-radius:12px;border:none;width:260px;font-size:1rem;outline:none;text-align:center;background:rgba(255,255,255,.04);color:var(--text)}
+#passwordButton{margin-top:1rem;background:var(--accent);border:none;padding:.7rem 1.2rem;color:#fff;border-radius:12px;cursor:pointer;font-weight:700}
 #passwordButton:hover{background:var(--accent2)}
 
 /* lights */
-.lights {position:fixed;top:0;left:0;width:100%;display:flex;justify-content:space-around;padding-top:10px;z-index:5;pointer-events:none;}
-.wire {position:absolute;top:22px;left:0;width:100%;height:2px;background:rgba(70,70,70,.8);border-radius:1px;z-index:1;}
-.bulb {width:10px;height:18px;border-radius:50% 50% 35% 35%;animation:twinkle 2s infinite ease-in-out;box-shadow:0 0 8px currentColor;z-index:2;}
-.bulb:nth-child(4n+1){background-color:#ff4444;animation-delay:.2s;}
-.bulb:nth-child(4n+2){background-color:#4ade80;animation-delay:.5s;}
-.bulb:nth-child(4n+3){background-color:#60a5fa;animation-delay:.8s;}
-.bulb:nth-child(4n+4){background-color:#facc15;animation-delay:1.1s;}
-@keyframes twinkle{0%,100%{opacity:.8;transform:scale(1);}50%{opacity:1;transform:scale(1.15);}}
+.lights{position:fixed;top:0;left:0;width:100%;display:flex;justify-content:space-around;padding-top:10px;z-index:5;pointer-events:none}
+.wire{position:absolute;top:22px;left:0;width:100%;height:2px;background:rgba(70,70,70,.8);border-radius:1px;z-index:1}
+.bulb{width:10px;height:18px;border-radius:50% 50% 35% 35%;animation:twinkle 2s infinite ease-in-out;box-shadow:0 0 8px currentColor;z-index:2}
+.bulb:nth-child(4n+1){background:#ff4444;animation-delay:.2s}
+.bulb:nth-child(4n+2){background:#4ade80;animation-delay:.5s}
+.bulb:nth-child(4n+3){background:#60a5fa;animation-delay:.8s}
+.bulb:nth-child(4n+4){background:#facc15;animation-delay:1.1s}
+@keyframes twinkle{0%,100%{opacity:.8;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
 
 /* top bar */
-.top-bar {
-  position:fixed;top:50px;left:50%;
-  transform:translateX(-50%);
-  width:92%;
-  height:60px;
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(10px);
-  border-radius:var(--radius);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 2rem;
-  border:1px solid rgba(255,255,255,0.1);
-  z-index:4;
-}
-.bar-title{font-weight:700;font-size:1.3rem;background:linear-gradient(90deg,var(--accent),var(--accent2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.nav-right{display:flex;align-items:center;gap:1rem;}
-.nav-btn{display:flex;align-items:center;gap:.4rem;background:transparent;border:none;color:var(--text);
-  font-size:1rem;cursor:pointer;transition:.25s;font-weight:600;padding:.3rem .6rem;border-radius:12px;}
-.nav-btn:hover{color:var(--accent2);transform:translateY(-2px);}
-.nav-btn.active{color:var(--accent2);}
+.top-bar{position:fixed;top:50px;left:50%;transform:translateX(-50%);width:92%;height:60px;background:rgba(255,255,255,.08);backdrop-filter:blur(10px);border-radius:var(--radius);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;border:1px solid rgba(255,255,255,.1);z-index:4}
+.bar-title{font-weight:700;font-size:1.3rem;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.nav-btn{display:flex;align-items:center;gap:.4rem;background:transparent;border:none;color:var(--text);font-size:1rem;cursor:pointer;transition:.25s;font-weight:600;padding:.3rem .6rem;border-radius:12px}
+.nav-btn:hover{color:var(--accent2);transform:translateY(-2px)}
+.nav-btn.active{color:var(--accent2)}
 
 /* header */
-header{text-align:center;margin-top:130px;z-index:2;}
-h1{font-size:2.2rem;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--accent2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.subtitle{color:var(--muted);margin-top:.3rem;}
+header{text-align:center;margin-top:130px;z-index:2}
+h1{font-size:2.2rem;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{color:var(--muted);margin-top:.3rem}
 
 /* search bar */
-.search-bar{width:100%;max-width:520px;margin:1.5rem auto;z-index:2;transition:opacity .4s;}
-.search-bar input{
-  width:100%;padding:.9rem 1rem;border-radius:14px;
-  border:2px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,0.03);
-  color:var(--text);font-size:1rem;outline:none;transition:.2s;backdrop-filter:blur(3px);
-}
+.search-bar{width:100%;max-width:520px;margin:1.5rem auto;z-index:2;transition:opacity .4s}
+.search-bar input{width:100%;padding:.9rem 1rem;border-radius:14px;border:2px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--text);font-size:1rem;outline:none;transition:.2s;backdrop-filter:blur(3px)}
 
 /* grid */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:1.4rem;
-  width:100%;
-  max-width:980px;
-  margin-top:1rem;
-  z-index:2;
-  transition:opacity .4s ease;
-}
-.card{
-  background:rgba(255,255,255,.04);
-  border-radius:18px;
-  text-align:center;
-  box-shadow:0 4px 12px rgba(0,0,0,.32);
-  transition:transform .35s ease, box-shadow .35s ease, opacity .35s ease;
-  cursor:pointer;padding:1.4rem 1rem;border:1px solid rgba(255,255,255,.06);
-  position:relative;overflow:hidden;
-  opacity:1;
-}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.4rem;width:100%;max-width:980px;margin-top:1rem;z-index:2;transition:opacity .4s ease,grid-template-columns .3s ease,justify-content .3s ease;justify-content:center}
+.card{background:rgba(255,255,255,.04);border-radius:18px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.32);transition:transform .35s ease,box-shadow .35s ease,opacity .35s ease;cursor:pointer;padding:1.4rem 1rem;border:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden;opacity:1}
 .card.hide-anim{opacity:0}
-.card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 12px rgba(255,68,68,.08);}
-.card h3{font-size:1.15rem;margin-bottom:.45rem;}
-.card p{font-size:.88rem;color:var(--muted);margin-bottom:.8rem;}
-.card .play-button{
-  position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);
-  background:var(--accent);color:#fff;border:none;padding:.55rem 1.4rem;border-radius:12px;font-size:.95rem;cursor:pointer;opacity:0;transition:all .35s ease;
-}
-.card:hover .play-button{bottom:12px;opacity:1;}
+.card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 12px rgba(255,68,68,.08)}
+.card h3{font-size:1.15rem;margin-bottom:.45rem}
+.card p{font-size:.88rem;color:var(--muted);margin-bottom:.8rem}
+.card .play-button{position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;border:none;padding:.55rem 1.4rem;border-radius:12px;font-size:.95rem;cursor:pointer;opacity:0;transition:all .35s ease}
+.card:hover .play-button{bottom:12px;opacity:1}
 
 /* options */
-.options{display:none;opacity:0;transition:opacity .35s ease;margin-top:2rem;z-index:2;text-align:center;
-  background:rgba(255,255,255,.04);backdrop-filter:blur(6px);padding:1.6rem;border-radius:16px;
-  border:1px solid rgba(255,255,255,.06);max-width:760px;margin-left:auto;margin-right:auto;}
-.options h2{font-size:1.4rem;margin-bottom:1rem;}
-.switch{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.035);margin:.6rem auto;padding:.7rem .9rem;width:320px;border-radius:14px;border:1px solid rgba(255,255,255,.05);}
-.switch span{font-weight:600;}
-.toggle{width:50px;height:26px;border-radius:13px;background:#b91c1c;position:relative;cursor:pointer;transition:.25s;}
-.toggle::after{content:"";position:absolute;top:3px;left:4px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.25s;}
-.toggle.active{background:#22c55e;box-shadow:0 0 8px #22c55e;}
-.toggle.active::after{left:26px;}
+.options{display:none;opacity:0;transition:opacity .35s ease;margin-top:2rem;z-index:2;text-align:center;background:rgba(255,255,255,.04);backdrop-filter:blur(6px);padding:1.6rem;border-radius:16px;border:1px solid rgba(255,255,255,.06);max-width:760px;margin-left:auto;margin-right:auto}
+.options h2{font-size:1.4rem;margin-bottom:1rem}
+.switch{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.035);margin:.6rem auto;padding:.7rem .9rem;width:320px;border-radius:14px;border:1px solid rgba(255,255,255,.05)}
+.switch span{font-weight:600}
+.toggle{width:50px;height:26px;border-radius:13px;background:#b91c1c;position:relative;cursor:pointer;transition:.25s}
+.toggle::after{content:"";position:absolute;top:3px;left:4px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.25s}
+.toggle.active{background:#22c55e;box-shadow:0 0 8px #22c55e}
+.toggle.active::after{left:26px}
 
-/* presents and tree */
-.presents{position:fixed;bottom:-40px;left:-30px;width:380px;z-index:2;transition:opacity .35s;}
-.tree{position:fixed;bottom:-50px;right:-40px;width:420px;z-index:2;transition:opacity .35s;}
+/* presents & tree */
+.presents{position:fixed;bottom:-40px;left:-30px;width:380px;z-index:2;transition:opacity .35s}
+.tree{position:fixed;bottom:-50px;right:-40px;width:420px;z-index:2;transition:opacity .35s}
 
 /* footer */
-footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem;z-index:2;position:relative;}
+footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem;z-index:2;position:relative}
 
 /* snow canvas */
-#snow{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+#snow{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
 </style>
 </head>
 <body>
@@ -192,6 +127,7 @@ footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem
   <input type="text" id="searchInput" placeholder="Search for a game..." autocomplete="off" />
 </div>
 
+<!-- GAMES GRID (all games) -->
 <div class="grid" id="gameGrid">
   <div class="card" data-name="Drive Online">
     <h3>Drive Online</h3>
@@ -308,240 +244,271 @@ footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem
 </footer>
 
 <script>
-/* ---------- PASSWORD gate (DO NOT remember password) ---------- */
-const passwordScreen = document.getElementById('passwordScreen');
-const passwordInput = document.getElementById('passwordInput');
-const passwordButton = document.getElementById('passwordButton');
+/* ---------- Safe, single password gate + easter egg (DO NOT store password) ---------- */
+(() => {
+  const passwordScreen = document.getElementById('passwordScreen');
+  const passwordInput = document.getElementById('passwordInput');
+  const passwordButton = document.getElementById('passwordButton');
+  const gameGrid = document.getElementById('gameGrid');
 
-function hidePasswordScreen(){
-  passwordScreen.classList.add('hidden');
-  setTimeout(()=>{ if(passwordScreen && passwordScreen.parentNode) passwordScreen.parentNode.removeChild(passwordScreen); }, 520);
-}
+  function hidePasswordScreen() {
+    passwordScreen.classList.add('hidden');
+    setTimeout(() => {
+      if (passwordScreen && passwordScreen.parentNode) passwordScreen.parentNode.removeChild(passwordScreen);
+    }, 520);
+  }
 
-// exact password: fastxmas ; do NOT store it anywhere
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const passwordScreen = document.getElementById("password-screen");
-    const mainContent = document.getElementById("main-content");
-    const passwordInput = document.getElementById("password-input");
-    const submitBtn = document.getElementById("password-submit");
-    const gameGrid = document.getElementById("gameGrid");
+  passwordButton.addEventListener('click', () => {
+    const val = (passwordInput.value || '').trim();
+    if (val === 'fastxmas') {
+      // normal: show full site
+      hidePasswordScreen();
+      // ensure games visible
+      if (gameGrid) gameGrid.style.display = 'grid';
+    } else if (val === 'fastchristmas') {
+      // easter egg: show site but hide games
+      hidePasswordScreen();
+      if (gameGrid) gameGrid.style.display = 'none';
+    } else {
+      // wrong
+      passwordInput.value = '';
+      passwordInput.placeholder = 'Wrong password ❌';
+      passwordInput.animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:260});
+    }
+  });
 
-    submitBtn.addEventListener("click", () => {
-        const pass = passwordInput.value.trim();
-
-        if (pass === "fastxmas") {
-            // Normal login → full site
-            passwordScreen.style.display = "none";
-            mainContent.style.display = "block";
-            gameGrid.style.display = "grid";  // show all games
-        }
-
-        else if (pass === "fastchristmas") {
-            // Easter Egg → site with NO games
-            passwordScreen.style.display = "none";
-            mainContent.style.display = "block";
-            gameGrid.style.display = "none";  // hide games
-        }
-
-        else {
-            alert("Incorrect password.");
-        }
-    });
-});
-</script>
+  passwordInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') passwordButton.click();
+  });
+})();
 
 /* ---------- Year + lights ---------- */
 document.getElementById("year").textContent = new Date().getFullYear();
-const lights=document.getElementById("lights");
-for(let i=0;i<40;i++){const b=document.createElement("div");b.classList.add("bulb");lights.appendChild(b);}
+const lights = document.getElementById("lights");
+for (let i = 0; i < 40; i++) { const b = document.createElement("div"); b.classList.add("bulb"); lights.appendChild(b); }
 
-/* ---------- Search: move matches to top + fade-in for visible cards ---------- */
-const searchInput = document.getElementById('searchInput');
-const gameGrid = document.getElementById('gameGrid');
+/* ---------- Search: move matches to top + fade-in, preserve original order ---------- */
+(() => {
+  const searchInput = document.getElementById('searchInput');
+  const gameGrid = document.getElementById('gameGrid');
+  // capture original order
+  const originalOrder = Array.from(gameGrid.querySelectorAll('.card'));
 
-function fadeInElements(elements){
-  elements.forEach((el, idx) => {
-    el.style.transition = 'opacity .32s ease, transform .32s ease';
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(6px)';
-    // stagger slightly for nicer feel
-    setTimeout(()=>{ el.style.opacity='1'; el.style.transform='translateY(0)'; }, 40 + idx*40);
-  });
-}
-
-searchInput.addEventListener('input', (e) => {
-  const q = e.target.value.toLowerCase().trim();
-  const cards = Array.from(gameGrid.querySelectorAll('.card'));
-
-  // reset transitions quickly to avoid weird state
-  cards.forEach(c => { c.style.transition = 'opacity .32s ease, transform .32s ease'; });
-
-  if (q === '') {
-    // show all in original DOM order (we'll keep the current appended order)
-    cards.forEach(c => { c.style.display = 'block'; c.style.opacity = '1'; c.style.transform = ''; });
-    return;
+  function restoreOriginalOrder() {
+    originalOrder.forEach(c => gameGrid.appendChild(c));
+    originalOrder.forEach(c => { c.style.display = 'block'; c.style.opacity = '1'; c.style.transform = ''; });
+    gameGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(240px, 1fr))';
+    gameGrid.style.justifyContent = 'center';
   }
 
-  // find matches
-  const matches = cards.filter(c => c.dataset.name.toLowerCase().includes(q));
-  const nonMatches = cards.filter(c => !c.dataset.name.toLowerCase().includes(q));
+  function fadeInElements(elements) {
+    elements.forEach((el, idx) => {
+      el.style.transition = 'opacity .34s ease, transform .34s ease';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(10px)';
+      setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, 60 + idx * 45);
+    });
+  }
 
-  // hide non-matches (fade)
-  nonMatches.forEach((c)=> {
-    c.style.opacity = '0';
-    setTimeout(()=>{ c.style.display = 'none'; }, 320);
+  searchInput.addEventListener('input', (e) => {
+    const q = (e.target.value || '').toLowerCase().trim();
+    const cards = Array.from(originalOrder); // keep original reference order
+
+    if (q === '') {
+      restoreOriginalOrder();
+      return;
+    }
+
+    const matches = cards.filter(c => c.dataset.name.toLowerCase().includes(q));
+    const nonMatches = cards.filter(c => !c.dataset.name.toLowerCase().includes(q));
+
+    // hide non-matches
+    nonMatches.forEach(c => {
+      c.style.transition = 'opacity .28s ease';
+      c.style.opacity = '0';
+      setTimeout(() => { c.style.display = 'none'; }, 300);
+    });
+
+    // prepend matches in original relative order (so final order is matches then remaining)
+    // we prepend reversed so that the relative order among matches remains the same
+    matches.slice().reverse().forEach(m => {
+      m.style.display = 'block';
+      m.style.opacity = '0';
+      gameGrid.prepend(m);
+    });
+
+    // set grid single-match behavior
+    const visible = Array.from(gameGrid.querySelectorAll('.card')).filter(c => c.style.display !== 'none');
+    if (visible.length === 1) {
+      gameGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(240px, 240px))';
+      gameGrid.style.justifyContent = 'center';
+    } else {
+      gameGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(240px, 1fr))';
+      gameGrid.style.justifyContent = 'center';
+    }
+
+    // fade in visible
+    const visibleOrdered = visible; // already in DOM order (matches moved to top)
+    fadeInElements(visibleOrdered);
   });
-
-  // make sure matches are visible and move them to top in original relative order
-  // maintain the order among matches as they appear in the existing cards array
-  matches.reverse().forEach(m => { // reverse so prepend preserves original matches order
-    m.style.display = 'block';
-    m.style.opacity = '0';
-    gameGrid.prepend(m);
-  });
-
-  // fade in visible cards (matches) with a slight stagger
-  const visible = Array.from(gameGrid.querySelectorAll('.card')).filter(c => c.style.display !== 'none');
-  fadeInElements(visible);
-});
+})();
 
 /* ---------- Home / Options navigation (fade) ---------- */
-const homeBtn = document.getElementById('homeBtn');
-const optionsBtn = document.getElementById('optionsBtn');
-const searchBar = document.getElementById('searchBar');
-const optionsPanel = document.getElementById('optionsPanel');
+(() => {
+  const homeBtn = document.getElementById('homeBtn');
+  const optionsBtn = document.getElementById('optionsBtn');
+  const gameGrid = document.getElementById('gameGrid');
+  const searchBar = document.getElementById('searchBar');
+  const optionsPanel = document.getElementById('optionsPanel');
 
-function setActive(btn){ [homeBtn, optionsBtn].forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+  function setActive(btn) { [homeBtn, optionsBtn].forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
 
-optionsBtn.addEventListener('click', ()=>{
-  setActive(optionsBtn);
-  gameGrid.style.opacity = '0';
-  searchBar.style.opacity = '0';
-  setTimeout(()=>{
-    gameGrid.style.display = 'none';
-    searchBar.style.display = 'none';
-    optionsPanel.style.display = 'block';
-    setTimeout(()=> optionsPanel.style.opacity = '1', 50);
-  }, 360);
-});
-
-homeBtn.addEventListener('click', ()=>{
-  setActive(homeBtn);
-  optionsPanel.style.opacity = '0';
-  setTimeout(()=>{
-    optionsPanel.style.display = 'none';
-    gameGrid.style.display = 'grid';
-    searchBar.style.display = 'block';
-    setTimeout(()=>{ gameGrid.style.opacity = '1'; searchBar.style.opacity = '1'; }, 50);
-  }, 360);
-});
-
-/* ---------- Snow (interactive restored) ---------- */
-const canvas = document.getElementById('snow');
-const ctx = canvas.getContext('2d');
-let flakes = [], mouse = { x: -9999, y: -9999 };
-
-function resizeCanvas(){ canvas.width = innerWidth; canvas.height = innerHeight; }
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-for(let i=0;i<220;i++){
-  flakes.push({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    r: Math.random()*3 + 0.8,
-    vy: Math.random()*0.8 + 0.3,
-    opacity: Math.random()*0.8 + 0.15,
-    swing: Math.random()*2*Math.PI
+  optionsBtn.addEventListener('click', () => {
+    setActive(optionsBtn);
+    gameGrid.style.transition = 'opacity .35s ease';
+    searchBar.style.transition = 'opacity .35s ease';
+    gameGrid.style.opacity = '0';
+    searchBar.style.opacity = '0';
+    setTimeout(() => {
+      gameGrid.style.display = 'none';
+      searchBar.style.display = 'none';
+      optionsPanel.style.display = 'block';
+      document.body.style.overflowY = 'auto';
+      setTimeout(() => optionsPanel.style.opacity = '1', 60);
+    }, 360);
   });
-}
 
-window.addEventListener('mousemove', (e)=>{ mouse.x = e.clientX; mouse.y = e.clientY; });
-window.addEventListener('mouseout', ()=>{ mouse.x = -9999; mouse.y = -9999; });
-
-function drawSnow(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  const time = Date.now();
-  flakes.forEach((f)=>{
-    // draw
-    ctx.beginPath();
-    ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
-    ctx.fill();
-
-    // interaction with mouse: gentle repulsion
-    const dx = f.x - mouse.x;
-    const dy = f.y - mouse.y;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-    if(dist < 120){
-      const push = (120 - dist)/120;
-      const nx = (dx/dist) || 0;
-      const ny = (dy/dist) || 0;
-      f.x += nx * push * 2.2;
-      f.y += ny * push * 0.9;
-    } else {
-      // slight horizontal swing to make falling natural
-      f.x += Math.sin((f.y + time*0.001) * 0.002) * 0.6;
-    }
-
-    f.y += f.vy;
-    if(f.y > canvas.height + 10){
-      f.y = -10;
-      f.x = Math.random()*canvas.width;
-    }
-    if(f.x < -20) f.x = canvas.width + 20;
-    if(f.x > canvas.width + 20) f.x = -20;
+  homeBtn.addEventListener('click', () => {
+    setActive(homeBtn);
+    optionsPanel.style.opacity = '0';
+    setTimeout(() => {
+      optionsPanel.style.display = 'none';
+      gameGrid.style.display = 'grid';
+      searchBar.style.display = 'block';
+      document.body.style.overflowY = 'auto';
+      setTimeout(() => { gameGrid.style.opacity = '1'; searchBar.style.opacity = '1'; }, 60);
+    }, 360);
   });
-  requestAnimationFrame(drawSnow);
-}
-drawSnow();
+})();
+
+/* ---------- Snow: big fluffy flakes that move with mouse velocity ---------- */
+(() => {
+  const canvas = document.getElementById('snow');
+  const ctx = canvas.getContext('2d');
+  let W = 0, H = 0;
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize); resize();
+
+  const FL_COUNT = 120;
+  const flakes = [];
+  for (let i = 0; i < FL_COUNT; i++) {
+    flakes.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 6 + 3,
+      vy: Math.random() * 0.6 + 0.4,
+      vx: Math.random() * 0.4 - 0.2,
+      opacity: Math.random() * 0.6 + 0.25,
+      angle: Math.random() * Math.PI * 2
+    });
+  }
+
+  // mouse velocity tracker
+  const mouse = { x: -9999, y: -9999, vx: 0, vy: 0, lastX: null, lastY: null, lastT: null };
+  document.addEventListener('mousemove', (e) => {
+    const t = performance.now();
+    if (mouse.lastT != null) {
+      const dt = Math.max(1, t - mouse.lastT);
+      const nx = e.clientX, ny = e.clientY;
+      const ivx = (nx - mouse.lastX) / dt;
+      const ivy = (ny - mouse.lastY) / dt;
+      mouse.vx = mouse.vx * 0.82 + ivx * 0.18;
+      mouse.vy = mouse.vy * 0.82 + ivy * 0.18;
+    }
+    mouse.lastX = e.clientX; mouse.lastY = e.clientY; mouse.lastT = performance.now();
+    mouse.x = e.clientX; mouse.y = e.clientY;
+  });
+  document.addEventListener('mouseout', () => { mouse.x = -9999; mouse.y = -9999; mouse.vx = 0; mouse.vy = 0; mouse.lastT = null; });
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const time = performance.now();
+    for (let f of flakes) {
+      // directional push from mouse velocity (gentle)
+      const pushX = mouse.vx * 24;
+      const pushY = mouse.vy * 14;
+      f.x += f.vx + (pushX * (Math.random() * 0.05 + 0.02));
+      f.y += f.vy + (pushY * (Math.random() * 0.05 + 0.02));
+      f.x += Math.sin((f.y + time * 0.001) * 0.002 + f.angle) * 0.6;
+
+      // draw fluffy circle using shadow blur
+      ctx.beginPath();
+      ctx.globalAlpha = f.opacity;
+      ctx.fillStyle = '#fff';
+      ctx.shadowColor = 'rgba(255,255,255,0.9)';
+      ctx.shadowBlur = Math.max(6, f.r * 0.9);
+      ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+
+      // recycle
+      if (f.y > H + 20) {
+        f.y = -20 - Math.random() * 40;
+        f.x = Math.random() * W;
+        f.r = Math.random() * 6 + 3;
+        f.opacity = Math.random() * 0.6 + 0.25;
+        f.vy = Math.random() * 0.6 + 0.4;
+      }
+      if (f.x < -50) f.x = W + 50;
+      if (f.x > W + 50) f.x = -50;
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 
 /* ---------- Options toggles (remember these) ---------- */
-const snowToggle = document.getElementById('snowToggle'),
-      presentsToggle = document.getElementById('presentsToggle'),
-      treeToggle = document.getElementById('treeToggle'),
-      bgToggle = document.getElementById('bgToggle'),
-      presentsImg = document.getElementById('presentsImg'),
-      treeImg = document.getElementById('treeImg');
+(() => {
+  const snowToggle = document.getElementById('snowToggle'),
+        presentsToggle = document.getElementById('presentsToggle'),
+        treeToggle = document.getElementById('treeToggle'),
+        bgToggle = document.getElementById('bgToggle'),
+        presentsImg = document.getElementById('presentsImg'),
+        treeImg = document.getElementById('treeImg'),
+        gameGrid = document.getElementById('gameGrid');
 
-const bgs = ["var(--bg1)","var(--bg2)","var(--bg3)","var(--bg4)"];
-function setToggleState(el, state){ el.classList.toggle('active', !!state); el.setAttribute('aria-checked', !!state); }
+  const bgs = ["var(--bg1)","var(--bg2)","var(--bg3)","var(--bg4)"];
+  function setToggleState(el, state) { el.classList.toggle('active', !!state); el.setAttribute('aria-checked', !!state); }
 
-const settings = JSON.parse(localStorage.getItem('settings') || '{}');
-let snowOn = settings.snow !== false;
-let presentsOn = settings.presents !== false;
-let treeOn = settings.tree !== false;
-let bgIndex = settings.bg || 0;
+  const settings = JSON.parse(localStorage.getItem('settings') || '{}');
+  let snowOn = settings.snow !== false;
+  let presentsOn = settings.presents !== false;
+  let treeOn = settings.tree !== false;
+  let bgIndex = settings.bg || 0;
 
-setToggleState(snowToggle, snowOn);
-setToggleState(presentsToggle, presentsOn);
-setToggleState(treeToggle, treeOn);
-document.body.style.background = bgs[bgIndex];
-presentsImg.style.opacity = presentsOn ? 1 : 0;
-treeImg.style.opacity = treeOn ? 1 : 0;
-if(!snowOn) canvas.style.display = 'none';
+  setToggleState(document.getElementById('snowToggle'), snowOn);
+  setToggleState(document.getElementById('presentsToggle'), presentsOn);
+  setToggleState(document.getElementById('treeToggle'), treeOn);
+  document.body.style.background = bgs[bgIndex];
+  presentsImg.style.opacity = presentsOn ? 1 : 0;
+  treeImg.style.opacity = treeOn ? 1 : 0;
+  if (!snowOn) document.getElementById('snow').style.display = 'none';
 
-function saveSettings(){ localStorage.setItem('settings', JSON.stringify({ snow: snowOn, presents: presentsOn, tree: treeOn, bg: bgIndex })); }
+  function saveSettings(){ localStorage.setItem('settings', JSON.stringify({ snow: snowOn, presents: presentsOn, tree: treeOn, bg: bgIndex })); }
 
-snowToggle.addEventListener('click', ()=>{
-  snowOn = !snowOn; setToggleState(snowToggle, snowOn); canvas.style.display = snowOn ? 'block' : 'none'; saveSettings();
-});
-presentsToggle.addEventListener('click', ()=>{
-  presentsOn = !presentsOn; setToggleState(presentsToggle, presentsOn); presentsImg.style.opacity = presentsOn ? 1 : 0; saveSettings();
-});
-treeToggle.addEventListener('click', ()=>{
-  treeOn = !treeOn; setToggleState(treeToggle, treeOn); treeImg.style.opacity = treeOn ? 1 : 0; saveSettings();
-});
-bgToggle.addEventListener('click', ()=>{
-  bgIndex = (bgIndex + 1) % bgs.length; document.body.style.background = bgs[bgIndex]; saveSettings();
-});
+  document.getElementById('snowToggle').addEventListener('click', ()=>{ snowOn = !snowOn; setToggleState(document.getElementById('snowToggle'), snowOn); document.getElementById('snow').style.display = snowOn ? 'block' : 'none'; saveSettings(); });
+  document.getElementById('presentsToggle').addEventListener('click', ()=>{ presentsOn = !presentsOn; setToggleState(document.getElementById('presentsToggle'), presentsOn); presentsImg.style.opacity = presentsOn ? 1 : 0; saveSettings(); });
+  document.getElementById('treeToggle').addEventListener('click', ()=>{ treeOn = !treeOn; setToggleState(document.getElementById('treeToggle'), treeOn); treeImg.style.opacity = treeOn ? 1 : 0; saveSettings(); });
+  document.getElementById('bgToggle').addEventListener('click', ()=>{ bgIndex = (bgIndex + 1) % bgs.length; document.body.style.background = bgs[bgIndex]; saveSettings(); });
 
-/* keyboard accessibility for toggles */
-[snowToggle,presentsToggle,treeToggle,bgToggle].forEach(t=>{
-  t.tabIndex = 0;
-  t.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); t.click(); } });
-});
+  // keyboard accessible toggles
+  [document.getElementById('snowToggle'), document.getElementById('presentsToggle'), document.getElementById('treeToggle'), document.getElementById('bgToggle')].forEach(t => {
+    t.tabIndex = 0;
+    t.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); t.click(); } });
+  });
+})();
+
 </script>
 </body>
 </html>
