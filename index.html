@@ -193,98 +193,148 @@ footer{text-align:center;color:var(--muted);padding:2rem 0 .5rem;font-size:.9rem
   <input type="text" id="searchInput" placeholder="Search for a game..." autocomplete="off" />
 </div>
 
-<div class="grid" id="gameGrid">
-  <!-- Games list -->
-  <div class="card" data-name="Drive Online">
-    <h3>Drive Online</h3>
-    <p>Race through the city in real-time.</p>
-    <button class="play-button" onclick="window.location.href='https://sites.google.com/classroom.center/view/driving-games/drive-online?authuser=0'">Play</button>
-  </div>
-  <div class="card" data-name="Drive Online V2">
-    <h3>Drive Online V2</h3>
-    <p>The sequel with new cars and maps!</p>
-    <button class="play-button" onclick="window.location.href='https://playhop.com/dist-app/422450?skip-guard=1&header=no&utm_source=distrib&utm_medium=cursoralabs'">Play</button>
-  </div>
-  <div class="card" data-name="Kart Bros">
-    <h3>Kart Bros</h3>
-    <p>Compete with friends in fun kart races!</p>
-    <button class="play-button" onclick="window.location.href='https://kartbros.io'">Play</button>
-  </div>
-  <div class="card" data-name="Winter Clash 3D">
-    <h3>Winter Clash 3D</h3>
-    <p>Battle in snowy arenas this holiday season!</p>
-    <button class="play-button" onclick="window.location.href='WinterClash3D.html'">Play</button>
-  </div>
-  <div class="card" data-name="Parkour Snowboard">
-    <h3>Parkour Snowboard</h3>
-    <p>Shred the slopes with style in this epic parkour challenge!</p>
-    <button class="play-button" onclick="window.location.href='https://st.8games.net/10/8g/igra-obbi-snoubord-parkur/'">Play</button>
-  </div>
-  <div class="card" data-name="Geo FS">
-    <h3>Geo FS</h3>
-    <p>Fly realistic aircraft in a global multiplayer world.</p>
-    <button class="play-button" onclick="window.location.href='https://www.geo-fs.com/geofs.php'">Play</button>
-  </div>
-  <div class="card" data-name="ARC">
-    <h3>ARC</h3>
-    <p>Master your aim and dominate in ragdoll archer battles!</p>
-    <button class="play-button" onclick="window.location.href='https://ragdollhit.gg/games/ragdoll-archers/'">Play</button>
-  </div>
-  <div class="card" data-name="Ragdoll Hit">
-    <h3>Ragdoll Hit</h3>
-    <p>Use physics-based combat to defeat hilarious enemies!</p>
-    <button class="play-button" onclick="window.location.href='https://ragdollhit.gg/games/ragdoll-hit-unblocked/'">Play</button>
-  </div>
-  <div class="card" data-name="Poly Track">
-    <h3>Poly Track</h3>
-    <p>Build and race your own low-poly tracks!</p>
-    <button class="play-button" onclick="window.location.href='https://www.kodub.com/apps/polytrack'">Play</button>
-  </div>
-  <div class="card" data-name="Melon Playground">
-    <h3>Melon Playground</h3>
-    <p>Create chaos and experiment with physics in the sandbox world!</p>
-    <button class="play-button" onclick="window.location.href='Melon.html'">Play</button>
-  </div>
-  <div class="card" data-name="Aimbot Shooter">
-    <h3>Aimbot Shooter</h3>
-    <p>Test your reflexes and precision in this fast-paced FPS challenge!</p>
-    <button class="play-button" onclick="window.location.href='AimbotShooter.html'">Play</button>
-  </div>
-  <div class="card" data-name="Squid Playground">
-    <h3>Squid Playground</h3>
-    <p>Survive, fight, and experiment in this dark twist on the playground world!</p>
-    <button class="play-button" onclick="window.location.href='SquidPlayground.html'">Play</button>
-  </div>
-  <div class="card" data-name="BeamNG">
-    <h3>BeamNG</h3>
-    <p>Crash, race, and simulate realistic car physics!</p>
-    <button class="play-button" onclick="window.location.href='CarCrash.html'">Play</button>
-  </div>
-  <div class="card" data-name="Snow Rider 4K">
-    <h3>Snow Rider 4K</h3>
-    <p>Ride down snowy mountains in stunning 4K detail!</p>
-    <button class="play-button" onclick="window.location.href='SnowRider.html'">Play</button>
-  </div>
-  <div class="card" data-name="Drive Angry">
-    <h3>Drive Angry</h3>
-    <p>Race fast and furious — but try not to crash!</p>
-    <button class="play-button" onclick="window.location.href='https://gamecollections.me/game/3kh0-assets-main/drive-mad/'">Play</button>
-  </div>
-  <div class="card" data-name="Formula One">
-    <h3>Formula One</h3>
-    <p>Take on the ultimate racing challenge in this high-speed Formula 1 game!</p>
-    <button class="play-button" onclick="window.location.href='https://kdata1.com/2024/05/super-star-car6363233/'">Play</button>
-  </div>
-  <div class="card" data-name="Drift Hunterz">
-    <h3>Drift Hunterz</h3>
-    <p>Master drifting in this addictive racing game!</p>
-    <button class="play-button" onclick="window.location.href='https://ubg76.gitlab.io/drift-hunters/'">Play</button>
-  </div>
-  <div class="card" data-name="Skate.">
-    <h3>Skate.</h3>
-    <p>Pull off tricks and explore skateparks!</p>
-    <button class="play-button" onclick="window.location.href='http://skate6.com/'">Play</button>
-  </div>
+<!-- Drive Online -->
+<div class="card" data-name="Drive Online" onclick="window.location.href='https://sites.google.com/classroom.center/view/driving-games/drive-online?authuser=0'">
+    <img src="img/driveonline.png" class="card-image">
+    <div class="card-title">Drive Online</div>
+</div>
+
+<!-- Drive Online V2 -->
+<div class="card" data-name="Drive Online V2" onclick="window.location.href='https://playhop.com/dist-app/422450?skip-guard=1&header=no&utm_source=distrib&utm_medium=cursoralabs'">
+    <img src="img/driveonlinev2.png" class="card-image">
+    <div class="card-title">Drive Online V2</div>
+</div>
+
+<!-- Kart Bros -->
+<div class="card" data-name="Kart Bros" onclick="window.location.href='https://kartbros.io'">
+    <img src="img/kartbros.png" class="card-image">
+    <div class="card-title">Kart Bros</div>
+</div>
+
+<!-- Winter Clash 3D -->
+<div class="card" data-name="Winter Clash 3D" onclick="window.location.href='WinterClash.html'">
+    <img src="img/winterclash.png" class="card-image">
+    <div class="card-title">Winter Clash 3D</div>
+</div>
+
+<!-- Parkour Snowboard -->
+<div class="card" data-name="Parkour Snowboard" onclick="window.location.href='https://st.8games.net/10/8g/igra-obbi-snoubord-parkur/'">
+    <img src="img/parkoursnowboard.png" class="card-image">
+    <div class="card-title">Parkour Snowboard</div>
+</div>
+
+<!-- Geo FS -->
+<div class="card" data-name="Geo FS" onclick="window.location.href='https://www.geo-fs.com/geofs.php'">
+    <img src="img/geofs.png" class="card-image">
+    <div class="card-title">Geo FS</div>
+</div>
+
+<!-- ARC -->
+<div class="card" data-name="ARC" onclick="window.location.href='https://ragdollhit.gg/games/ragdoll-archers/'">
+    <img src="img/arc.png" class="card-image">
+    <div class="card-title">ARC</div>
+</div>
+
+<!-- Ragdoll Hit -->
+<div class="card" data-name="Ragdoll Hit" onclick="window.location.href='https://ragdollhit.gg/games/ragdoll-hit-unblocked/'">
+    <img src="img/ragdollhit.png" class="card-image">
+    <div class="card-title">Ragdoll Hit</div>
+</div>
+
+<!-- Poly Track -->
+<div class="card" data-name="Poly Track" onclick="window.location.href='https://www.kodub.com/apps/polytrack'">
+    <img src="img/polytrack.png" class="card-image">
+    <div class="card-title">Poly Track</div>
+</div>
+
+<!-- Melon Playground -->
+<div class="card" data-name="Melon Playground" onclick="window.location.href='Melon.html'">
+    <img src="img/melon.png" class="card-image">
+    <div class="card-title">Melon Playground</div>
+</div>
+
+<!-- Aimbot Shooter -->
+<div class="card" data-name="Aimbot Shooter" onclick="window.location.href='AimbotShooter.html'">
+    <img src="img/aimbotshooter.png" class="card-image">
+    <div class="card-title">Aimbot Shooter</div>
+</div>
+
+<!-- Squid Playground -->
+<div class="card" data-name="Squid Playground" onclick="window.location.href='SquidPlayground.html'">
+    <img src="img/squidplayground.png" class="card-image">
+    <div class="card-title">Squid Playground</div>
+</div>
+
+<!-- BeamNG -->
+<div class="card" data-name="BeamNG" onclick="window.location.href='CarCrash.html'">
+    <img src="img/beamng.png" class="card-image">
+    <div class="card-title">BeamNG</div>
+</div>
+
+<!-- Snow Rider 4K -->
+<div class="card" data-name="Snow Rider 4K" onclick="window.location.href='SnowRider.html'">
+    <img src="img/snowrider.png" class="card-image">
+    <div class="card-title">Snow Rider 4K</div>
+</div>
+
+<!-- Drive Angry -->
+<div class="card" data-name="Drive Angry" onclick="window.location.href='https://gamecollections.me/game/3kh0-assets-main/drive-mad/'">
+    <img src="img/driveangry.png" class="card-image">
+    <div class="card-title">Drive Angry</div>
+</div>
+
+<!-- Formula One -->
+<div class="card" data-name="Formula One" onclick="window.location.href='https://kdata1.com/2024/05/super-star-car6363233/'">
+    <img src="img/formulaone.png" class="card-image">
+    <div class="card-title">Formula One</div>
+</div>
+
+<!-- Drift Hunterz -->
+<div class="card" data-name="Drift Hunterz" onclick="window.location.href='https://ubg76.gitlab.io/drift-hunters/'">
+    <img src="img/drifhunterz.png" class="card-image">
+    <div class="card-title">Drift Hunterz</div>
+</div>
+
+<!-- Skate. -->
+<div class="card" data-name="Skate." onclick="window.location.href='http://skate6.com/'">
+    <img src="img/skate.png" class="card-image">
+    <div class="card-title">Skate.</div>
+</div>
+
+<!-- Super Liquid Soccer -->
+<div class="card" data-name="Super Liquid Soccer" onclick="window.location.href='https://superliquid-soccer.com/gg/super-liquid-soccer/'">
+    <img src="img/superliquid.png" class="card-image">
+    <div class="card-title">Super Liquid Soccer</div>
+</div>
+
+<!-- Blacktop: Police Chase -->
+<div class="card" data-name="Blacktop: Police Chase" onclick="window.location.href='https://kdata1.com/5000/2025/blacktop-police-chase/'">
+    <img src="img/blacktop.png" class="card-image">
+    <div class="card-title">Blacktop: Police Chase</div>
+</div>
+
+<!-- Rocket League -->
+<div class="card" data-name="Rocket League" onclick="window.location.href='https://m.igroutka.ru/ni3/81/RocketSoccer/'">
+    <img src="img/rocketleague.png" class="card-image">
+    <div class="card-title">Rocket League</div>
+</div>
+
+<!-- Stunt Bike Extreme -->
+<div class="card" data-name="Stunt Bike Extreme" onclick="window.location.href='https://g.igroutka.ru/games/793/2xTdm6GrXEuN0Kwq/fe831138-3321-40ed-b8cd-f1c482091e04/index.html'">
+    <img src="img/stuntbike.png" class="card-image">
+    <div class="card-title">Stunt Bike Extreme</div>
+</div>
+
+<!-- Ping Ponk -->
+<div class="card" data-name="Ping Ponk" onclick="window.location.href='https://pkgames.org/ping-pong-go!/index.html'">
+    <img src="img/pingponk.png" class="card-image">
+    <div class="card-title">Ping Ponk</div>
+</div>
+
+<!-- Basketball Superstars -->
+<div class="card" data-name="Basketball Superstars" onclick="window.location.href='https://g2.igroutka.ru/lib/crazy/games/basketball-superstars/'">
+    <img src="img/basketballsuperstars.png" class="card-image">
+    <div class="card-title">Basketball Superstars</div>
 </div>
 
 <!-- options panel -->
